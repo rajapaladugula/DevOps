@@ -1,0 +1,62 @@
+---------------------- HOW TO PUSH MAVEN BUILD TO NEXUS OSS -------------------------------------
+
+Pre Req: JAVA 7 | Platform --> WINDOWS::
+
+# Download Nexus OSS. (https://www.sonatype.com/download-oss-sonatype) and extract the file downloaded.
+
+# Execute ($ nexus.exe /install) after navigating to the corresponding directory where the nexus.exe is present. Once installed, start the service ($ nexus.exe /start). Can also start the service in run-> services.msc-> nexus-> start
+
+# Open the browser and type localhost:8081/nexus to open it. (In case of AWS Instance, open corresponding ports in Security Groups.)
+
+# Default Credentials for Nexus:: user: admin and password: admin123
+
+-----------------NOW CREATING A REPO TO PUSH MAVEN BUILD-----------------------------------
+
+# Open Nexus, Click settings icon --> Repository --> Create Repository --> maven2 (hosted). 
+   Name: Name of the Repo to be created.
+   Version policy: Select accordingly and Create the Repository.
+
+# Inorder to push maven build to Nexus, we create users and their roles for security purpose. 
+   ROLES:: create role:nexus role-> Role id (ex:developer) --> Rolename (ex: developer) --> Role description: Custom description -->        Privileges: Corresponding settings and then create the role.
+   
+   USER: Click users in security --> Give an ID (ex: developer) -->fname -->lname -->email -->pass --> Status:active --> You can provide    selected roles and then create user.
+
+# In order to push maven build to Nexus, we need to do the following changes in the pom.xml:
+
+   <distributionManagement>
+   <snapshotRepository>
+      <id>nexus-snapshots</id>
+      <url>http://localhost:8081/nexus/content/repositories/YOUR_REPO_NAME/>
+   </snapshotRepository>
+</distributionManagement>
+
+
+And in <plugins> add the following : 
+
+<plugin>
+   <artifactId>maven-deploy-plugin</artifactId>
+   <version>2.8.1</version>
+   <executions>
+      <execution>
+         <id>default-deploy</id>
+         <phase>deploy</phase>
+         <goals>
+            <goal>deploy</goal>
+         </goals>
+      </execution>
+   </executions>
+</plugin>
+
+# In settings.xml of maven ( For localhost Ex: C:\Program Files\apache-maven-3.3.9\conf). In servers coloumn, add the following:
+
+<servers>
+   <server>
+      <id>nexus-snapshots</id>
+      <username>deployment</username>
+      <password>Pass_for_the_deployment_user</password>
+   </server>
+</servers>
+
+# when we run the uild in jenkins, we can observe that the generated .jar/.war file is in the Nexus Repository created.  
+
+REF: http://www.baeldung.com/maven-deploy-nexus                                 
