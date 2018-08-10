@@ -1,0 +1,25 @@
+--------------------------MASTER/SLAVE-------------------------
+
+SLAVE TASK: 
+
+# We need to set a password to get the slave connected with master. Inorder to set password, we need to enable the ssh configs:
+   $ sudo vi /etc/ssh/sshd_config
+
+# Now edit the password configs by removing # (comment) in password authentication, which looks like (#PasswordAuthentication yes)
+   Change it to (PasswordAuthentication yes) 
+
+# Restart sshd ($ sudo service sshd restart) and set password to the user: (sudo passwd USER_NAME)
+   $ sudo passwd ec2-user
+
+# Login to the server using the password and create a directory which can be used as Jenkins Slave Workspace.
+
+MASTER TASK:
+
+# Open Jenkins-> Manage Jenkins --> Manage Node --> New node --> Give node name -->Check Permanent Agent -->Ok.
+  Set the No of Executors and add the slave's directory path created in the Remote root directory.
+# In labels, provide a label name to it and in launch method, select Launch slave agents via SSH (i.e, LINUX SYSTEMS).
+# In the HOST provide the slave's ip address and add the credentials-> Jenkins-> created for the slave.
+# Change the HOST KEY VERIFICATION STRATEGY to NON VERIFYING VERIFICATION STARTEGY. 
+# Click tool locations and provide the paths of the slaves softwares installed (i.e. path of git in server..).
+# Create a Jenkins Job and in the configuration we must select "RESTRICT WHERE THIS PROJECT CAN BE RUN" and give label 
+  that was created earlier to be running on it.
