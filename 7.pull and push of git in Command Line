@@ -1,0 +1,21 @@
+      ----------HOW TO PULL AND PUSH REQ IN GIT USING COMMAND LINE----------
+
+# First you need to initialize git by using ($ git init). This will create .git directory. 
+$ git init
+
+# Now to add reference remote git url ($ git remote add ALIAS_NAME GIT_REPO_URL).
+$ git remote add DevOps https://github.com/rajapaladugula/DevOps.git
+
+# Now you need to pull the code using ($ git pull ALIAS_NAME BRANCH_NAME).
+$ git pull DevOps Master
+
+# After modifications we need to do staging i.e, add all ($ git add .) or specific files ($ git add FILE.TXT)
+
+# Commit the changes  ($ git commit -m "RANDOM_MESSAGE") which displays the insertions, deletions or changes to the file.
+$ git commit -m "This is the first commit"
+
+# Push changes to the Repo ($ git push -u ALIAS_NAME BRANCH_NAME) and authenticate. 
+$ git push -u DevOps master
+
+# To check the status.
+$ git status
