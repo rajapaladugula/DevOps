@@ -1,0 +1,86 @@
+-----------------------------HOW TO PUSH MAVEN BUILD TO APACHE TOMCAT----------------------------
+
+# Installing Apache Tomcat on Centos:
+  $ sudo yum update | $ sudo yum install tomcat
+
+# We need to install admin packages:
+  $ sudo yum install tomcat-webapps tomcat-admin-webapps
+
+# Inorder to configure Tomcat web management interface, we need to configure the user credentials:
+  $ sudo vi/usr/share/tomcat/conf/tomcat-users.xml
+  Add user credentials in between tomcat users:
+     <tomcat-users>
+      <role rolename="admin"/>
+       <role rolename="admin-gui"/>
+       <role rolename="admin-script"/>
+       <role rolename="manager"/>
+       <role rolename="manager-gui"/>
+       <role rolename="manager-script"/>
+       <role rolename="manager-jmx"/>
+       <role rolename="manager-status"/>
+       <user username="admin" password="password" roles="admin,manager,admin-gui,admin-script,manager-gui,manager-script,manager-jmx,manager-status" />
+     </tomcat-users>
+
+# The default port no. for tomcat is 8080. Inorder to configure:
+   $ cd /usr/share/tomcat/conf | $ sudo vi server.xml
+   Locate the connector port and change the port number.
+
+# Incase of AWS Instance, open the same port AWS -->Security groups -->Inbound rule --> Add new rule.
+
+# Restart and open Tomcat with the updated port using credentials by clicking manager app.. 
+
+-------------------PUSHING BUILD TO TOMCAT-----------------------
+
+# Pushing a build to tomcat can be done in two ways:
+   i) Using POM.XML
+  ii) Using Container Deployement plugin in jenkins.
+
+   i) USING POM.XML:
+
+ # Add the following deployement plugin in pom.xml 
+       
+        <plugin>
+   <artifactId>maven-deploy-plugin</artifactId>
+   <version>2.8.1</version>
+   <executions>
+      <execution>
+         <id>default-deploy</id>
+         <phase>deploy</phase>
+         <goals>
+            <goal>deploy</goal>
+         </goals>
+      </execution>
+   </executions>
+</plugin> 
+
+   # Add the tomcat configuration plugin in the same.
+
+        <plugin>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>tomcat-maven-plugin</artifactId>
+	<configuration>
+		<url>http://xx.xx.xx.xx:xxxx/manager/text</url>
+		<server>MyServer</server>
+		<path>/RAJA</path>
+	</configuration>
+</plugin>
+
+# Now in jenkins job configuration -->Maven Goals --> clean tomcat:deploy
+ 
+
+ii) USING CONTAINER PLUGIN IN JENKINS: (No Tomcat-maven Plugin in pom.xml)
+
+    -> For this we need to install "delpoy to container" plugin in jenkins.
+     
+    -> Now add servers in server.xml of maven. As shown above.
+    
+    -> In Jenkins job configure --> Postbuild actions --> Deploy war/ear to container:
+       WAR/EAR FILE: **/*.war -> This is the way to choose war file.
+       CONTEXT PATH: /RAJA -> This is just a path name 
+       CONTAINER: Add container-> tomcat 7.x (Versions vary)
+                  Manager credentials : Cred of tomcat manager app
+                  Tomcat url: http://xx.xx.xx.xx:xxx  -> url with port number
+ 
+       Goals and options: clean package
+
+REF: https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-7-on-centos-7-via-yum
