@@ -53,18 +53,27 @@
    </executions>
 </plugin> 
 
-   # Add the tomcat configuration plugin in the same.
+ # Add the tomcat configuration plugin in the same.
 
         <plugin>
 	<groupId>org.codehaus.mojo</groupId>
 	<artifactId>tomcat-maven-plugin</artifactId>
 	<configuration>
 		<url>http://xx.xx.xx.xx:xxxx/manager/text</url>
-		<server>MyServer</server>
+		<server>TomcatServer</server>
 		<path>/RAJA</path>
 	</configuration>
 </plugin>
 
+# Add servers in server.xml of maven:
+       <servers>
+        <server>
+           <id>TomcatServer</id>
+           <username>admin</username>
+           <password>password</password>
+        </server>
+       </servers>
+       
 # Now in jenkins job configuration -->Maven Goals --> clean tomcat:deploy
  
 
@@ -72,8 +81,8 @@ ii) USING CONTAINER PLUGIN IN JENKINS: (No Tomcat-maven Plugin in pom.xml)
 
     -> For this we need to install "delpoy to container" plugin in jenkins.
      
-    -> Now add servers in server.xml of maven. As shown above.
-    
+    -> Add servers in server.xml of maven as mentioned above.
+     
     -> In Jenkins job configure --> Postbuild actions --> Deploy war/ear to container:
        WAR/EAR FILE: **/*.war -> This is the way to choose war file.
        CONTEXT PATH: /RAJA -> This is just a path name 
@@ -84,3 +93,4 @@ ii) USING CONTAINER PLUGIN IN JENKINS: (No Tomcat-maven Plugin in pom.xml)
        Goals and options: clean package
 
 REF: https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-7-on-centos-7-via-yum
+     https://stackoverflow.com/questions/6549504/maven-server-in-settings-xml
