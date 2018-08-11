@@ -1,0 +1,19 @@
+------------------------HOW TO BUILD A JENKINS JOB WHEN MERGE HAPPENS IN GITHUB------------------------------
+
+# Create a Repository in Git Hub and a job in Jenkins.
+
+# In order to build a Jenkins Job automatically, create a webhook in github.
+  Open the Repository in Git Hub -->settings --> Webhooks -->Add webhook --> In Payload url(JENKINSURL/github-webhook/)
+   Ex: (http://xx.xx.xx.xx:xxxx/github-webhook/)
+
+# Configure the Jenkins Job:
+  --> Clone git repo url and paste in Jenkins Git Hub config. Remove .git in the end as its a repo url.
+  --> Under source code management, check git and clone same url in it.
+  --> Under Build triggers, check github hook trigger for GITScm polling.
+  --> Under Build -->Goals and options --> Give your requirement like "test" or "clean package" etc.
+
+# Open Github and add some files to it. Now create a branch in github, by clicking on branch:master and add a branch to it.
+
+# Open the created branch and make any changes in your script and then commit. Now click new pull req and select base:master ... compare:branch and update pull req.
+
+# Now Merge the pull req to master. Observe jenkins as it automatically starts a build according to your goals and options.
