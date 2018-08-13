@@ -17,5 +17,11 @@ $ git commit -m "This is the first commit"
 # Push changes to the Repo ($ git push -u ALIAS_NAME BRANCH_NAME) and authenticate. 
 $ git push -u DevOps master
 
-# To check the status.
+# Check the status.
 $ git status
+
+# Clone a Repository from Git
+$ git clone https://github.com/rajapaladugula/DevOps.git
+
+# Create a Branch in the Repo
+$ git checkout -b  BRANCH_NAME
