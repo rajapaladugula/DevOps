@@ -4,18 +4,21 @@
 $ git config --global user.name "Raja Paladugula"
 $ git config --global user.email rajapaladugula@gmail.com
 
-# First you need to initialize git by using ($ git init). This will create .git directory. 
+# Initialize git using ($ git init) which will create .git directory. 
 $ git init
 
-# Now to add reference remote git url ($ git remote add ALIAS_NAME GIT_REPO_URL).
+# To add remote git url ($ git remote add ALIAS_NAME GIT_REPO_URL).
 $ git remote add DevOps https://github.com/rajapaladugula/DevOps.git
 
-# Now you need to pull the code using ($ git pull ALIAS_NAME BRANCH_NAME).
+# Clone a Repository from git
+$ git clone https://github.com/rajapaladugula/DevOps.git
+
+# To pull the code ($ git pull ALIAS_NAME BRANCH_NAME).
 $ git pull DevOps Master
 
 # After modifications we need to do staging i.e, add all ($ git add .) or specific files ($ git add FILE.TXT)
 
-# Commit the changes  ($ git commit -m "RANDOM_MESSAGE") which displays the insertions, deletions or changes to the file.
+# Commit the changes ($ git commit -m "RANDOM_MESSAGE") which displays the insertions, deletions or changes to the file.
 $ git commit -m "This is the first commit"
 
 # Push changes to the Repo ($ git push -u ALIAS_NAME BRANCH_NAME) and authenticate. 
@@ -24,14 +27,21 @@ $ git push -u DevOps master
 # Check the status.
 $ git status
 
-# Clone a Repository from Git
-$ git clone https://github.com/rajapaladugula/DevOps.git
-
-# Create a Branch in the Repo
+# Create a Branch on local machine.
 $ git checkout -b BRANCH_NAME
 
-# View current remotes
+# Delete a branch on your local file system
+$ git branch -d [name_of_your_new_branch]
+
+# Change working branch.
+$ git checkout [name_of_your_new_branch]
+
+# View current remotes.
 $ git remote -v
 
-# Remove a remote
+# Remove a remote.
 $ git remote rm destination
+
+# Update branch on local system when the original branch from official repository has been updated
+$ git fetch [name_of_your_remote]
+
