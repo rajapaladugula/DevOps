@@ -30,8 +30,8 @@ $ git clone https://github.com/rajapaladugula/DevOps.git
 # Create a Branch in the Repo
 $ git checkout -b BRANCH_NAME
 
-#
+# View current remotes
 $ git remote -v
 
-#
+# Remove a remote
 $ git remote rm destination
