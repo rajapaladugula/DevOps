@@ -29,3 +29,9 @@ $ git clone https://github.com/rajapaladugula/DevOps.git
 
 # Create a Branch in the Repo
 $ git checkout -b BRANCH_NAME
+
+#
+$ git remote -v
+
+#
+$ git remote rm destination
