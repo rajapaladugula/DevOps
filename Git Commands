@@ -1,5 +1,9 @@
       ----------HOW TO PULL AND PUSH REQ IN GIT USING COMMAND LINE----------
 
+# Git Identify
+$ git config --global user.name "Raja Paladugula"
+$ git config --global user.email rajapaladugula@gmail.com
+
 # First you need to initialize git by using ($ git init). This will create .git directory. 
 $ git init
 
