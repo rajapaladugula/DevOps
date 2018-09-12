@@ -54,3 +54,4 @@
   Issues: Failed to start Kibana using systemctl.
   Resolution: /etc/systemd/system/kibana.service file was tryign to start kibana as the kibana user and group,
               which neither of those existsed. Resolved after creating and restart.
+  Reference: https://github.com/elastic/kibana/issues/7041
