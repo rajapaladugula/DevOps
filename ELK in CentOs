@@ -26,7 +26,7 @@
   node.data: true     (False if Client node)
   node.master: true  (False if Slave node)
   
-  bootstrap.memory_lock: true   (Add the below to File /usr/lib/systemd/system/elasticsearch.service: 
+  bootstrap.memory_lock: true   **(Add the below to File /usr/lib/systemd/system/elasticsearch.service: 
         LimitMEMLOCK=infinity   and run systemctl daemon-reload, if bootstrap.memory_lock is enabled.)
   
   network.host: ["xx.xx.xxx.xxx",_local_]
@@ -35,6 +35,9 @@
   discovery.zen.minimum_master_nodes: 3   (In case of a Cluster)
   discovery.zen.ping.unicast.hosts: ["xx.xx.xx.xx","xx.xx.xx.xx"] (Add all the servers in the Cluster)
   transport.tcp.port: 9300
+  
+  Issues: Unable to lock JVM Memory: error=12, reason=Cannot allocate memory. Resolution**
+          Unable to browse 9200 port outside of the server. Res: Open the Firewall Port 9200
 
 ###KIBANA###
 # Download and install RPM for ES v6.4.0 manually:
@@ -43,8 +46,11 @@
   $sudo rpm --install kibana-6.4.0-x86_64.rpm
   $sudo /bin/systemctl daemon-reload
   $sudo /bin/systemctl enable kibana.service
+  $sudo systemctl start kibana.service
  
 # Start Kibana service by executing:
   $sudo systemctl start kibana.service
   
-  
+  Issues: Failed to start Kibana using systemctl.
+  Resolution: /etc/systemd/system/kibana.service file was tryign to start kibana as the kibana user and group,
+              which neither of those existsed. Resolved after creating and restart.
