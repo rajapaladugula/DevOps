@@ -10,4 +10,7 @@
    Resolution: Resolved after device is connected using $nmcli device connect [devicename]
    Reference: https://serverfault.com/questions/904304/could-not-resolve-host-mirrorlist-centos-org-centos-7/926933#926933?newreg=4658bff3c76c4c8c988908204a9ccfef
    
-2. Condition: 
+2. Condition: Open a Port in CentOs
+   To open up a new port (e.g., TCP/80) permanently, use these commands.
+   $ sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+   $ sudo firewall-cmd --reload
