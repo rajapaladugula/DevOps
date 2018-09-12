@@ -1,0 +1,13 @@
+1. Condition: Triying to update yum Repo.
+   Command: yum update -y
+   Error: Could not retrieve mirrorlist http://mirrorlist.centos.org/*
+          "Could not resolve host: mirror.centos.org; Unknown error". Trying other mirror.
+   Issue: Device not connected to N/W
+   Remedy: $nmcli device status   If your device is not connected, then this might be the issue do,
+          $nmcli device connect [devicename found above]
+          $nmcli connection down [devicename]
+          $nmcli connection up [devicename]
+   Resolution: Resolved after device is connected using $nmcli device connect [devicename]
+   Reference: https://serverfault.com/questions/904304/could-not-resolve-host-mirrorlist-centos-org-centos-7/926933#926933?newreg=4658bff3c76c4c8c988908204a9ccfef
+   
+2. Condition: 
