@@ -50,8 +50,15 @@
  
 # Start Kibana service by executing:
   $sudo systemctl start kibana.service
+
+# Configuring Kibana: /etc/kibana/kibana.yml
+  server.host: 'xx.xx.xx.xx'
+  elasticsearch.url: 'http://xx.xx.xx.xx:9200'
   
   Issues: Failed to start Kibana using systemctl.
-  Resolution: /etc/systemd/system/kibana.service file was tryign to start kibana as the kibana user and group,
-              which neither of those existsed. Resolved after creating and restart.
+  Resolution: /etc/systemd/system/kibana.service file was trying to start kibana as the kibana user and group,
+              where either of those exists. Resolved after creating them and restarting Kibana.
+              Create a new User:  useradd USER_NAME
+              Create a new Group: groupadd GROUP_NAME
+              Add a user to a Group:  usermod -a -G GROUP_NAME USER_NAME
   Reference: https://github.com/elastic/kibana/issues/7041
