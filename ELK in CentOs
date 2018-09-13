@@ -69,3 +69,6 @@
   sudo rpm -vi metricbeat-6.4.0-x86_64.rpm
 # Configure /etc/metricbeat/metricbeat.yml
   https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-reference-yml.html
+
+# Logs for Metric Beat Failures
+  $sudo journalctl -u metricbeat
