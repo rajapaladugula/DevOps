@@ -81,4 +81,6 @@
   $curl -XGET 'http://localhost:9200/metricbeat-*/_search?pretty'
   
 ####SENTINL#####
-# 
+# Change Directory to $cd /usr/share/kibana
+# ./bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-6.2.4/sentinl-v6.2.2.zip
+# Restart Kibana
