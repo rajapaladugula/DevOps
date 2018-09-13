@@ -1,4 +1,4 @@
-###ELASTIC SEARCH###
+###ELASTIC_SEARCH###
 # Installing Java (Pre-Requisite) & Set Environment Variable:
   $sudo yum install java-1.8.0-openjdk.x86_64 -y
   $sudo sh -c "echo export JAVA_HOME=/usr/java/jdk1.8.0_161/jre >> /etc/environment"
@@ -62,3 +62,10 @@
               Create a new Group: groupadd GROUP_NAME
               Add a user to a Group:  usermod -a -G GROUP_NAME USER_NAME
   Reference: https://github.com/elastic/kibana/issues/7041
+  
+###METRIC_BEAT###
+# Download and install RPM for MetricBeat v6.4.0
+  curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.4.0-x86_64.rpm
+  sudo rpm -vi metricbeat-6.4.0-x86_64.rpm
+# Configure /etc/metricbeat/metricbeat.yml
+  https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-reference-yml.html
