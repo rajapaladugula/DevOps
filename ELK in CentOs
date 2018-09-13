@@ -46,7 +46,6 @@
   $sudo rpm --install kibana-6.4.0-x86_64.rpm
   $sudo /bin/systemctl daemon-reload
   $sudo /bin/systemctl enable kibana.service
-  $sudo systemctl start kibana.service
  
 # Start Kibana service by executing:
   $sudo systemctl start kibana.service
@@ -54,6 +53,8 @@
 # Configuring Kibana: /etc/kibana/kibana.yml
   server.host: 'xx.xx.xx.xx'
   elasticsearch.url: 'http://xx.xx.xx.xx:9200'
+  
+# Logs: $journalctl -fu kibana.service
   
   Issues: Failed to start Kibana using systemctl.
   Resolution: /etc/systemd/system/kibana.service file was trying to start kibana as the kibana user and group,
@@ -79,4 +80,5 @@
 # Test Metric_Beat Installation
   $curl -XGET 'http://localhost:9200/metricbeat-*/_search?pretty'
   
+####SENTINL#####
 # 
