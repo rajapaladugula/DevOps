@@ -72,3 +72,11 @@
 
 # Logs for Metric Beat Failures
   $sudo journalctl -u metricbeat
+  
+# Start Metric _Beat
+  $sudo service metricbeat start
+  
+# Test Metric_Beat Installation
+  $curl -XGET 'http://localhost:9200/metricbeat-*/_search?pretty'
+  
+# 
