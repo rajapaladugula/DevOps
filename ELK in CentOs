@@ -51,6 +51,7 @@
   $sudo systemctl start kibana.service
 
 # Configuring Kibana: /etc/kibana/kibana.yml
+  server.port: 5601
   server.host: 'xx.xx.xx.xx'
   elasticsearch.url: 'http://xx.xx.xx.xx:9200'
   
@@ -82,5 +83,5 @@
   
 ####SENTINL#####
 # Change Directory to $cd /usr/share/kibana
-# ./bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-6.2.4/sentinl-v6.2.2.zip
+# ./bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-6.2.4/sentinl-v6.2.4.zip
 # Restart Kibana
