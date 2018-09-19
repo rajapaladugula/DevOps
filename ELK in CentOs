@@ -92,4 +92,10 @@
 # ./bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-6.2.4/sentinl-v6.2.4.zip
 # Restart Kibana
 
-Reference to sample watch: https://github.com/rajapaladugula/DevOps/blob/master/sentinl_watcher
+As Sentinl is a plugin to Kibana, we congifure the integartions in kibana.yml file.
+
+#References:
+configs: https://github.com/sirensolutions/sentinl/blob/master/docs/Config-Example.md
+Example watches: https://github.com/elastic/examples/
+Sentinl: https://github.com/sirensolutions/sentinl/tree/master/docs
+Sample watch: https://github.com/rajapaladugula/DevOps/blob/master/sentinl_watcher
