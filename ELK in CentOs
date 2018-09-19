@@ -94,6 +94,11 @@
 
 As Sentinl is a plugin to Kibana, we congifure the integartions in kibana.yml file.
 
+Sentinl-Slack Integration(Action): 
+https://api.slack.com/apps --> Your Apps --> [Create New App] --> Incoming Webhooks [Activate Incoming Webhhoks <ON>] -->
+[Add New Webhook to WorkSpace] --> Select Channel/Direct Message to post.
+OAuth & Permissions --> Scopes --> Add "Post to Specific Channels in Slack"
+
 #References:
 configs: https://github.com/sirensolutions/sentinl/blob/master/docs/Config-Example.md
 Example watches: https://github.com/elastic/examples/
