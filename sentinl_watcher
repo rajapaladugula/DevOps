@@ -1,0 +1,66 @@
+{
+  "actions": {
+    "Slack_alarm_9acc021a-95a8-4777-9d1d-3e471377b597": {
+      "name": "Slack Sample Alarm",
+      "throttle_period": "2m",
+      "slack": {
+        "priority": "medium",
+        "stateless": false,
+        "message": "SENTINL Alert! Found {{payload.hits.total}} Events",
+        "channel": "#jenkinsupgrade"
+      }
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "search_type": "query_then_fetch",
+        "index": [
+          "metricbeat-*"
+        ],
+        "types": [],
+        "body": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "query_string": {
+                    "analyze_wildcard": true,
+                    "query": "service.name:elasticsearch AND host.name:localhost.localdomain"
+                  }
+                },
+                {
+                  "range": {
+                    "@timestamp": {
+                      "gte": "now-30m",
+                      "lte": "now"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "compare": {
+      "payload.hits.total": {
+        "gt": 350
+      }
+    }
+  },
+  "trigger": {
+    "schedule": {
+      "interval": "2m"
+    }
+  },
+  "disable": true,
+  "report": false,
+  "title": "metric_watcher",
+  "wizard": {},
+  "save_payload": false,
+  "spy": false,
+  "impersonate": false
+}
