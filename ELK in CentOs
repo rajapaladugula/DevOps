@@ -36,6 +36,8 @@
   discovery.zen.ping.unicast.hosts: ["xx.xx.xx.xx","xx.xx.xx.xx"] (Add all the servers in the Cluster)
   transport.tcp.port: 9300
   
+  Reference to es.yaml: https://github.com/rajapaladugula/DevOps/blob/master/elasticsearch.yml
+  
   Issues: Unable to lock JVM Memory: error=12, reason=Cannot allocate memory. Resolution**
           Unable to browse 9200 port outside of the server. Res: Open the Firewall Port 9200
 
@@ -56,6 +58,8 @@
   elasticsearch.url: 'http://xx.xx.xx.xx:9200'
   
 # Logs: $journalctl -fu kibana.service
+
+  Reference to kibana.yml : https://github.com/rajapaladugula/DevOps/blob/master/kibana.yml
   
   Issues: Failed to start Kibana using systemctl.
   Resolution: /etc/systemd/system/kibana.service file was trying to start kibana as the kibana user and group,
@@ -80,6 +84,8 @@
   
 # Test Metric_Beat Installation
   $curl -XGET 'http://localhost:9200/metricbeat-*/_search?pretty'
+  
+  Reference to Metricbeat.yml : https://github.com/rajapaladugula/DevOps/blob/master/metricbeat.yml
   
 ####SENTINL#####
 # Change Directory to $cd /usr/share/kibana
