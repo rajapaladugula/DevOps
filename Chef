@@ -1,0 +1,146 @@
+----------------------------CONFIGURATION MANAGEMENT-----------------------------
+
+Idempotent: Config changes occurs "in-place" only if a resource does not match changed requirements.
+	Ex: Ansible, Chef
+Immutability: Resources are either recreated or destroyed but not changed.
+	Ex: Terraform, Cloud Formation.
+Convergence: Ability to successfully modify or restore resource when required.
+
+Chef::
+Work Station -(Knife)-> Chef Server <--(Chef client) Nodes
+
+1. Work Station:Chef Development Kit is installed...write cook books...interacts & manage nodes on Chef Server.
+				Chef Executable: Generate code templetes, run system commands, install ruby gems.
+				Chef Client: Registering nodes with Chef Server, Sync code from Server to node, make sure nodes are configured correctly.
+				Ohai: Gathers attributes info about node (OS, Version, N/W, memory, CPU....) run by Chef Client...used to conditionally execute code...attributes also saved on Chef server.
+				Knife: Interacts with Chef Server.
+				Kitchen: Test developed code on multiple instances at same time.
+				Berksfile: Downloads code dependencies. points to metadata.
+
+2. Chef Server: Clent-Server Arch...Central Hub where code lives...controls and manages nodes.
+	
+3. Nodes: clients/servers. Chef Client collects data and send to Chef Server.
+
+Work Station -> Chef Repo -> Cook Books::
+
+		Recepies: Contains configuration code...collection of Resources that describes a config... Resource- Desired state of a node aspect [Attribute, Action].
+		Attributes: Specific detail about a node state...sourced from -> Nodes (Ohai) - Attribute Files - Recepies - Environments - Roles....default & Automatic are common types.
+					precedence: automatic > force_override > override > normal > force_default > default
+		Files: Files that needs to be copied from files (cookbooks) to nodes.
+		Templetes: Similar to files with programming logic inside, to dynamically fetch data EX: from nodes.
+				   The name of the template resource should be the location where the virtual host file is placed on the nodes. The source is the name of the template file.
+		libraries: Add new functionality to recepies. Fetch data dynamically from a DB and store it in a file. Written in Ruby.
+		Metadata: Details about Chef cookBook and dependent cookbooks from Berksfile - name, decription, dependencies, gems, client version.
+
+Ruby Methods: statements (if, case)
+				platform, platform_family, value_for_platform, value_for_platform_family, include_recepie (include existing recepies), attribute,
+				data_bag (stores data), shell_out (run shell commands)
+				
+Chef_Repo --> .Chef --> .knife.rb		: Chef Server Configuration (Generated from Chef Server --> Administartion --> Organization --> Generate Knife Config)
+					--> RSA Private Key	: To Authenticate with Chef Server (Generated from Administartion --> Users --> Reset Key)
+		  --> .kitchen --> Logs			: Kitchen Logs
+		  --> .kitchen.yml				: Kitchen Configuration
+
+
+1. chef verify																						: Verifies Chef Installation on a server.
+2. chef generate repo REPO_NAME 																	: Generates a Chef Repo.
+3. chef generate cookbook COOKBOOK_NAME (Minimal Directory)| knife cookbook create (Full Directory)	: Generates Chef Cookbook.
+4. kitchen converge 																				: Run the Recepie for testing in work station.
+   chef-client --local-mode --runlist 'recipe[COOKBOOK_NAME]'										: Run/Test Recipe on Work station.
+   chef-apply RECIPE_NAME																			: Runs a single recipe.
+   foodcritic | cookstyle																			: Checks for errors or corrections.
+5. knife ssl fetch																					: Command to fetch SSL Certs (authenticate) from Chef Server.
+   knife ssl check																					: Validate connection to Chef Server. (Use this command from the current Chef Repo)
+6. knife cookbook upload COOKBOOK_NAME																: Uploads cookbook to the Chef Server.
+   
+   berks install																					: Download Dependent Cookbooks mentioned in Berksfile to ~/.berkshelf/cookbooks
+   berks upload 																					: Upload the downloaded Cookbooks and dependencies to Chef Server.
+   $ echo '{"ssl": { "verify": false }}' > ~/.berkshelf/config.json
+   $ cat ~/.berkshelf/config.json
+
+7. BootStraping :: W.S --> Node --> Server (SSH/winrm from W.S to Node, Installs Chef Client on node & Adds Chef node to the Server.)
+	knife bootstrap xx.xx.xx.xx --ssh-user USER_NAME --ssh-password '*****' --node-name CHEF_NODE									: Password Authentication.
+	knife bootstrap localhost --ssh-port FORWARDED_PORT_NO --ssh-user USER_NAME --sudo --identity-file IDENTITY_FILE_LOCATION --node-name NODE_NAME : Bootstrap a local virtual machine using a forwarded port.
+	knife bootstrap xx.xx.xx.xx -i /opt/first_repo/.chef/amex.pem -N CentOS -x ec2-user --sudo										: Key based Authentication.
+		-N | --node-name		: Name of the Node.
+		-i | --identify-file	: Location of the Key.
+		-x | --ssh-user			: User name to connect to the node.
+		--run-list 'recipe[COOKBOOK_NAME]'	: Recipe to run (optional)
+   
+	knife bootstrap windows winrm xx.xx.X.X --winrm-user Administrator --winrm-password @Server1 --node-name win16	: Bootstarping Windows node.
+	
+	Node:	/etc/chef 	--> Client.rb (Server Information), Client.pem (Private Key)
+			/var/chef 	--> backup (file changes backups), cache (Cookbooks stored) 
+			/opt/chefdk	--> ChefDK tools installed.
+   
+*. knife node list				: nodes associated to the Chef Server.
+   knife node show NODE_NAME	: View data about a particular node.
+
+8. knife node run_list set NODE_NAME 'recipe[COOK_BOOK]' 											: Assign run_list to nodes.
+   knife node run_list set NODE_NAME 'role[ROLE_NAME]'												: Assign Roles to nodes that have run_lists.
+
+9. ssh -i ~/.ssh/MY.PEM SUDO_USER@xx.xx.xx.xx														: SSH connection test to the node.   
+   ssh SUDO_USER@xx.xx.xx.xx
+   ssh -i /home/user/.vagrant/machines/default/virtualbox/private_key -l USER_NAME -p 2222 localhost: The -p option specifies the port on the host (2222) that will forward to port 22 on the guest. : VAGRANT
+   
+0. Chef-client: (Gets node Info) Node --> Authenticate Server (client.rb) --> Sync CB's Runlists & stores to /var/chef/cache --> (loads attributes, Resource collections) Loads CB --> Converge --> Send node obj to server
+
+   knife ssh "name:NODE_NAME" "sudo chef-client" -x ec2-user -a ec2.public_hostname -i ~/.ssh/KEY_PAIR.pem  : Chef-client executes the Run-lists on the nodes Remotely from WS.
+   knife ssh "role:ROLE_NAME" "sudo chef-client" -x ec2-user -a ec2.public_hostname -i ~/.ssh/KEY_PAIR.pem  : Chef-client executes the Run-lists in the Role Remotely from WS.
+	"name:centos" 		: Name of the node. Can use RegEx for "chef search".
+	"sudo chef-client" 	: chef-client causes the node to execute run list.
+	-x ec2-user 		: Name of the user.
+	-a ec2.public_hostname : Cloud Provider Attribute (here AWS)
+	-i ~/.ssh/KEY_PAIR.pem : Path of the Key file.
+	--attribute ipaddress  : Special details about the node, automatically collected by Ohai(optional) Ref: https://docs.chef.io/attributes.html#automatic-ohai
+	NODE_NAME			: Can use Wild Card Patterns ('name:node1-*')
+	
+   knife winrm 'name:WINDOWS_NODE_NAME' chef-client --winrm-user USER --winrm-password 'PASSWORD' --attribute ipaddress
+
+$ chef generate lwrp RESOURCE_NAME		: Create a Custom Resource.
+
+ROLES: Roles have Run_Lists and attributes which are assigned to Nodes.
+	$ knife role create ROLE_NAME								: Creates a new role.
+	$ knife role from file ../../roles/ROLE_NAME.json 			: Updates the existing role to Chef Server.
+	$ knife role list											: Shows the list of Roles
+	$ knife role show ROLE_NAME									: View the Roles details
+
+DATA_BAGS: Global variables that stores JSON data.
+	knife data bag create DATA_BAG_NAME		: Creates Data bag on Chef Server.
+	knife data bag from file DATA_BAG_NAME ../../data_bags/DATA_BAG_NAME		: Store(upload) DATA_BAGS on Chef Server.
+	knife data bag list						: Lists Data bags.
+	knife data bag show DATA_BAG_NAME		: Shows the items in the DATA_BAG
+		Methods: data_bag(DATA_BAG_NAME), data_bag_item
+	knife data bag create DATA_BAG_NAME DATA_BAG_ITEM --secret-file /PATH/TO/SECRET_FILE
+
+ChefSpec: Unit Test - Simulates execution of resources in memory. Uses RSpec to execute. Faster Execution Time, less accurate.
+		  Verifies state of Resource Collection (Resources in Recipes). 	Location: spec --> unit --> recipes --> default_spec.rb
+		  $chef exec rspec : Runs the RSpec Tests.	action_resource 'name'
+ 
+  InSpec: Integration Test - Verifies Sys Config & acheive compliance goals (Detect -> Correct). Uses Kitchen to execute. Slower Excution Time, more accurate.
+		  https://learn.chef.io/modules/try-inspec#/
+
+Chef Automate: Provides actionable insights into state of complaince, configs.
+			   Monitor and visulaize node status (Inspec <Test Kitchen> is used to scan nodes for compliance)
+			   Asset Store contains complaince profiles, which in turn contains multiple tests called controls written in InSpec..
+			   
+INSTRUCTIONS:
+	Update MAJOR.MINOR.PATCH versions in metadata.rb file after every updates before uploading to Chef Server.
+
+Kitchen:
+	kitchen create	: Create Test Instances.
+	kitchen list	: Lists the VM's created.
+	kitchen converge: Install Chef, Sync CookBooks, Apply Run_Lists
+	kitchen verify	: Execute Tests
+	kitchen destroy	: Destroy craeted Virtual MAchine.
+	kitchen test	: Destroy --> Create --> Apply --> Test --> Destroy
+	kitchen login	: Login to the created VM
+	kitchen kitchen exec --command 'cat /etc/centos-release'	: Execute a command in the VM.
+	
+ISSUES:
+	SSH Connection failed, retrying in X seconds	: Delete the created file in .kitchen folder.
+	Could not contact CDS load balancer				: Retry as Sudo.
+
+REFERENCES:
+	https://www.linode.com/docs/applications/configuration-management/creating-your-first-chef-cookbook/
+	https://kitchen.ci/docs/getting-started/
