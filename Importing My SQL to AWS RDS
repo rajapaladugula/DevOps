@@ -1,0 +1,13 @@
+#####################Importing My SQL to RDS############################
+
+Linux:
+1. Create MySQL Dump: mysqldump -u [mysql_user] -p [DATABASE_NAME] > backup.sql
+    $mysqldump -u root -p prdgrafana > backup1.sql
+
+2. Create a Database in RDS through SQL Workbench [http://webvaultwiki.com.au/Create-Mysql-Database-User-Workbench.ashx]
+
+3. Export SQL Dump: mysql -u [RDS_USERNAME] -p[RDS_PASSWORD] --host=[RDS_HOSTNAME] [RDS_DATABASENAME] < backup.sql
+    $mysql -u tt_prd_grafana -p -h my-web-prd-mysql.abcdef.us-east-1.rds.amazonaws.com prdgrafana < backup.sql 
+
+Windows: 
+SQL Workbench [https://stackoverflow.com/questions/11731714/how-do-i-import-a-local-mysql-db-to-rds-db-instance]
