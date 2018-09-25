@@ -1,0 +1,31 @@
+$yum install -y yum-utils device-mapper-persistent-data lvm2
+$yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+$yum makecache fast
+$yum install -y --setopt=obsoletes=0 docker-ce-17.03.2.ce-1.el7.centos.x86_64 docker-ce-selinux-17.03.2.ce-1.el7.centos.noarch
+$usermod -aG docker ec2-user
+$mkdir -p /etc/systemd/system/docker.service.d
+$mkdir -p /apps/docker
+$echo "[Service]" > /etc/systemd/system/docker.service.d/docker.conf
+$echo "ExecStart=" >> /etc/systemd/system/docker.service.d/docker.conf
+$echo "ExecStart=/usr/bin/dockerd -g /apps/docker -H unix:///var/run/docker.sock -H tcp://0.0.0.0:5555 --insecure-registry diaunx:5000 --insecure-registry diaunx20:5000 --insecure-registry 172.30.0.0/16" >> /etc/systemd/system/docker.service.d/docker.conf
+$echo "[Service]" > /etc/systemd/system/docker.service.d/http-proxy.conf
+# $echo "Environment="HTTP_PROXY=http://my-proxy:xxxx"" >> /etc/systemd/system/docker.service.d/http-proxy.conf
+# $echo "Environment="HTTPS_PROXY=http://my-proxy:xxxx"" >> /etc/systemd/system/docker.service.d/http-proxy.conf
+$systemctl daemon-reload
+$service docker start
+$systemctl enable docker
+$sed -i 's/net.ipv6.conf.default.disable_ipv6=0/net.ipv6.conf.default.disable_ipv6=1/g' /etc/sysctl.conf
+$sed -i 's/net.ipv6.conf.all.disable_ipv6=0/net.ipv6.conf.all.disable_ipv6=1/g' /etc/sysctl.conf
+$sed -i 's/net.ipv4.ip_forward=0/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
+$syctl -p
+$systemctl restart network
+$service docker restart
+
+# ECS Cleanup Commands
+#echo "#!/bin/bash" > /etc/cron.daily/dockerCleanup.sh
+#echo "/usr/bin/docker rm -f $(/usr/bin/docker ps -q -f status=exited)" >> /etc/cron.daily/dockerCleanup.sh
+#echo "/usr/bin/docker rmi $(/usr/bin/docker images -q -f dangling=true)" >> /etc/cron.daily/dockerCleanup.sh
+#chmod +x /etc/cron.daily/dockerCleanup.sh
+
+# Running Portainer for Docker Mgmt 
+$docker run -d -p 9000:9000 --restart=always -v "/var/run/docker.sock:/var/run/docker.sock" portainer/portainer
