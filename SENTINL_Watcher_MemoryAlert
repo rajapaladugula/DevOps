@@ -1,8 +1,8 @@
 {
-  "actions": {													# Notifies slack about the results.
+  "actions": {							# Notifies slack about the results.
     "Slack_alarm_9acc021a-95a8-4777-9d1d-3e471377b597": {
-      "name": "Slack Alarm",									# Name of the Action
-      "throttle_period": "5m",									# Time gap between subsequent Slack_alarm action executions.
+      "name": "Slack Alarm",							# Name of the Action
+      "throttle_period": "5m",						# Time gap between subsequent Slack_alarm action executions.
       "slack": {
         "priority": "medium",
         "stateless": false,
@@ -11,14 +11,14 @@
       }
     }
   },
-  "input": {													# This input searches in the metricbeat-* index for the term and ranges specified and loads the response into the watch payload.
+  "input": {						# This input searches in the metricbeat-* index for the term and ranges specified and loads the response into the watch payload.
     "search": {
       "request": {
         "search_type": "query_then_fetch",
         "index": [
-          "metricbeat-*"										# Index that needs to be queried.
+          "metricbeat-*"					# Index that needs to be queried.
         ],
-        "body": {												# We can write queries from https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
+        "body": {						# We can write queries from https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
           "query": {
             "bool": {
               "filter": [
@@ -64,7 +64,7 @@
       }
     }
   },
-  "condition": {																	# This condition checks to see if there are more than 0 events in key.size() i.e, hosts in response file. (hits in the search response)
+  "condition": {							# This condition checks to see if there are more than 0 events in key.size() i.e, hosts in response file. (hits in the search response)
     "inline": "return payload.aggregations.hosts.buckets.key.size() > threshold",
     "params": {
       "threshold": 0
@@ -93,201 +93,7 @@
   "impersonate": false
 }
 
-Response for the above query::
-
-{
-  "actions": {													# Notifies slack about the results.
-    "Slack_alarm_9acc021a-95a8-4777-9d1d-3e471377b597": {
-      "name": "Slack Alarm",									# Name of the Action
-      "throttle_period": "5m",									# Time gap between subsequent Slack_alarm action executions.
-      "slack": {
-        "priority": "medium",
-        "stateless": false,
-        "message": "Watcher Alert - HIGH MEMORY USAGE! \n\n Hosts with HIGH MEMORY Usage (>80%):\n\n{{payload.hosts}}\n\n Memory Usage is at: {{payload.memory}} \n\n at times: {{trigger.triggered_time}} \n\n",
-        "channel": "#jenkinsupgrade"
-      }
-    }
-  },
-  "input": {													# This input searches in the metricbeat-* index for the term and ranges specified and loads the response into the watch payload.
-    "search": {
-      "request": {
-        "search_type": "query_then_fetch",
-        "index": [
-          "metricbeat-*"										# Index that needs to be queried.
-        ],
-        "body": {												# We can write queries from https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
-          "query": {
-            "bool": {
-              "filter": [
-                {
-                  "range": {
-                    "@timestamp": {
-                      "gte": "now-60m",
-                      "lte": "now"
-                    }
-                  }
-                },
-                {
-                  "term": {
-                    "metricset.name": "memory"
-                  }
-                },
-                {
-                  "range": {
-                    "system.memory.used.pct": {
-                      "gte": "0.80"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "aggs": {
-            "hosts": {
-              "terms": {
-                "field": "beat.hostname",
-                "size": 25
-              },
-              "aggs": {
-                "values_avg": {
-                  "avg": {
-                    "field": "system.memory.used.pct"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "condition": {																	# This condition checks to see if there are more than 0 events in key.size() i.e, hosts in response file. (hits in the search response)
-    "inline": "return payload.aggregations.hosts.buckets.key.size() > threshold",
-    "params": {
-      "threshold": 0
-    }
-  },
-  "transform": {			# Executes a script on the current payload in the watch execution context and replaces it with a newly generated one.
-    "script": {
-      "script": "payload.hosts = payload.aggregations.hosts.buckets.map(bucket => { return bucket.key }).join(', '); payload.memory = payload.aggregations.hosts.buckets.map(bucket => {return bucket.values_avg.value.toFixed(2) + '%' }).join(', ')"
-    }
-  },
-  
-  # Here we are assigning a new pay load to "payload.hosts" & "payload.memory" from the current payload.
-  # payload.aggregations.hosts.buckets.map(bucket => { return bucket.key }).join(', ')
-  # payload from aggregations -> hosts -> buckets -> and map it to a name 'bucket' which returns our required field value. Here return bucket.key returns the values in aggregations -> hosts -> buckets -> key. joining each by ,
-  
-  "trigger": {					# This schedule trigger executes the watch every 30 minutes.
-    "schedule": {
-      "interval": "30m"
-    }
-  },
-  "disable": false,
-  "report": false,
-  "title": "watcher_memory",
-  "save_payload": false,
-  "spy": false,
-  "impersonate": false
-}
-
-Example Response::
-
-{
-  "actions": {													# Notifies slack about the results.
-    "Slack_alarm_9acc021a-95a8-4777-9d1d-3e471377b597": {
-      "name": "Slack Alarm",									# Name of the Action
-      "throttle_period": "5m",									# Time gap between subsequent Slack_alarm action executions.
-      "slack": {
-        "priority": "medium",
-        "stateless": false,
-        "message": "Watcher Alert - HIGH MEMORY USAGE! \n\n Hosts with HIGH MEMORY Usage (>80%):\n\n{{payload.hosts}}\n\n Memory Usage is at: {{payload.memory}} \n\n at times: {{trigger.triggered_time}} \n\n",
-        "channel": "#jenkinsupgrade"
-      }
-    }
-  },
-  "input": {													# This input searches in the metricbeat-* index for the term and ranges specified and loads the response into the watch payload.
-    "search": {
-      "request": {
-        "search_type": "query_then_fetch",
-        "index": [
-          "metricbeat-*"										# Index that needs to be queried.
-        ],
-        "body": {												# We can write queries from https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
-          "query": {
-            "bool": {
-              "filter": [
-                {
-                  "range": {
-                    "@timestamp": {
-                      "gte": "now-60m",
-                      "lte": "now"
-                    }
-                  }
-                },
-                {
-                  "term": {
-                    "metricset.name": "memory"
-                  }
-                },
-                {
-                  "range": {
-                    "system.memory.used.pct": {
-                      "gte": "0.80"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "aggs": {
-            "hosts": {
-              "terms": {
-                "field": "beat.hostname",
-                "size": 25
-              },
-              "aggs": {
-                "values_avg": {
-                  "avg": {
-                    "field": "system.memory.used.pct"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "condition": {																	# This condition checks to see if there are more than 0 events in key.size() i.e, hosts in response file. (hits in the search response)
-    "inline": "return payload.aggregations.hosts.buckets.key.size() > threshold",
-    "params": {
-      "threshold": 0
-    }
-  },
-  "transform": {			# Executes a script on the current payload in the watch execution context and replaces it with a newly generated one.
-    "script": {
-      "script": "payload.hosts = payload.aggregations.hosts.buckets.map(bucket => { return bucket.key }).join(', '); payload.memory = payload.aggregations.hosts.buckets.map(bucket => {return bucket.values_avg.value.toFixed(2) + '%' }).join(', ')"
-    }
-  },
-  
-  # Here we are assigning a new pay load to "payload.hosts" & "payload.memory" from the current payload.
-  # payload.aggregations.hosts.buckets.map(bucket => { return bucket.key }).join(', ')
-  # payload from aggregations -> hosts -> buckets -> and map it to a name 'bucket' which returns our required field value. Here return bucket.key returns the values in aggregations -> hosts -> buckets -> key. joining each by ,
-  
-  "trigger": {					# This schedule trigger executes the watch every 30 minutes.
-    "schedule": {
-      "interval": "30m"
-    }
-  },
-  "disable": false,
-  "report": false,
-  "title": "watcher_memory",
-  "save_payload": false,
-  "spy": false,
-  "impersonate": false
-}
-
-Example Response::
+##################Response for the above query######################
 
 {
         "_index": "metricbeat-6.4.0-2018.09.25",
