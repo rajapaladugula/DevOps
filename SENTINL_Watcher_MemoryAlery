@@ -1,0 +1,89 @@
+{
+  "actions": {
+    "Slack_alarm_9acc021a-95a8-4777-9d1d-3e471377b597": {
+      "name": "Slack Sample Alarm",
+      "throttle_period": "5m",
+      "slack": {
+        "priority": "medium",
+        "stateless": false,
+        "message": "Watcher Alert - HIGH MEMORY USAGE! \n\n Hosts with HIGH MEMORY Usage (>80%):\n\n{{payload.hosts}}\n\n Memory Usage is at: {{payload.memory}} \n\n at times: {{trigger.triggered_time}} \n\n",
+        "channel": "#jenkins"
+      }
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "search_type": "query_then_fetch",
+        "index": [
+          "metricbeat-*"
+        ],
+        "body": {
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "@timestamp": {
+                      "gte": "now-60m",
+                      "lte": "now"
+                    }
+                  }
+                },
+                {
+                  "term": {
+                    "metricset.name": "memory"
+                  }
+                },
+                {
+                  "range": {
+                    "system.memory.used.pct": {
+                      "gte": "0.80"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "aggs": {
+            "hosts": {
+              "terms": {
+                "field": "beat.hostname",
+                "size": 25
+              },
+              "aggs": {
+                "values_avg": {
+                  "avg": {
+                    "field": "system.memory.used.pct"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "inline": "return payload.aggregations.hosts.buckets.key.size() > threshold",
+    "params": {
+      "threshold": 0
+    }
+  },
+  "transform": {
+    "script": {
+      "script": "payload.hosts = payload.aggregations.hosts.buckets.map(bucket => { return bucket.key }).join(', '); payload.memory = payload.aggregations.hosts.buckets.map(bucket => {return bucket.values_avg.value.toFixed(2) + '%' }).join(', ')"
+    }
+  },
+  "trigger": {
+    "schedule": {
+      "interval": "30m"
+    }
+  },
+  "disable": false,
+  "report": false,
+  "title": "watcher_memory",
+  "save_payload": false,
+  "spy": false,
+  "impersonate": false
+}
