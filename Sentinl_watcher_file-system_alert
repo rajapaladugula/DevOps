@@ -6,7 +6,7 @@
       "slack": {
         "priority": "medium",
         "stateless": false,
-        "message": "Watcher Alert - HIGH Disk_Space USAGE! \n\n Hosts with HIGH Disk_Space Usage (>10%):\n\n{{payload.hosts}}\n\n File_system_names: {{payload.device_name}}\n\n Disk_Space is at: {{payload.filesystem}} {{trigger.triggered_time}} {{trigger.scheduled_time}} \n\n",
+        "message": "Watcher Alert - HIGH Disk_Space USAGE! \n\n Hosts with HIGH Disk_Space Usage (>10%):\n\n{{payload.hosts}}\n\n File_System_Names: {{payload.device_name}}\n\n File_System Avg Disk_Space: {{payload.devicespace_avg}} \n\n",
         "channel": "#jenkins"
       }
     }
@@ -37,13 +37,13 @@
                 },
                 {
                   "wildcard": {
-                    "system.filesystem.device_name": "/dev/mapper*"
+                    "system.filesystem.device_name": "/dev/*"
                   }
                 },
                 {
                   "range": {
                     "system.filesystem.used.pct": {
-                      "gte": "0.10"
+                      "gte": "0.1"
                     }
                   }
                 }
@@ -54,12 +54,18 @@
             "hosts": {
               "terms": {
                 "field": "beat.hostname",
-                "size": 25
+                "size": 100
               },
               "aggs": {
-                "values_avg": {
+                "devicespace_avg": {
                   "avg": {
                     "field": "system.filesystem.used.pct"
+                  }
+                },
+                "device_name": {
+                  "terms": {
+                    "field": "system.filesystem.device_name",
+                    "size": 100
                   }
                 }
               }
@@ -77,7 +83,7 @@
   },
   "transform": {
     "script": {
-      "script": "payload.hosts = payload.aggregations.hosts.buckets.map(bucket => { return bucket.key }).join(', '); payload.filesystem = payload.aggregations.hosts.buckets.map(bucket => {return bucket.values_avg.value.toFixed(4)*100 + '%' }).join(', '); payload.device_name = payload.hits.hits.map(hit => {return hit._source.system.filesystem.device_name;}).join(', ').replace('/', '.');"
+      "script": "payload.hosts = payload.aggregations.hosts.buckets.map(bucket => { return bucket.key }).join(', '); payload.devicespace_avg = payload.aggregations.hosts.buckets.map(bucket => {return bucket.devicespace_avg.value.toFixed(4)*100 + '%' }).join(', '); payload.device_name = payload.aggregations.hosts.buckets.map(bucket => {return bucket.device_name.buckets.map(buck => {return buck.key});}).join(', ').replace('/', '.');"
     }
   },
   "trigger": {
@@ -87,7 +93,7 @@
   },
   "disable": false,
   "report": false,
-  "title": "watcher_filesystem",
+  "title": "Watcher_filesystem",
   "save_payload": false,
   "spy": false,
   "impersonate": false
