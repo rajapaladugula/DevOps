@@ -6,8 +6,8 @@
       "slack": {
         "priority": "medium",
         "stateless": false,
-        "message": "Watcher Alert - HIGH MEMORY USAGE! \n\n Hosts with HIGH MEMORY Usage (>80%):\n\n{{payload.hosts}}\n\n Memory Usage is at: {{payload.memory}} \n\n at times: {{trigger.triggered_time}} \n\n",
-        "channel": "#jenkinsupgrade"
+        "message": "Watcher Alert - HIGH MEMORY USAGE! \n\n Hosts with HIGH MEMORY Usage (>80%):\n\n{{payload.hosts}}\n\n Memory Usage is at: {{payload.memory}} \n\n",
+        "channel": "#jenkins"
       }
     }
   },
