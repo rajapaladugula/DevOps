@@ -38,6 +38,4 @@
 ----------------------------SOME MORE COMMAND ON CLI-----------------------------------------
 
 1. To list your repos in ECR -> $ aws ecr describe-repositories
-   This shows the entire list of your repos with their name, ARN, ID, URI etc. 
-
-2. 
+   This shows the entire list of your repos with their name, ARN, ID, URI etc.
