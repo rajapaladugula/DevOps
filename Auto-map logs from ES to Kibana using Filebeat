@@ -26,7 +26,6 @@
 -------------- AUTOMAPPING LOGS FROM ES TO KIBANA USING FILEBEAT-------------------------
 
 
-
 1. Here i tried to send tomcat's catalina logs to elastic search and then access those logs through kibana. 
    To do so i need to send catalina logs from filebeat to elastic search first. 
 
@@ -67,5 +66,3 @@
 
 9. click index contain time based event and create index name pattern. Then an index pattern is created in the name 
    of devtomcat-* and you can see the catalina logs there. 
-
-10. Done!  
