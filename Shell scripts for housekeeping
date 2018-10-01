@@ -16,16 +16,12 @@ date="${f%.txt.gz}"
 [[ $date < $sixty_days ]]  && aws s3 mv "$f" s3://rajrupeshbucket/
 done
 
-
 Here, Im zipping files(named with date) older than 30 days and sending files to s3 bucket older than 60 days.
-
 
 Ref:https://unix.stackexchange.com/questions/208683/removing-files-based-on-date-given-in-filename
 
 
-
---------------ANOTHER SCRIPT----------------------------------------
-
+-----------------------------------------ANOTHER SCRIPT----------------------------------------
 
 
 #!/bin/sh
@@ -38,5 +34,24 @@ fdate="${fdate##*.}"; [ "$fdate" "<" "$(date +%F -d "60 days ago")" ] && echo  r
 
 Here, Im zipping files older than 30 days and deleting files older than 60 days.
 
-
 Ref: https://unix.stackexchange.com/questions/288002/how-do-i-delete-file-by-filename-that-are-set-as-dates
+
+
+--------------------------With no date in filename(based on file modified or created date)----------------------
+
+#!/bin/sh
+
+find /YOUR/DIR/PATH/*.png -mtime +15 -exec gzip {} \;
+aws s3 mv /YOUR/DIR/PATH/ s3://YOURBUCKETNAME/ --recursive --exclude '*'  --include '*.gz'
+
+with date as filename :
+
+#!/bin/sh
+
+cd /YOUR/DIR/PATH/
+for f in image-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].png; do
+fifteen_days=$(date -d "15 days ago" +%Y-%m-%d)
+date="${f%.JPG}"
+date="${date#*-}"
+[[ $date < $fifteen_days ]] && gzip "$f"|aws s3 mv "$f.gz" s3://YOURBUCKETNAME/
+done
