@@ -44,9 +44,9 @@ Chef_Repo --> .Chef --> .knife.rb		: Chef Server Configuration (Generated from C
 
 1. chef verify																						: Verifies Chef Installation on a server.
 2. chef generate repo REPO_NAME 																	: Generates a Chef Repo.
-3. chef generate cookbook COOKBOOK_NAME (Minimal Directory)| knife cookbook create (Full Directory)	: Generates Chef Cookbook.
+3. chef generate cookbook COOKBOOK_NAME (Minimal Directory)											: Generates Chef Cookbook.
 4. kitchen converge 																				: Run the Recepie for testing in work station.
-   chef-client --local-mode --runlist 'recipe[COOKBOOK_NAME]'										: Run/Test Recipe on Work station.
+   chef-client --local-mode --runlist 'recipe[COOKBOOK_NAME::RECIPE_NAME]'										: Run/Test Recipe on Work station.
    chef-apply RECIPE_NAME																			: Runs a single recipe.
    foodcritic | cookstyle																			: Checks for errors or corrections.
 5. knife ssl fetch																					: Command to fetch SSL Certs (authenticate) from Chef Server.
@@ -67,7 +67,7 @@ Chef_Repo --> .Chef --> .knife.rb		: Chef Server Configuration (Generated from C
 		-x | --ssh-user			: User name to connect to the node.
 		--run-list 'recipe[COOKBOOK_NAME]'	: Recipe to run (optional)
    
-	knife bootstrap windows winrm xx.xx.X.X --winrm-user Administrator --winrm-password @Server1 --node-name win16	: Bootstarping Windows node.
+	knife bootstrap windows winrm xx.xx.X.X --winrm-user Administrator --winrm-password @Server1 --node-name win16	: Bootstraping Windows node.
 	
 	Node:	/etc/chef 	--> Client.rb (Server Information), Client.pem (Private Key)
 			/var/chef 	--> backup (file changes backups), cache (Cookbooks stored) 
@@ -118,6 +118,7 @@ ChefSpec: Unit Test - Simulates execution of resources in memory. Uses RSpec to 
 		  $chef exec rspec : Runs the RSpec Tests.	action_resource 'name'
  
   InSpec: Integration Test - Verifies Sys Config & acheive compliance goals (Detect -> Correct). Uses Kitchen to execute. Slower Excution Time, more accurate.
+		  $inspec exec /COOKBOOK_NAME
 		  https://learn.chef.io/modules/try-inspec#/
 
 Chef Automate: Provides actionable insights into state of complaince, configs.
