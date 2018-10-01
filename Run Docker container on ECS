@@ -55,8 +55,7 @@
     cd /var/lib/jenkins/
     ./ecs.sh docker_env="ECS" docker_container="tomcat" docker_image_version=8.0 docker_port_app=8080 docker_port_host=9999 )
 
-8. Here, you will get both the keys when you are installing Aws-cli. docker_env is your cluster name, docker_container is what you want to run in container,
-   docker_image_version is the version of your image, docker_port_app is default we set it as 8080, and docker_port_host is port you wish to run the container.
+8. Here, you will get both the keys when you are installing Aws-cli. docker_env is your cluster name, docker_container is what you want    to run in container, docker_image_version is the version of your image, docker_port_app is default we set it as 8080, and docker_port_host is port you   wish to run the container.
 
 9. Now build the job in jenkins. You will see a container running in your ECS. To see the docker container you can login to putty with the ip of the instance
    in which the container is running. $docker ps for the running process.
