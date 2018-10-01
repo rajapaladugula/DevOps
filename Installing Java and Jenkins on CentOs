@@ -1,0 +1,45 @@
+------------------------------HOW TO Install JENKINS IN CENTOS-----------------------------------------
+
+1. Check for updates of the centos system.
+    $ sudo yum update -y
+
+2. Now we need to setup Java before installing jenkins as its a dependency.
+   To install java, first we need to install wget.
+    $ sudo yum install wget -y
+
+3. Change directory where java needs to be installed and download, unzip.
+    $ cd /opt/
+    $ sudo wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.tar.gz"
+    $ sudo tar -xvzf jdk-8u121-linux-x64.tar.gz
+
+4. After unzipping archive file, use the following command to install and select the alternatives of java versions (if available).
+    $ cd /opt/jdk1.8.0_121/
+    $ sudo alternatives --install /usr/bin/java java /opt/jdk1.8.0_121/bin/java 2
+    $ sudo alternatives --config java
+
+5. At this point java is installed. Now you need to setup javac and jar command path alternatives.
+    $ sudo alternatives --install /usr/bin/jar jar /opt/jdk1.8.0_121/bin/jar 2
+    $ sudo alternatives --install /usr/bin/javac javac /opt/jdk1.8.0_121/bin/javac 2
+    $ sudo alternatives --set jar /opt/jdk1.8.0_121/bin/jar
+    $ sudo alternatives --set javac /opt/jdk1.8.0_121/bin/javac
+
+6. Configure Environment variables.
+    $ export JAVA_HOME=/opt/jdk1.8.0_121
+    $ export JRE_HOME=/opt/jdk1.8.0_121/jre
+    $ export PATH=$PATH:/opt/jdk1.8.0_121/bin:/opt/jdk1.8.0_121/jre/bin
+
+7. Download Jenkins Repo, Key and Install Jenkins:
+    $ sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+    $ sudo rpm --import http://pkg.jenkins-ci.org/redhat-stable/jenkins-ci.org.key
+    $ sudo yum install jenkins
+
+8. Start & Enable jenkins:
+    $ sudo systemctl start jenkins.service
+    $ sudo systemctl enable jenkins.service
+
+13. The dafault port for jenkins is http://localhost:8080
+    Follow the instructions to set password and install plugins.
+
+References: https://www.vultr.com/docs/how-to-install-jenkins-on-centos-7
+            https://tecadmin.net/install-java-8-on-centos-rhel-and-fedora/
+
