@@ -1,0 +1,21 @@
+----------------------- HOW TO BUILD Jenkins Job AUTOMATICALLY WHEN EVER A PULL REQ RAISES in GitHub--------------------
+ 
+1. First you need to create a repository in github and a job in jenkins.
+
+2. In order to build automatically, Initially You need to add a service in github.
+   To add a service: Open your repository in git--> settings--> Integrations and services--> Add service--> Jenkins(Git plugin)
+
+3. Open Your job in jenkins and then configure it.
+  --> Check Github project and clone git repo url and paste in it. Remove .git in the end because its a repo url.
+  --> Under source code management check git and clone same url in it.
+  --> Under source code management click Advanced and in refspec add --> +refs/pull/*:refs/remotes/origin/pr/*
+  --> Under Build triggers check github pull request builder--> advanced--> Check build every pull request automaically with out asking 
+  --> Under Build-->Goals and options--> Give your requirement like "test" or "clean package" etc.
+
+4. Open Manage Jenkins--> Configure system--> Github pull req builder--> add credentials--> you github credentials. And test credentials--> Save.
+
+5. Now open your github and add files in it. Now create a branch in github by clicking on branch:master and add a branch to it.
+
+6. Open your branch and make any changes in your script and then commit. Now click new pull req and select base:master ... compare:branch and update pull req.
+
+7. Notice that a new build has been generated in Jenkins Job.
