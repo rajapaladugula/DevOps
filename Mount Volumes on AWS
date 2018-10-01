@@ -16,5 +16,4 @@
 
 6. It will get mounted to the created volume. To check the mounted volumes $(df -h)
 
-7. Done.
-            http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html
+Reference: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html
