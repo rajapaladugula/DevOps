@@ -43,11 +43,7 @@
     $(mysqladmin -u root -p)
     Enter the command above and then enter your password this will take you to mysql server. 
 
-12. DONE!
-
 REF: https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-centos-7#prerequisites
-
-
 
 
 ------------------HOW TO CHANGE THE ROOT DIRECTORY OF MYSQL DB -----------------------------
@@ -81,10 +77,6 @@ REF: https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ce
    is changed or not. Enter the following command
    $ (mysql -u root -p -e "SELECT @@datadir;")  you will see your new root dir there. 
 
-7. Done!
-
 REF: https://www.tecmint.com/change-default-mysql-mariadb-data-directory-in-linux/
-
      https://tecadmin.net/change-default-mysql-data-directory-in-linux/
-
      https://dba.stackexchange.com/questions/13098/how-to-change-data-location-on-ubuntu
