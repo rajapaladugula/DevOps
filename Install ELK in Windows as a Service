@@ -12,10 +12,10 @@
    ELASTIC SEARCH:
 
 4. Later, Open powershell in your windows and enter this command to install elasticsearch.
-   $ Invoke-Expression -command ìc:\ELK-Stack\elasticsearch\bin\service installî
+   $ Invoke-Expression -command ‚Äúc:\ELK-Stack\elasticsearch\bin\service install‚Äù
                                ------YOUR PATH TO ELASTICSEARCH-------
 
-5. Next, Enter the following command $ Invoke-Expression -command ìc:\ELK-Stack\elasticsearch\bin\service managerî
+5. Next, Enter the following command $ Invoke-Expression -command ‚Äúc:\ELK-Stack\elasticsearch\bin\service manager‚Äù
 
 6. Then a window will pop up. Select start service as AUTOMATIC and start the service.
 
@@ -28,7 +28,7 @@
    Windows powershell and enter the dfollowing command  
    $ Start-BitsTransfer -Source http://robwillis.info/data/ELK-Stack/Config-Files/logstash.json -Destination c:\ELK-Stack\logstash\bin\
 
-9. Next enter the following command. $ Invoke-Expression ñcommand ìC:\ELK-Stack\nssm\win64\nssm install Logstashî
+9. Next enter the following command. $ Invoke-Expression ‚Äìcommand ‚ÄúC:\ELK-Stack\nssm\win64\nssm install Logstash‚Äù
 
 10. Then NSSM service manager will pop up. There you need to give the path, startupdirectory,Arguments
     PATH: c:\ELK-Stack\logstash\bin\logstash.bat (Path to logstash.bat)
@@ -45,7 +45,7 @@
 
    KIBANA:
 
-14. This is same as logstash, Open windows powershell and enter $ Invoke-Expression ñcommand ìC:\ELK-Stack\nssm\win64\nssm install Kibanaî
+14. This is same as logstash, Open windows powershell and enter $ Invoke-Expression ‚Äìcommand ‚ÄúC:\ELK-Stack\nssm\win64\nssm install Kibana‚Äù
 
 15. Then NSSM Service manager will pop up. Add the following 
     Path: c:\ELK-Stack\kibana\bin\kibana.bat
@@ -61,8 +61,6 @@
     Logstash
 
 18. Click Install and the OK. Kibana is installed. To verify, Open browser and go to localhost:5601. It will take 
-    some time to load. 
-
-19. DOne!
+    some time to load.
 
 REF: http://robwillis.info/2016/05/installing-elasticsearch-logstash-and-kibana-elk-on-windows-server-2012-r2/
