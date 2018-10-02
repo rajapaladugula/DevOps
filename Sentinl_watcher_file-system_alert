@@ -83,7 +83,7 @@
   },
   "transform": {
     "script": {
-      "script": "payload.hosts = payload.aggregations.hosts.buckets.map(bucket => { return bucket.key }).join(', '); payload.devicespace_avg = payload.aggregations.hosts.buckets.map(bucket => {return bucket.devicespace_avg.value.toFixed(4)*100 + '%' }).join(', '); payload.device_name = payload.aggregations.hosts.buckets.map(bucket => {return bucket.device_name.buckets.map(buck => {return buck.key});}).join(', ').replace('/', '.');"
+      "script": "payload.hosts = payload.aggregations.hosts.buckets.map(bucket => { return bucket.key }).join(', '); payload.devicespace_avg = payload.aggregations.hosts.buckets.map(bucket => {return bucket.devicespace_avg.value.toFixed(4)*100 + '%' }).join(', '); payload.device_name = payload.aggregations.hosts.buckets.map(bucket => {return bucket.device_name.buckets.map(buck => {return buck.key});}).join(', ').replace(new RegExp('\\/','gm'), '.');"
     }
   },
   "trigger": {
