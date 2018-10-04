@@ -104,3 +104,9 @@ configs: https://github.com/sirensolutions/sentinl/blob/master/docs/Config-Examp
 Example watches: https://github.com/elastic/examples/
 Sentinl: https://github.com/sirensolutions/sentinl/tree/master/docs
 Sample watch: https://github.com/rajapaladugula/DevOps/blob/master/sentinl_watcher
+
+#Handy Elastic Commands:
+Install Advanced REST Client Extension from Google Chrome: https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US
+Creating New Index --> Method:PUT RequestURL: http://xx.xx.xx.xx:9200/NEW_INDEX_NAME  https://www.elastic.co/guide/en/elasticsearch/reference/current/indices.html
+Check Indices in ES --> http://xx.xx.xx.xx:9200/_cat/indices
+Insert data into ES --> Method:POST RequestURL: http://xx.xx.xx.xx:9200/_bulk Body content type:application/json Place the dat into the "Body"
