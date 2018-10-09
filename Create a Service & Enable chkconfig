@@ -1,0 +1,33 @@
+------------------Creating a service file-------------------------
+
+Change Directory & create a file <SERVICE_NAME>.service:
+  $cd /etc/systemd/system directory
+  $sudo vi bamboo.service
+
+[Unit]
+Description=Atlassian Bamboo
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User=<bamboo-user>
+ExecStart=<bamboo-install>/bin/start-bamboo.sh
+ExecStop=<bamboo-install>/bin/stop-bamboo.sh
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
+
+The values for <bamboo-user> and <bamboo-install> should be replaced with your Bamboo user and the path to your Bamboo Install directory, respectively.
+
+Enable the service to start at boot time by running the following in a terminal:
+$systemctl enable bamboo.service
+
+Confirmation: Stop Bamboo using the provided Bamboo stop script (<bamboo-install>/bin/stop-bamboo.sh) and restart your system to check that
+              Bamboo starts as expected
+
+Issue:      systemd: test.service operation timed out.Terminating.
+Resolution: Set the Type of your service script either to 'simple' or 'oneshot'. Depending on the behavior of the shell script that is started.
+            if the shell script runs an endless loop and does not exit, set Type to simple  otherwise set Type to oneshot. After you have made 
+            your changes reload the configuration with $systemctl daemon-reload and start your service.
+Reference:  https://confluence.atlassian.com/bamboo/running-bamboo-as-a-linux-service-416056046.html
