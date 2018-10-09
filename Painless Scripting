@@ -1,0 +1,15 @@
+-------------------------PAINLESS_SCRIPTING------------------------------
+
+{
+  "script_fields": {	#Create a new field that will hold the data that we write in the script.
+    "some_scores": {	# Name of the new field
+      "script": {		# specify lang used and "source" is the script for fetching data.
+          "lang": "painless",
+        "source": "def scores = 0; scores = doc['AvgScrRead'].value + doc['AvgScrWrit'].value; return scores;"
+      }
+    }
+  }
+}
+
+if, else, while, do...while, for, break, continue --> Valid
+else if, switch --> Invalid 
