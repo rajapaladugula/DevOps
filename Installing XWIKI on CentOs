@@ -1,0 +1,9 @@
+XWIKI is an open source tool similar to Confluence.
+
+Installation Instructions:
+  https://thishosting.rocks/how-to-build-your-own-wiki-with-xwiki-on-centos/
+  https://hostpresto.com/community/tutorials/how-to-install-xwiki-on-centos-7/
+
+Activate Office Importer --> To import different docs to XWIKI (Google Docs, spread sheets)
+  https://www.youtube.com/watch?v=QP_N5U_GIJY
+  https://extensions.xwiki.org/xwiki/bin/view/Extension/Office%20Importer%20Application#HHowtouse
