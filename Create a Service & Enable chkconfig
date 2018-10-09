@@ -31,3 +31,15 @@ Resolution: Set the Type of your service script either to 'simple' or 'oneshot'.
             if the shell script runs an endless loop and does not exit, set Type to simple  otherwise set Type to oneshot. After you have made 
             your changes reload the configuration with $systemctl daemon-reload and start your service.
 Reference:  https://confluence.atlassian.com/bamboo/running-bamboo-as-a-linux-service-416056046.html
+            https://askubuntu.com/questions/953920/systemctl-service-timed-out-during-start
+            https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/sect-managing_services_with_systemd-unit_files
+            https://www.digitalocean.com/community/tutorials/how-to-configure-a-linux-service-to-start-automatically-after-a-crash-or-reboot-part-2-reference
+
+Search for a Service:  $ps -ef | grep SERVICE_NAME
+Kill the process: $sudo kill -9 process_number
+
+-------------------------chkconfig---------------------------------
+$chkconfig                        : Used to start/stop a service at a particular runlevel.
+$sudo chkconfig SERVICE_NAME on : Enable chkconfig for the service.
+
+Reference: https://www.liquidweb.com/kb/chkconfig-command-examples-for-red-hat-and-centos/
