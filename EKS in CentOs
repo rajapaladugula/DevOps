@@ -90,6 +90,7 @@
 ####SENTINL#####
 # Change Directory to $cd /usr/share/kibana
 # ./bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-6.2.4/sentinl-v6.2.4.zip
+  Get the plugin link from https://github.com/sirensolutions/sentinl/releases
 # Restart Kibana
 
 As Sentinl is a plugin to Kibana, we congifure the integartions in kibana.yml file.
