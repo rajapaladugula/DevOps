@@ -41,6 +41,13 @@
   Issues: Unable to lock JVM Memory: error=12, reason=Cannot allocate memory. Resolution**
           Unable to browse 9200 port outside of the server. Res: Open the Firewall Port 9200
 
+#Handy Elastic Commands:
+Install Advanced REST Client Extension from Google Chrome: https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US
+Creating New Index --> Method:PUT RequestURL: http://xx.xx.xx.xx:9200/NEW_INDEX_NAME  https://www.elastic.co/guide/en/elasticsearch/reference/current/indices.html
+Check Indices in ES --> http://xx.xx.xx.xx:9200/_cat/indices
+Insert data manually into ES --> Method:POST RequestURL: http://xx.xx.xx.xx:9200/_bulk Body.content.type:application/json -> Place the data into the "Body"
+
+----------------------------------------
 ###KIBANA###
 # Download and install RPM for ES v6.4.0 manually:
   $wget https://artifacts.elastic.co/downloads/kibana/kibana-6.4.0-x86_64.rpm
@@ -68,7 +75,8 @@
               Create a new Group: groupadd GROUP_NAME
               Add a user to a Group:  usermod -a -G GROUP_NAME USER_NAME
   Reference: https://github.com/elastic/kibana/issues/7041
-  
+
+-------------------------------------
 ###METRIC_BEAT###
 # Download and install RPM for MetricBeat v6.4.0
   curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.4.0-x86_64.rpm
@@ -86,7 +94,8 @@
   $curl -XGET 'http://localhost:9200/metricbeat-*/_search?pretty'
   
   Reference to Metricbeat.yml : https://github.com/rajapaladugula/DevOps/blob/master/metricbeat.yml
-  
+ 
+-------------------------------
 ####SENTINL#####
 # Change Directory to $cd /usr/share/kibana
 # ./bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-6.2.4/sentinl-v6.2.4.zip
@@ -106,8 +115,26 @@ Example watches: https://github.com/elastic/examples/
 Sentinl: https://github.com/sirensolutions/sentinl/tree/master/docs
 Sample watch: https://github.com/rajapaladugula/DevOps/blob/master/sentinl_watcher
 
-#Handy Elastic Commands:
-Install Advanced REST Client Extension from Google Chrome: https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US
-Creating New Index --> Method:PUT RequestURL: http://xx.xx.xx.xx:9200/NEW_INDEX_NAME  https://www.elastic.co/guide/en/elasticsearch/reference/current/indices.html
-Check Indices in ES --> http://xx.xx.xx.xx:9200/_cat/indices
-Insert data manually into ES --> Method:POST RequestURL: http://xx.xx.xx.xx:9200/_bulk Body.content.type:application/json -> Place the data into the "Body"
+----------------------------------
+
+####CURATOR####
+
+1. Installing Curator using PIP:
+    Installing PIP: To install PIP we need to install EPEL: $sudo yum install epel-release
+      $sudo yum -y install python-pip   $sudo pip install --upgrade pip
+    $sudo pip install elasticsearch-curator
+    
+2. Create a Configuration file for Curator at ~/.curator/curator.yml
+    https://www.elastic.co/guide/en/elasticsearch/client/curator/current/configfile.html
+ 
+3. Create an action file to delete_indices (one of the use case)
+    https://www.elastic.co/guide/en/elasticsearch/client/curator/current/ex_delete_indices.html
+    
+4. Run the curator command to see curator in action:  $curator /path/to/curator_file/
+    https://www.elastic.co/guide/en/elasticsearch/client/curator/current/command-line.html
+    
+References:
+    https://www.elastic.co/guide/en/elasticsearch/client/curator/current/
+    https://discuss.elastic.co/t/kibana-displays-status-red/75290/3
+
+
