@@ -40,7 +40,12 @@ systemctl enable bamboo.service
 
 Stop Bamboo using the provided Bamboo stop script (<bamboo-install>/bin/stop-bamboo.sh) and restart your system to check that Bamboo starts as expected
 
-8. 
+Issues:
+    Error: Unable to start Bamboo. Error is "Unable to bootstrap application: Could not make directory/ies.
+    Cause: This issue occurs when the user that is starting Confluence does not have full read/write permission to the Bamboo Home and other important directories directory.
+    Resolution: Ensure that the user that is starting Bamboo has full read/write permission to the Bamboo Home and other important directories directory, including permission to create and delete subfolders.
+                Even if the permissions look correct, sometimes there can be a few errant files that have the wrong permissions, so it's a good idea to reset the permissions and force them to be reapplied to the Home directory and all subfolders and files.
+    Ref: https://confluence.atlassian.com/confkb/unable-to-start-confluence-error-is-unable-to-bootstrap-application-could-not-make-directory-ies-home-directory-392890163.html
 
 References:
           https://confluence.atlassian.com/bamboo/installing-bamboo-on-linux-289276792.html
