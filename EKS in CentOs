@@ -127,7 +127,7 @@ Sample watch: https://github.com/rajapaladugula/DevOps/blob/master/sentinl_watch
 2. Create a Configuration file for Curator at ~/.curator/curator.yml
     https://www.elastic.co/guide/en/elasticsearch/client/curator/current/configfile.html
  
-3. Create an action file to delete_indices (one of the use case)
+3. Create an action file to delete_indices at ~/.curator/mycurator_delete_indices.yml
     https://www.elastic.co/guide/en/elasticsearch/client/curator/current/ex_delete_indices.html
     
 4. Run the curator command to see curator in action:  $curator /path/to/curator_file/
