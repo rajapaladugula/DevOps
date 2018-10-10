@@ -132,6 +132,9 @@ Sample watch: https://github.com/rajapaladugula/DevOps/blob/master/sentinl_watch
     
 4. Run the curator command to see curator in action:  $curator /path/to/curator_file/
     https://www.elastic.co/guide/en/elasticsearch/client/curator/current/command-line.html
+
+5. Cron Job to run a curator at a particular time period and sending logs to a .log file"
+    0 12 * * * my_user /home/user_name/.curator/curators --config /home/user_name/.curator/curator.yml /home/user_name/.curator/curators/action_delete.yml >> /home/user_name/.curator/cron_log/action_delete.log 2>&1
     
 References:
     https://www.elastic.co/guide/en/elasticsearch/client/curator/current/
