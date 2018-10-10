@@ -1,0 +1,47 @@
+---------------Installing Bamboo on CentOs------------------
+
+1. Install java is a pre-requisite and set path for JAVA_HOME:
+  $ java -version
+  $ echo $JAVA_HOME
+
+2. Create a dedicated user to run Bamboo:
+  $ sudo /usr/sbin/useradd --create-home --home-dir /usr/local/bamboo --shell /bin/bash bamboo
+
+3. Download the tar.gz file for your operating system (30 day trial):
+  $ sudo wget https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-6.6.3.tar.gz
+
+4. Extract the downloaded file to an install location and refer it as <Bamboo installation directory>
+  $ tar -xvzf atlassian-bamboo-6.6.3.tar.gz
+
+5. Create your Bamboo home directory, which should be different from <Bamboo installation directory> to store Bamboo data.
+
+6. Open <Bamboo installation directory>/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties and update the home directory path.
+
+7. Running Bamboo as a service: Create a bamboo.service file in your /etc/systemd/system directory
+
+[Unit]
+Description=Atlassian Bamboo
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User=<bamboo-user>
+ExecStart=<bamboo-install>/bin/start-bamboo.sh
+ExecStop=<bamboo-install>/bin/stop-bamboo.sh
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
+
+The values for <bamboo-user> and <bamboo-install> should be replaced with your Bamboo user and the path to your Bamboo Install directory, respectively.
+
+Enable the service to start at boot time by running the following in a terminal:
+systemctl enable bamboo.service
+
+Stop Bamboo using the provided Bamboo stop script (<bamboo-install>/bin/stop-bamboo.sh) and restart your system to check that Bamboo starts as expected
+
+8. 
+
+References:
+          https://confluence.atlassian.com/bamboo/installing-bamboo-on-linux-289276792.html
+          https://confluence.atlassian.com/bamboo/installing-bamboo-on-linux-289276792.html
