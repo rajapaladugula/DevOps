@@ -1,0 +1,135 @@
+Machine Boots --> Kernal Loads from Memory --> init process/deamon(PID 1)
+Kernal is one of the first progarms loaded to perform critical tasks that connects App Software and Hardware.
+
+------------------- System V -----------------------
+Upstart is backwards-compatible with System V.
+
+init sequence::
+1. The init daemon is created from the binary file /sbin/init
+2. The first file the init daemon reads is /etc/inittab
+3. One of the entries in this inittab file decides the runlevel(1-6) the machine should boot into: $vi /etc/inittab | grep initdefault
+	id:2:initdefault:
+4. Next, the init daemon looks further into the init scripts(/etc/init.d/rc) that it needs to run for the above selected runlevel.
+
+init daemon --created from-> /sbin/init --reads file-> /etc/inittab --decides run level & executes the init scripts for that level.
+
+System V config Init Scripts:: When a process or service starts, its binary program file has to load into memory. The job of starting, stopping, or reloading this binary application is handled by the service's init script.
+Directory Structure::
+/etc --> Parent Directory
+/etc/init.d --> Actual location for init shell scripts, which are symlinked to the rc(run command) directories.
+/etc/rc0.d, /etc/rc1.d, /etc/rc2.d --> Numbers represent different runlevels. within each rc<n>.d, we have files that starts with K(Kill) and S(Start), followed by two digits.
+/etc/rc0.d/K25service_script, /etc/rc1.d/S25some_script --> These are sym links that points to the actual /etc/init.d shell scripts. The two digits represents the order of execution of the script.
+/etc/inittab --> First file the init daemon reads after being craeted.
+/etc/init.d/rc --> init startup script.
+
+Startup::
+The init scripts are not called by init daemon, but through the /etc/init.d/rc script.
+First, the /etc/inittab file tells the init daemon what runlevel the system should enter by default.
+For each runlevel in the /etc/inittab file, init daemon calls the /etc/init.d/rc script, passing on that runlevel as a parameter.
+Based on this parameter, the script then calls the files under the corresponding /etc/rc<n>.d directory.
+Ex: So, if the server boots with runlevel 2, scripts under the /etc/rc2.d will be called; for runlevel 3, scripts under /etc/rc3.d are executed.
+
+Enable/Disable a Service::
+a) chkconfig	https://www.thegeekdiary.com/how-to-enable-or-disable-service-on-boot-with-chkconfig/
+b) Install sysv-rc-conf: $sudo apt-get install sysv-rc-conf -y
+   To see run level behavior of services: $sudo sysv-rc-conf	Use arrow keys and SPACEBAR to enable/disable service.
+c) update-rc.d installs or removes services from runlevels only:	$sudo update-rc.d SERVICE_NAME disable
+
+respawn:: can be used in /etc/inittab to ensure service restarts after crash. Ex: ms:2345:respawn:/bin/sh /usr/bin/mysqld_safe
+
+
+-------------------- Upstart ------------------------
+Init sequence:: Like System V, Upstart also runs the /etc/init.d/rc script at startup. This script executes any System V init scripts normally. 
+				Upstart also looks under the /etc/init directory and executes the shell commands in each service config file.
+/etc/init --> Configuration files are located
+
+Start/Stop/Status a Service:: (restart/reload is not compatiable)
+$sudo initctl stop SERVICE_NAME
+
+-------------------- systemd ------------------------
+systemd backward-compatible with System V commands and initialization scripts. That means any System V service will also run under systemd.
+
+systemd config files are unit files. The main diff btwn systemd and other 2 are that systemd is responsible for initialization of not only service 
+	daemons but also other types of resources like sockets, device operating system paths, mount points, etc.
+Unit Files Locations:: /lib/systemd/system/		/etc/systemd/system
+
+Init Sequence(Target Units):: systemd uses targets instead of runlevels after the machine boots & Kernal loads to memory.
+    Target units represent the state of the system at any one time. systemd targets can therefore be loosely compared to System V runlevels, although they are not the same.
+		Each target has a name instead of a number. For example, we have multi-user.target instead of runlevel 3 or reboot.target instead of runlevel 6.
+       # multi-user.target: analogous to runlevel 3 --> These have all the services that are pointed to the sym links of the respective service scripts (etc/systemd/system).
+       # graphical.target: analogous to runlevel 5
+
+Runlevel(System V init)	Target_Units(Systemd)
+runlevel 0					      poweroff.target
+runlevel 1					      resuce.target
+runlevel 2, 3, 4		      multi-user.target
+runlevel 5					      graphical.target
+runlevel 6					      reboot.target
+
+    As in System V, we had the default runlevel defined in a file called inittab, Likewise In systemd, that file is replaced by default.target.
+    The default target unit file lives under /etc/systemd/system directory. It's a symbolic link to one of the target unit files under /lib/systemd/system.
+    
+    The inittab file in System V also specified which directory Linux will execute its init scripts from: it could be any of the rc<n>.d directories. Likewise,
+    In systemd, the default target unit determines which resource units will be loaded at boot time, that has dependencies to other targets (Requires).
+    In systemd, a unit that requires another unit will not start until the required unit is loaded and activated. If the required unit fails for some reason while the first unit is active, the first unit will also stop.
+    Example: default.target -> /lib/systemd/system/multi-user.target -> basic.target -> *
+
+------------------Creating a service file-------------------------
+
+Change Directory & Create a file <SERVICE_NAME>.service:
+  $cd /etc/systemd/system directory
+  $sudo vi bamboo.service
+
+[Unit]
+Description=Atlassian Bamboo
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User=<bamboo-user>
+ExecStart=<bamboo-install>/bin/start-bamboo.sh
+ExecStop=<bamboo-install>/bin/stop-bamboo.sh
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
+
+# Restart=always
+
+The values for <bamboo-user> and <bamboo-install> should be replaced with your Bamboo 'user' and the path to your Bamboo Install directory.
+Add Restart=always under the [Service] section of the file to enable the service to respawn after a crash.
+
+Enable the service to start at boot time, Reload the systemd daemon and restart service by running the following in a terminal:
+$sudo systemctl enable bamboo.service
+$sudo systemctl daemon-reload
+$sudo systemctl restart service.service
+
+Confirmation: Stop Bamboo using the provided Bamboo stop script (<bamboo-install>/bin/stop-bamboo.sh) and restart your system to check that
+              Bamboo starts as expected
+References: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/sect-managing_services_with_systemd-unit_files
+         ***https://www.digitalocean.com/community/tutorials/how-to-configure-a-linux-service-to-start-automatically-after-a-crash-or-reboot-part-2-reference
+----------------------
+Issue:      systemd: test.service operation timed out.Terminating.
+Cause:      Check the "Type" in [Service] being used. Here as we used 'Forking': The parent process is expected to exit when start-up is complete
+            and the child should continue to run as the main daemon process.
+Resolution: Set the Type of your service script either to 'simple' or 'oneshot'. Depending on the behavior of the shell script that is started.
+            if the shell script runs an endless loop and does not exit, set Type to simple  otherwise set Type to oneshot. After you have made 
+            your changes reload the configuration with $systemctl daemon-reload and start your service.
+Reference:  https://confluence.atlassian.com/bamboo/running-bamboo-as-a-linux-service-416056046.html
+            https://askubuntu.com/questions/953920/systemctl-service-timed-out-during-start
+-----------------------
+
+Search for a Service:  $ps -ef | grep SERVICE_NAME
+Kill the process: $sudo kill -9 process_number
+
+-------------------------chkconfig----------------------------
+$chkconfig                        : Used to start/stop a service at a particular runlevels of linux.
+$sudo chkconfig SERVICE_NAME on : Enable chkconfig for the service.
+
+Reference: https://www.liquidweb.com/kb/chkconfig-command-examples-for-red-hat-and-centos/
+           https://www.thegeekdiary.com/how-to-enable-or-disable-service-on-boot-with-chkconfig/
+
+Info:
+1. start-up scripts are stored in the /etc/init.d/ directory.
+2. To check whether the SERVICE daemon was configured to start automatically at boot time, execute the systemctl command with the is-enabled option:
+    $sudo systemctl is-enabled SERVICE.service    which should output "enabled"
