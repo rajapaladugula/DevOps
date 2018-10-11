@@ -49,6 +49,7 @@ $chkconfig                        : Used to start/stop a service at a particular
 $sudo chkconfig SERVICE_NAME on : Enable chkconfig for the service.
 
 Reference: https://www.liquidweb.com/kb/chkconfig-command-examples-for-red-hat-and-centos/
+           https://www.thegeekdiary.com/how-to-enable-or-disable-service-on-boot-with-chkconfig/
 
 Info:
 1. start-up scripts are stored in the /etc/init.d/ directory.
