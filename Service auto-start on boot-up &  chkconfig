@@ -19,9 +19,12 @@ SuccessExitStatus=143
 WantedBy=multi-user.target
 
 The values for <bamboo-user> and <bamboo-install> should be replaced with your Bamboo 'user' and the path to your Bamboo Install directory.
+Add Restart=always under the [Service] section of the file to enable the service to respawn after a crash.
 
-Enable the service to start at boot time by running the following in a terminal:
-$systemctl enable bamboo.service
+Enable the service to start at boot time, Reload the systemd daemon and restart service by running the following in a terminal:
+$sudo systemctl enable bamboo.service
+$sudo systemctl daemon-reload
+$sudo systemctl restart service.service
 
 Confirmation: Stop Bamboo using the provided Bamboo stop script (<bamboo-install>/bin/stop-bamboo.sh) and restart your system to check that
               Bamboo starts as expected
