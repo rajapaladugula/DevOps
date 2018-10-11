@@ -26,7 +26,7 @@ $systemctl enable bamboo.service
 Confirmation: Stop Bamboo using the provided Bamboo stop script (<bamboo-install>/bin/stop-bamboo.sh) and restart your system to check that
               Bamboo starts as expected
 References: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/sect-managing_services_with_systemd-unit_files
-            https://www.digitalocean.com/community/tutorials/how-to-configure-a-linux-service-to-start-automatically-after-a-crash-or-reboot-part-2-reference
+            ***https://www.digitalocean.com/community/tutorials/how-to-configure-a-linux-service-to-start-automatically-after-a-crash-or-reboot-part-2-reference
 ----------------------
 Issue:      systemd: test.service operation timed out.Terminating.
 Cause:      Check the "Type" in [Service] being used. Here as we used 'Forking': The parent process is expected to exit when start-up is complete
