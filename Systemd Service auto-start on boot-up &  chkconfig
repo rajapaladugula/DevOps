@@ -18,6 +18,8 @@ SuccessExitStatus=143
 [Install]
 WantedBy=multi-user.target
 
+# Restart=always
+
 The values for <bamboo-user> and <bamboo-install> should be replaced with your Bamboo 'user' and the path to your Bamboo Install directory.
 Add Restart=always under the [Service] section of the file to enable the service to respawn after a crash.
 
