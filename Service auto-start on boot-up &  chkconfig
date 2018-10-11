@@ -51,4 +51,6 @@ $sudo chkconfig SERVICE_NAME on : Enable chkconfig for the service.
 Reference: https://www.liquidweb.com/kb/chkconfig-command-examples-for-red-hat-and-centos/
 
 Info:
-start-up scripts are stored in the /etc/init.d/ directory.
+1. start-up scripts are stored in the /etc/init.d/ directory.
+2. To check whether the SERVICE daemon was configured to start automatically at boot time, execute the systemctl command with the is-enabled option:
+    $sudo systemctl is-enabled SERVICE.service    which should output "enabled"
