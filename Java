@@ -1,0 +1,158 @@
+// If the class is defined inside a package, package statement should be 1st statement in source file.
+// Package is a way of categorizing the classes and interfaces.
+
+import java.io.*; // fully qualified name that includes package & class name so the compiler can... 
+// easily locate the source code/classes. 
+// If import statements are present, they must be written between the package statement & class declaration...
+// If there are no package statements, then the import statement should be the 1st line in the source file.
+
+public class Employee { // class name 1st letter should be in Upper Case &...
+    // each inner word's 1st letter should be in Upper Case.
+    // class is a template/blueprint that describes the behavior/state of the obj.
+    // Name of the program file should exactly match the class name.
+    // There can be only one public class per source file and can have multiple non-public classes.
+
+    String name; // default access modifier
+    // var/method declared without any access control modifier is available to any other class in same package.
+
+    private String last; // members declared can only be accessed within the class itself.
+    // Class and interfaces cannot be private. most restrictive access level. helps encapsulation.
+    // Var declared private can be accessed outside the class, if public getter methods are present in class.
+    public String getlast() {
+        return this.last;
+     }
+     public void setlast(String last) {
+        this.last = last;
+     } // Here, the instance var last is private, so there's no way for other classes to retrieve... 
+     // or set its value directly. So, to make this var available to outside world, we defined two ...
+     // public methods: getlast(),which returns the value of format, and setlast(String), which sets its value.
+     // Main() method should be public orelse, it could not be called by the interpreter.
+
+    public int age; // Can be accessed from world, However if its a different package, it needs to be imported. 
+    
+    protected String company; // members declared protected in a superclass can be accessed only by subclasses...
+    // in other package or any class with-in the package of protected's members class.
+    // cannot be applied to class and interfaces. methods and fields in a interface cannot be declared protected.
+
+    String designation;
+    double salary; // Instance\Object Var are initialized when the class instantiated.
+    // Created when an obj is created with keyword 'new' and destroyed when the obj destroys.
+    // 'Instance\Object Var' can be left unassigned, which have default values. Access modifiers can be applied.
+    // Obj's state is created with the values assigned to these instance var.
+    // Declared within a class, but outside any method, constructor or any block, & is visible to said class members.
+    // Can be accessed directly by calling the variable name inside the class. Ex. var 'company' inside constructor.
+
+    /* IDENTIFIERS 'name, last, age...' */
+    // puppyAge is the 'Identifier' which should begin with a letter (A to Z or a to z),($) or (_).
+    // key words cannot be used as an identifier.
+    // Can be accessed from inside any method, constructor or blocks of that particular class.
+
+    static int numInstances = 0; // (Static/Class) Var Exist's independently of any instances created for the class.
+    // Local variables cannot be declared static.
+
+    public static final String DEPARTMENT = "Development ";
+    // Class/Static Var's used to declare constants, which never changes the initial values declared.
+    // var's declared within a class, outside any method, with the static keyword.
+    // Created when program starts & destroyed when program stops. Visibility, default values similar to instance var.
+    // var name should be in Upper case when Declaring class var as public static final....
+    // If the static variables are not public and final, the naming syntax is the same as instance and local variables.
+    // If vars are accessed from outside class, constant should be accessed as 'Employee.DEPARTMENT'
+
+    final int value = 10; // Final variable can be explicitly initialized only once, value cannot be changed.
+    final Employee emp = new Employee(); // A reference variable ('emp') declared final can never be reassigned to refer to an different object...
+    // However, the data within the object can be changed. So, the state of the object can be changed but not the reference.
+
+    public Employee() {
+        company = "VR3";
+    } // Using these constructors the instance variables of a method will be initialized with fixed values for all objects.
+
+    public Employee(String name, String last) {
+        // parameterized-constructor - parameters passed during obj creation
+        this.name = name; // this refers to current class instance
+        this.last = last;
+    }
+
+    public Employee(String nam) {
+        name = nam;
+    } // Every class has a constructor. If we do not explicitly write a constructor for a class,...
+    // Java compiler builds a default for that class.
+    // Each time a new object is created, at least one constructor will be invoked.
+    // They should have the same name as the class. A class can have more than one constructor.
+
+    public void setAge(int setAge) { // (Behavior) Method with parameters
+        age = setAge;
+    }
+    // Method with void doesnot return any value back.
+    // Method starts with Lower Case and then each inner word's 1st letter should be in Upper Case.
+    
+    public int getAge() {
+        System.out.println(name + " age is: (Single-Quote)\'" + age);
+        System.out.println("Staic var in a method " + DEPARTMENT); // static var called directly. 
+        return age;
+    } // Method that has no void will return some value back.
+
+    public void setDesig(String setDesig) {
+        designation = setDesig;
+    } // Methods declared public in a superclass also must be public in all subclasses.
+    // Methods declared protected in a superclass must either be protected/public in subclasses; but not private.
+    // Methods declared private are not inherited at all.
+    public void setSal(double setSal) {
+        salary = setSal;
+    }
+    public void printInfo() {
+        System.out.println("(double-Quotes)\"Name: " + name + " " + last + "(Back-Slash)\\ Designation: " + designation);
+    }
+
+    private static int addInstance() {
+        numInstances++;
+        return numInstances;
+     } // Static modifier is used for creating class methods and variables.
+     // Static members exists independently of any instances created for the class.
+     // Static methods do not use any instance variables of any object of the class they are defined in.
+     // Static members were accessed using {class-name.var/method-name}
+     // Non-Static Members can call Static Members, but not vice-versa.
+
+     public final void changeValue() {
+        numInstances++;
+     } // Final method cannot be overridden by any subclasses. Similarly final CLASS cannot be sub-classed.
+
+        public static void main(String args[]) { // Main Method. Program starts here.
+           /* Create two objects using constructor from class Employee */
+           Employee empOne = new Employee("James", "Smith");
+           Employee empTwo = new Employee("Mary", "Anne");  // Points to Multi-param constructor.
+           Employee empThree = new Employee("Anne"); // Points to Uni-param constructor.
+           Employee empFour = new Employee(); //points to no-param constructor.
+           Employee value = new Employee();
+           value.changeValue();
+           // The 'new' keyword is used to create object, followed by a call to constructor.
+           // Obj has (State) var's & (Behavior) methods.
+
+           int a = 10; // Var declared inside methods, constructors or blocks are called Local Var.
+            // Should be declared, initialized with a value before use or it throws Compilation error.
+            // The var will be declared and initialized(visible) within the method, constructor, or block...
+            // and the variable will be destroyed when the method, constructor, or block completes.
+            // Access modifiers cannot be used for local variables.
+            
+            System.out.println("Static var in main-method " + DEPARTMENT); // static var called directly.
+
+           // Invoking methods for each object created
+           empOne.setAge(26);
+           empOne.getAge();
+           empOne.setDesig("Senior Software Engineer");
+           empOne.setSal(1000);
+           empOne.printInfo();
+     
+           empTwo.setAge(21);
+           empTwo.setDesig("Software Engineer");
+           empTwo.setSal(500);
+           empTwo.printInfo();
+           empThree.printInfo();
+           
+           System.out.println(empTwo.name + " age is: (BackSpace)\b" + empTwo.age); // Accessing Instance var using obj.
+           // within static methods, they should be called using the fully qualified name. (ObjectReference.VariableName)
+           
+           System.out.println("Here comes a Tab Space: \t" + a); // Accessing local var.
+           System.out.println("Prints New Line:\n" + empFour.company); // Prints the value assigned from no-param constructor.
+           System.out.println("Static var addInstance: " + Employee.addInstance());
+        }
+     }
