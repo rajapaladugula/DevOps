@@ -43,3 +43,7 @@
 References: https://www.vultr.com/docs/how-to-install-jenkins-on-centos-7
             https://tecadmin.net/install-java-8-on-centos-rhel-and-fedora/
 
+Tips:
+1. Passing Jenkins Environment Variables inside "Power Shell" Plugin is different $env:WORKSPACE
+when compared to other Jenkins configs ${WORKSPACE}
+2. 
