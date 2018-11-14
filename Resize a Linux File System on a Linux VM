@@ -29,3 +29,6 @@
 
 13. We can now increase the size of our file system to the same size as our resized logical volume by typing in resize2fs <filesystem/volume_group>
     e.g. resize2fs /dev/mapper/vg_redhat-lv_root .
+ -------------------------------------------------------
+ Remove a partition:
+ fdisk /dev/sda (d:delete p:reload partition table w:write)
