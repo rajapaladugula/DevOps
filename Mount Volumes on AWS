@@ -1,5 +1,7 @@
 ------------------------------HOW TO ATTACH VOLUMES TO THE INSTANCE---------------------------
 
+Install lsblk on centos 6+ : sudo yum install util-linux-ng
+
 1. First, you need to create a volume in EC2 instance. To do so, open volumes -> create volume -> select volume
    type (SSD) -> Size -> Select Available zones -> Create.
 
