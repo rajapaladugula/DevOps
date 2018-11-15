@@ -62,8 +62,3 @@ This contains various documents related to ad hoc DevOps Tasks.
     <td></td>
   </tr>
 </table>
-
-
-# TO DO
-
-- 
