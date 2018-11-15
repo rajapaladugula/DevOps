@@ -52,12 +52,7 @@ This contains various documents related to ad hoc DevOps Tasks.
     <td></td>
   </tr>
   <tr>
-    <td>Windowse</code></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Others</code></td>
+    <td>Windows</code></td>
     <td></td>
     <td></td>
   </tr>
