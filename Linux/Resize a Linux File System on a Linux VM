@@ -6,29 +6,29 @@
       
 3. Start the Linux VM after the resizing of the virtual hard disk become a sudo user.
 
-4. List the current Partitions in Linux to find out the next Partition number by using fdisk -l. we observe devices /dev/sd*
+4. List the current Partitions in Linux to find out the next Partition number by using $fdisk -l. we observe devices /dev/sd*
 
-5. Now create a new partition using fdisk. We use the syntax fdisk /dev/<sd*> e.g. fdisk /dev/sda to launch fdisk on the selected disk.
-   Then create a new partition and write the changes to disk (n ; p ; w). Taken defaults will use teh max available disk space.
+5. Now create a new partition using fdisk. We use the syntax $fdisk /dev/<sd*> e.g. fdisk /dev/sda to launch fdisk on the selected disk.
+   Then create a new partition and write the changes to disk (n ; p ; w). Taken defaults will use the max available disk space.
 
-6. Restart the Linux VM for changes to take effect.
+6. Restart the Linux VM for changes to take effect. (reboot -f)
 
-7. Run fdisk -l to list the partitions including the newly created partition. Take note of the newly created partition name e.g. /dev/sda3.
+7. Run $fdisk -l to list the partitions including the newly created partition. Take note of the newly created partition name e.g. /dev/sda3.
 
 8. List the currently mounted file systems sizes using the df -h command. Also take note of the file system name that you want to resize.
 
-9. Create a physical volume out of the new partition by using the pvcreate command e.g. pvcreate /dev/sda3.
+9. Create a physical volume out of the new partition by using the pvcreate command e.g. $pvcreate /dev/sda3.
 
-10. Run vgdisplay to list the current volume groups. Take note of the volume group which you want to extend the size of so that you can increase the file system.
+10. Run $vgdisplay to list the current volume groups. Take note of the volume group which you want to extend the size of so that you can increase the file system.
 
-11. Use the vgextend command to extend the selected volume group to the new physical volume. e.g. vgextend vg_redhat /dev/sda3.
+11. Use the vgextend command to extend the selected volume group to the new physical volume. e.g. $vgextend vg_redhat /dev/sda3.
 
 12. Use lvextend to extend the logical volume of the file system to the maximum space that you have added (or a lesser amount if required).
     We will increase the size by using the number of physical extents by typing in lvextend -l +<extents> <filesystem/volume_group>
-    e.g. lvextend -l +12789 /dev/mapper/vg_redhat-lv_root . Can also use +100%FREE to use the available at full.
+    e.g. $lvextend -l +12789 /dev/mapper/vg_redhat-lv_root . Can also use +100%FREE to use the available at full.
 
 13. We can now increase the size of our file system to the same size as our resized logical volume by typing in resize2fs <filesystem/volume_group>
-    e.g. resize2fs /dev/mapper/vg_redhat-lv_root (or) xfs_growfs /dev/mapper/vg_redhat-lv_root
+    e.g. $resize2fs /dev/mapper/vg_redhat-lv_root (or) $xfs_growfs /dev/mapper/vg_redhat-lv_root
  -------------------------------------------------------
  Remove a partition:
- fdisk /dev/sda (d:delete p:reload partition table w:write)
+ $fdisk /dev/sda (d:delete p:reload partition table w:write)
