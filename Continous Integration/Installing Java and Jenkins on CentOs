@@ -10,6 +10,7 @@
 3. Change directory where java needs to be installed and download, unzip.
     $ cd /opt/
     $ sudo wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "https://download.oracle.com/otn-pub/java/jdk/8u191-b12/2787e4a523244c269598db4e85c51e0c/jdk-8u191-linux-i586.tar.gz"
+    For change of Java versions: https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
     $ sudo tar -xvzf jdk-8u121-linux-x64.tar.gz
 
 4. After unzipping archive file, use the following command to install and select the alternatives of java versions (if available).
