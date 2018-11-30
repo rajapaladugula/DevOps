@@ -49,3 +49,4 @@ Tips:
 when compared to other Jenkins configs ${WORKSPACE}
 Ref: https://stackoverflow.com/questions/27152656/jenkins-access-global-passwords-in-powershell
 2. If you want case-insensitive, add “(?i)” to the pattern. For example (?i)web* will match jobs starting with both “web” and “Web”.
+3. To remove JDK from Centos: yum remove jdk -y
