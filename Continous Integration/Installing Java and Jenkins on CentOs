@@ -16,13 +16,14 @@
 4. After unzipping archive file, use the following command to install and select the alternatives of java versions (if available).
     $ cd /opt/jdk1.8.0_191/
     $ sudo alternatives --install /usr/bin/java java /opt/jdk1.8.0_191/bin/java 2
-    $ sudo alternatives --config java
+    $ sudo alternatives --config java --> Select the newly installed number.
 
 5. At this point java is installed. Now you need to setup javac and jar command path alternatives.
     $ sudo alternatives --install /usr/bin/jar jar /opt/jdk1.8.0_191/bin/jar 2
     $ sudo alternatives --install /usr/bin/javac javac /opt/jdk1.8.0_191/bin/javac 2
     $ sudo alternatives --set jar /opt/jdk1.8.0_191/bin/jar
     $ sudo alternatives --set javac /opt/jdk1.8.0_191/bin/javac
+    $ java -version --> To check Java version installed.
 
 6. Configure Environment variables.
     $ export JAVA_HOME=/opt/jdk1.8.0_191
