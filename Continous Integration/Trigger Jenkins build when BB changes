@@ -1,0 +1,20 @@
+:::::Tigger a build when ever there is a change in BB branch & when a new branch is created inside BB::::::
+
+1. Install the plugin to BitBucket:
+BB Administrataion Settings --> Add ONS(Manage Apps) --> Install plugin "Parameterized Builds for jenkins"
+
+2. Configure BB to Jenkins:
+BB Administrataion Settings --> Add ONS(Jenkins Settings) --> Enter "Base URL" for Jenkins.
+For Default user, Token: Jenkins -> People --> <USER_NAME> --> Configure --> API Token(Add new Token)
+
+3. Enable "Parameterized Builds for jenkins" in Repository level of BB:
+BB --> projects/<PROJECT_NAME>/repos/<REPO_NAME> --> Repository Settings --> Hooks(Post receive): Enable "Parameterized Builds for jenkins"
+
+Now add jobs that needs to be triggered when there are certain changes to the BB Repo:
+  Job name:  name of the jenkins job to trigger. If the job is contained in a folder set the job name as <folderName>/job/<jobName>.
+  Ref Type: Select teh Ref type as branch.
+  Enable Triggers required.
+  Build parameters: Set any parameters that might be needed to triggered to Jenkins. Ex: BRANCH=$BRANCH would send branch name as BRANCH.
+  Ref Filter: Trigger builds for matched branches or tags. Ex: "dev|release|master"
+
+Reference: https://github.com/KyleLNicholls/parameterized-builds
