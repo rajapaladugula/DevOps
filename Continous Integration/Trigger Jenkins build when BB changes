@@ -13,7 +13,7 @@ BB --> projects/<PROJECT_NAME>/repos/<REPO_NAME> --> Repository Settings --> Hoo
 Now add jobs that needs to be triggered when there are certain changes to the BB Repo:
   Job name:  name of the jenkins job to trigger. If the job is contained in a folder set the job name as <folderName>/job/<jobName>.
   Ref Type: Select teh Ref type as branch.
-  Enable Triggers required.
+  Enable Triggers required. "Manual" Trigger allows the Jenkins builds to be trigerred parameterized from BB Repo.
   Build parameters: Set any parameters that might be needed to triggered to Jenkins. Ex: BRANCH=$BRANCH would send branch name as BRANCH.
   Ref Filter: Trigger builds for matched branches or tags. Ex: "dev|release|master"
 
