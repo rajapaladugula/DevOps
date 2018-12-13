@@ -1,0 +1,52 @@
+Build Docker Image from a Dockerfile: docker build -t <tag_name> <PATH | URL | -file>
+PATH: local path in the machine; URL: Git Repo; file /path/to/file
+
+Create a Docker Image from an existing Container: docker commit <CONTAINER_ID> <NEW_REPOSITORY_NAME>
+
+Remove a Docker Image: docker rmi <Container_ID>
+
+Create a Docker container from Docker image: docker run -d -p 3000:8080 --name=my_app <image name>
+-d :Detach (Runs container in background)
+--name : Desired name of the container
+-p (publish): Bind port on host:port on container -p | -P (publish all) maps port dynamically
+
+lynx: Terminal based browser -> lynx localhost:xxxx
+
+Docker Images storage path: /var/lib/docker/image/overlay/imagedb/content/sha256
+Run Docker Interactively: docker run -it <image>
+Fetch IP address of a container: docker inspect <Container_ID | Name>
+Detach from a container without stopping: CTRL+p | CTRL+q
+Interact with the running container --> docker attach <CONTAINER_ID>
+
+3 Networks: bridge-host-none $docker network ls
+(default)bridge n/w has access to interact with every other container and also reach outside world.
+hosts n/w adds containers to hosts n/w directly, no isolation b/w hosts & containers. ($docker run -d --network=host)
+none has no n/w access $docker run -d --network=none
+Show all containers on N/W: arp-scan --interface=eth0 --localnet
+
+MOUNT:
+docker run -d --mount type=bind,src="/opt/demo", dst=/logs <Image_Name>
+src is the path in the host; dst is the path in the container, which are binded together.	
+docker run -d --mount type=volume,src="logs", dst=/logs <Image_Name> --> need not mention the fully qualified name of the src in host, docker manages it.
+To find where the volume is mounted: docker volume inspect <VOLUME_NAME | src>
+docker run -d --mount type=tmpfs,dst=/logs <Image_Name>
+In Memory storage isolated from host, so no src mentioned.  
+
+Tag an image: docker tag <image> <username>/<repository>:<tag>
+publish image: docker push <username>/<repository>:<tag>
+pull & run image from remote repo: docker run -p 4000:80 <username>/<repository>:<tag>
+
+DOCKER_FILE INSTRUCTIONS:::
+FROM : base image to be used ; FROM python:2.7-slim --> Use an official Python runtime as a parent image.
+RUN : takes commands as arg's and runs. installs packages specified like jenkins, java.. actually used to build image.
+ADD: has 2 arg's ADD /source/file /dest/file Copies files from host to container.
+COPY: copy files from host to the container; COPY . /app --> Copy the current directory contents into the container at /app.
+CMD : runs the commands specified similar to RUN. unlike RUN, it is not executed during build, but when container is instantained using image built finally.
+ENTRYPOINT : 1st command to be executed.
+URL : Git repository location.
+MAINTAINER : name of the maintainer.
+USER : UID/username of the user who can execute container.
+VOLUME : enable access from your container to a directory on host machine(mount) VOLUME ["/file"]
+ENV : Define environment variable key-value pair; ENV NAME World
+EXPOSE : EXPOSE 80 --> used to associate specified port to enable n/w access of running process inside container.
+WORKDIR : Set the working directory; WORKDIR /desired/path --> used to set path where command defined with CMD is to be executed.
