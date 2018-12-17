@@ -1,0 +1,15 @@
+
+1: Run this command to download the latest version of Docker Compose: Check the latest version on: https://github.com/docker/compose/releases
+    $sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+2. Apply executable permissions to the binary:
+    $sudo chmod +x /usr/local/bin/docker-compose
+
+3. Create a symbolic link:
+    $sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+4. Test the installation:
+    $docker-compose --version
+    
+Ref: https://docs.docker.com/compose/install/#install-compose
+     https://stackoverflow.com/questions/38775954/sudo-docker-compose-command-not-found/38776946
