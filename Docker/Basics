@@ -1,18 +1,22 @@
 Build Docker Image from a Dockerfile: docker build -t <tag_name> <PATH | URL | -file>
-PATH: local path in the machine; URL: Git Repo; file /path/to/file
+PATH: local path in the machine; URL: Git Repo; -f /path/to/file(if exists at a dfferent location)
 
 Create a Docker Image from an existing Container: docker commit <CONTAINER_ID> <NEW_REPOSITORY_NAME>
 
 Remove a Docker Image: docker rmi <Container_ID>
+Remove all Docker Images: docker image prune -a
+Remove a Docker Container: docker rm <Container_ID>
+Remove all stopped containers: docker system prune
 
-Create a Docker container from Docker image: docker run -d -p 3000:8080 --name=my_app <image name>
--d :Detach (Runs container in background)
+Create a Docker container from Docker image: docker run -d -p 3000:8080 --name=my_app --network <Network_Name> <image name>
+-d : Detach (Runs container in background)
 --name : Desired name of the container
 -p (publish): Bind port on host:port on container -p | -P (publish all) maps port dynamically
+--network : Network associated
 
 lynx: Terminal based browser -> lynx localhost:xxxx
 
-Docker Images storage path: /var/lib/docker/image/overlay/imagedb/content/sha256
+Docker resources storage path: /var/lib/docker/*
 Run Docker Interactively: docker run -it <image>
 Fetch IP address of a container: docker inspect <Container_ID | Name>
 Detach from a container without stopping: CTRL+p | CTRL+q
@@ -20,17 +24,22 @@ Interact with the running container --> docker attach <CONTAINER_ID>
 
 3 Networks: bridge-host-none $docker network ls
 (default)bridge n/w has access to interact with every other container and also reach outside world.
+$docker network create --driver bridge <Network_Name>
 hosts n/w adds containers to hosts n/w directly, no isolation b/w hosts & containers. ($docker run -d --network=host)
 none has no n/w access $docker run -d --network=none
 Show all containers on N/W: arp-scan --interface=eth0 --localnet
 
 MOUNT:
-docker run -d --mount type=bind,src="/opt/demo", dst=/logs <Image_Name>
+1. docker run -d --mount type=bind,src="/opt/demo", dst=/logs <Image_Name>
 src is the path in the host; dst is the path in the container, which are binded together.	
-docker run -d --mount type=volume,src="logs", dst=/logs <Image_Name> --> need not mention the fully qualified name of the src in host, docker manages it.
+2. docker run -d --mount type=volume,src="logs", dst=/logs <Image_Name> --> need not mention the fully qualified name of the src in host, docker manages it.
+Create a new Docker volume : Docker volume create <VOLUME_NAME>
 To find where the volume is mounted: docker volume inspect <VOLUME_NAME | src>
-docker run -d --mount type=tmpfs,dst=/logs <Image_Name>
-In Memory storage isolated from host, so no src mentioned.  
+3. docker run -d --mount type=tmpfs,dst=/logs <Image_Name> --> In Memory storage isolated from host, so no src mentioned.  
+
+Connect a volume to the container : docker run -it --name=<Container_Name> -p 8083:8080 -p 50000:50000 -v </path/to/host | VOLUME_NAME>:/var/jenkins_home <Image_Name>
+-v | --volume | --mount : attach a created volume; --mount is the path/on/host
+Remove unused volumes: docker volume prune
 
 Tag an image: docker tag <image> <username>/<repository>:<tag>
 publish image: docker push <username>/<repository>:<tag>
@@ -50,3 +59,70 @@ VOLUME : enable access from your container to a directory on host machine(mount)
 ENV : Define environment variable key-value pair; ENV NAME World
 EXPOSE : EXPOSE 80 --> used to associate specified port to enable n/w access of running process inside container.
 WORKDIR : Set the working directory; WORKDIR /desired/path --> used to set path where command defined with CMD is to be executed.
+
+Docker Compose: define & run multi-container (micro-services) docker applications
+Check validity of docker-compose file: docker-compose config
+Run docker-compose.yml file : docker-compose up -d -scale <SERVICE_NAME>=<No_of_containers_required>
+Compose file configs: image, volumes, ports, environment, logging, security_opt...
+Applications in Compose were isolated using projects. the resources created in a project were appeneded with <project_name>-<Name_key_in_compose-file>
+By default uses directory as project name which enables to isolate multiple environments. -p is used to customize project name.
+If you dont want dependencies to be updated in the service compose-file: docker-compose -f <file_name>.yml up -d --no-deps <service_name>
+If you want to restart all the containers even without any changes in compose file: --force-recreate
+UP: creates n/w's & named volumes, then builds, creates, starts & attaches to service containers.
+DOWN: removes containers & default n/w's; does not delete volumes & images by default. To delete explicitly: --rmi all for images; --volumes for volumes; --remove-orphans 
+for project containers no longer defined in the compose file.
+docker run --name=my_app -p 3000:8080 --network <Network_Name> redis:1.01 redis-server --appendonly yes
+
+version: '3.4'
+x-logging:			    // extension fields let reuse configuration blocks; only works with >3.4; begins with x-<CONFIGURATION_NAME>
+  &default-logging		// &<name> is the anchor<name> which is used to reference in services
+  options:
+    max-size: '10m'
+	max-file: 7
+  driver: json-file
+
+ bservices:				// Docker containers to be created
+  my_app:				// Name of the Service
+    image: redis:1.01	// Image from Docker Hub
+    ports:				// Ports Exposed
+	  - '3000:8080'
+    command:			// Commands (in-line syntax)
+	  - "redis-server"
+	  - "appendonly"
+	  - "yes"
+    command: ["redis-server", "--appendonly", "yes"] // Docker default syntax
+    command: redis-server --appendonly yes
+    depends_on:			// Initiates the depends_on service if exists
+	  - app
+    restart: always     // restarts the container if stopped.
+    environment:
+      redis_root_password: somepassword
+    networks:
+	  - frontend
+    logging: *default-logging		// default-logging is being referenced with *
+  web:
+    image: app
+    volumes:			// Can use volumes in services config, even when not mentioned in the compose file volumes.
+	  - named-volume:/data  // <named-volume> is the name of the volume; /data is the directory on container.
+      environment:
+        - redis_root_password=somepassword
+    networks:
+	  backend:
+	    aliases:
+		  - database
+volumes:				// Similar to docker volume create
+  named-volume:			// named-volume creates volume using the default local volume driver. <directory_name>_service_data
+  external-volume:      // volume created that already exists
+    external: true
+networks:				// compose automatically creates a new n/w using the default bridge driver for the apps in compose file. <directory_name>_default
+  frontend:
+  backend:              // network created that already exists
+    external: true
+	
+
+SORT Unique:  cat /var/log/cron | cut -d " " -f4 | sort |uniq
+-f 4 is the fourth row.
+
+Tail to refresh every sec: tail -F -s1 /path/to/logs
+
+Docker in depth; Intro to ECS; Intro to Kube * 2; 
