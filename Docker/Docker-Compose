@@ -1,0 +1,92 @@
+INSTALLATION:::
+1: Run this command to download the latest version of Docker Compose: Check the latest version on: https://github.com/docker/compose/releases
+    $sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+2. Apply executable permissions to the binary:
+    $sudo chmod +x /usr/local/bin/docker-compose
+
+3. Create a symbolic link:
+    $sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+4. Test the installation:
+    $docker-compose --version
+    
+Ref: https://docs.docker.com/compose/install/#install-compose
+     https://stackoverflow.com/questions/38775954/sudo-docker-compose-command-not-found/38776946
+     
+Docker Compose: define & run multi-container (micro-services) docker applications.
+Check validity of docker-compose file: docker-compose config
+docker-compose.yml to scale services desired : docker-compose up -d -scale <SERVICE_NAME>=<No_of_containers_required>
+Compose file configs: version, image, volumes, networks, ports, environment...
+Applications in Compose were isolated using projects. the resources created in a project were appeneded with <project_name>-<Name_key_in_compose-file>
+By default uses directory as project name which enables to isolate multiple environments. -p is used to customize project name.
+If you dont want dependencies to be updated in the service compose-file: docker-compose -f <file_name>.yml up -d --no-deps <service_name>
+If you want to restart all the containers even without any changes in compose file: --force-recreate
+UP: creates n/w's & named volumes, then builds, creates, starts & attaches to service containers.
+DOWN: removes containers & default n/w's; does not delete volumes & images by default. To delete explicitly: --rmi all for images; --volumes for volumes; --remove-orphans 
+for project containers no longer defined in the compose file.
+check logs of docker-compose service: docker-compose -f <docker-compose.yml> logs <service_name>
+Docker-compose.yml :
+
+version: '3.4'
+x-logging:			    // extension fields let reuse configuration blocks; only works with >3.4; begins with x-<CONFIGURATION_NAME>
+  &default-logging		// &<name> is the anchor<name> which is used to reference in services
+  options:
+    max-size: '10m'
+	max-file: 7
+  driver: json-file
+
+services:				// Docker containers to be created
+  my_app:				// Name of the Service
+    image: redis:1.01	// Image from Docker Hub
+    ports:				// Ports Exposed
+	  - '3000:8080'
+    command:			// Commands (in-line syntax)
+	  - "redis-server"
+	  - "appendonly"
+	  - "yes"
+    command: ["redis-server", "--appendonly", "yes"] // Docker default syntax
+    command: redis-server --appendonly yes
+    depends_on:			// Initiates the depends_on service if exists
+	  - web
+    restart: always     // restarts the container if stopped.
+    environment:
+      redis_root_password: somepassword
+    networks:
+	  - frontend
+    logging: *default-logging		// default-logging is being referenced with *
+  web:
+    image: app
+    volumes:			// Can use volumes in services config, even when not mentioned in the compose file volumes.
+	  - named-volume:/data  // <named-volume> is the name of the volume; /data is the directory on container.
+      environment:
+        - redis_root_password=somepassword
+    networks:
+	  backend:
+	    aliases:
+		  - database
+volumes:				// Similar to docker volume create
+  named-volume:			// named-volume creates volume using the default local volume driver. <directory_name>_service_data
+  external-volume:      // volume created that already exists
+    external: true
+networks:				// compose automatically creates a new n/w using the default bridge driver for the apps in compose file. <directory_name>_default
+  frontend:
+  backend:              // network created that already exists
+    external: true
+	
+--> Docker-compose can be used to build images from dockerfile. Use-case is that we can modify the code and observe changes without restarting container. To instruct docker-compose
+to build an image we need to add build key in he docker-compose file config. 
+
+build:
+  context: . // directory of the docker file.
+  dockerfile:  // name of the docker file from which image is created; default is dockerfile
+  args:         // optional; passed arg values at build time.
+    buildno: 1
+  
+docker-compose up is used to build images for any services that doesnt have an image built. Add --build to re-build the image.
+docker-compose build is used to build/re-build images if already exist.
+--no-cache : rebuild all services without using any cache; --pull : to always pull latest version of image in docker file.
+
+non-dev docker files have all the src files in the container, without any mounts to volumes; whereas dev docker files have volumes attached to container, to make changes on the go.
+prod docker files: use restart: always ; dont specify host ports & let docker choose to avoid port conflicts, only specify container ports; use ENV variables to distinguish
+ prod/non-prod; use named volume to persist data.
