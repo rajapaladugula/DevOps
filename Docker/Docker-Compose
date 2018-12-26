@@ -90,3 +90,5 @@ docker-compose build is used to build/re-build images if already exist.
 non-dev docker files have all the src files in the container, without any mounts to volumes; whereas dev docker files have volumes attached to container, to make changes on the go.
 prod docker files: use restart: always ; dont specify host ports & let docker choose to avoid port conflicts, only specify container ports; use ENV variables to distinguish
  prod/non-prod; use named volume to persist data.
+
+Combining multiple docker-compose files: $docker-compose -f <docker-compose.yml> -f <docker-compose.yml> config
