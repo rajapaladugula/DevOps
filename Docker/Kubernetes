@@ -1,0 +1,22 @@
+Cluster: group of nodes configured to run a functioning KUBERNETES Systen.
+Control plane: schedules containers onto nodes based on compute requirements.
+PODS: lowest building block; group of one or more containers running on single node; 
+SERVICES: defines n/w rules for exposing pods to other pods (or) public internet determined by a selector;
+Selector: set of rules to match resources based on metadata; 
+Label: key/value pair attached to resources; 
+Annotation: non-identifying metadata for retrival by API clients such as tools & lib's; 
+DEPLOYMENT: a declerative template (deployment config changes) for creating & scaling pods; 
+ReplicationSet: coordinates pod creation, deletion and updates during deployments; 
+Volume: a stateful block store for use with ephemeral pods to write persisted data; not a DB;  
+Secret: senstive info such as passwords, OAuth tokens, ssh keys; 
+StatefulSet: a pod with gurantees on deployment and scaling ordering; 
+Request: desired amount of CPU or memory for a container in a pod; 
+Resource: any individual KUBERNETES item such as deployment, pod, service or secret e.t.c,
+
+kubectl:
+
+kubectl create -f FILE : create a new KUBERNETES resources based on instructions in the FILE.
+kubectl delete TYPE NAME : delete a particular resource --> kubectl delete POD my_pod
+kubectl get TYPE : return all KUBERNETES resources of specified TYPE --> kubectl get PODS
+kubectl describe TYPE NAME : prints detailed info about a particular resource --> kubectl describe POD my_pod
+kubectl logs POD_NAME : print container logs for a particular pod;
