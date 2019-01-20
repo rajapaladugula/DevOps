@@ -21,11 +21,10 @@ $syctl -p
 $systemctl restart network
 $service docker restart
 
-# ECS Cleanup Commands
-#echo "#!/bin/bash" > /etc/cron.daily/dockerCleanup.sh
-#echo "/usr/bin/docker rm -f $(/usr/bin/docker ps -q -f status=exited)" >> /etc/cron.daily/dockerCleanup.sh
-#echo "/usr/bin/docker rmi $(/usr/bin/docker images -q -f dangling=true)" >> /etc/cron.daily/dockerCleanup.sh
-#chmod +x /etc/cron.daily/dockerCleanup.sh
-
 # Running Portainer for Docker Mgmt 
 $docker run -d -p 9000:9000 --restart=always -v "/var/run/docker.sock:/var/run/docker.sock" portainer/portainer
+
+# RHEL Docker Installation on EC2 Instance:
+$sudo yum install yum-utils
+$sudo yum-config-manager --enable rhui-REGION-rhel-server-extras
+$sudo yum install docker -y
