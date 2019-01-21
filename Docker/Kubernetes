@@ -20,3 +20,16 @@ kubectl delete TYPE NAME : delete a particular resource --> kubectl delete POD m
 kubectl get TYPE : return all KUBERNETES resources of specified TYPE --> kubectl get PODS
 kubectl describe TYPE NAME : prints detailed info about a particular resource --> kubectl describe POD my_pod
 kubectl logs POD_NAME : print container logs for a particular pod;
+
+Minikube Installation: (Requires Docker Pre-installed)
+
+1. Install Kubectl:
+$sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+$sudo chmod +x ./kubectl
+$sudo mv ./kubectl /usr/local/bin/kubectl
+
+2. Install Minikube:
+$sudo curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && sudo chmod +x minikube && sudo mv minikube /usr/local/bin/
+
+3. Check Minikube version:
+minikube version
