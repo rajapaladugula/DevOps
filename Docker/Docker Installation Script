@@ -28,3 +28,7 @@ $docker run -d -p 9000:9000 --restart=always -v "/var/run/docker.sock:/var/run/d
 $sudo yum install yum-utils
 $sudo yum-config-manager --enable rhui-REGION-rhel-server-extras
 $sudo yum install docker -y
+Manage Docker as non-root user:
+$sudo groupadd docker --> Create Docker Group
+$sudo usermod -aG docker $USER --> Add your user to docker group
+$sudo reboot --> Restart the VM
