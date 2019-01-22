@@ -31,4 +31,6 @@ $sudo yum install docker -y
 Manage Docker as non-root user:
 $sudo groupadd docker --> Create Docker Group
 $sudo usermod -aG docker $USER --> Add your user to docker group
+$systemctl daemon-reload
+$systemctl restart docker
 $sudo reboot --> Restart the VM
