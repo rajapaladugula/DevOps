@@ -25,9 +25,11 @@ $service docker restart
 $docker run -d -p 9000:9000 --restart=always -v "/var/run/docker.sock:/var/run/docker.sock" portainer/portainer
 
 # RHEL Docker Installation on EC2 Instance:
-$sudo yum install yum-utils
-$sudo yum-config-manager --enable rhui-REGION-rhel-server-extras
+$sudo yum update -y
+$sudo yum install yum-utils -y
+$sudo yum-config-manager --enable rhui-REGION-rhel-server-extras -y
 $sudo yum install docker -y
+$sudo service docker start
 Manage Docker as non-root user:
 $sudo groupadd docker --> Create Docker Group
 $sudo usermod -aG docker $USER --> Add your user to docker group
