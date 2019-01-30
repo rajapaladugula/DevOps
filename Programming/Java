@@ -117,7 +117,7 @@ public class Employee { // class name 1st letter should be in Upper Case &...
      } // Final method cannot be overridden by any subclasses. Similarly final CLASS cannot be sub-classed.
 
         public static void main(String args[]) { // Main Method. Program starts here.
-           /* Create two objects using constructor from class Employee */
+           /* Create objects using constructor from class Employee */
            Employee empOne = new Employee("James", "Smith");
            Employee empTwo = new Employee("Mary", "Anne");  // Points to Multi-param constructor.
            Employee empThree = new Employee("Anne"); // Points to Uni-param constructor.
