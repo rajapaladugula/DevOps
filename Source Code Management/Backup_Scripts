@@ -1,44 +1,31 @@
-for f in esawsmdl-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].log; do
+# Delete files older than 7 days.
+
+for f in <file_name>-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].log; do
 seven_days=$(date -d "7 days ago" +%Y-%m-%d)
 date="${f%.log}"
 mdate="${date#*-}"
 [[ $mdate < $seven_days ]] && rm "$f"
 done
 
-
+# Zip and move files to AWS S3.
 
 #!/bin/sh
 export PATH=~/bin:$PATH
 now="$(date +'%m_%d_%Y')"
 cd /
-sudo tar czvf bb-app-data_$now.tar.gz  data
+sudo tar czvf <file_name>_$now.tar.gz  data
 sudo mv /*.gz /home/ec2-user/
 sudo chmod o+r /home/ec2-user/*.gz
 export PATH=~/bin:$PATH
-aws s3 mv /home/ec2-user/bb-app-data_*.gz  s3://my-web-devops-backups/bb-app-backup/
+aws s3 mv /home/ec2-user/<file_name>_*.gz  s3://my-web-devops-backups/<file_name>-backup/
 
 
-
-#!/bin/sh
-
-export PATH=~/bin:$PATH
-
-now="$(date +'%m_%d_%Y')"
-`mysqldump -u root -p'$Ql@dm1n' bitbucket > /home/ec2-user/BB_db_backup/bb_db_backup_$now.sql`
-
-cd /home/ec2-user/BB_db_backup/
-gzip bb_db_backup_$now.sql
-aws s3 mv /home/ec2-user/BB_db_backup/*.gz  s3://my-web-devops-backups/mysql/bitbucket_db/
-
+# Create a SQL dump, zip and move it to AWS S3.
 
 #!/bin/sh
-
 export PATH=~/bin:$PATH
-
 now="$(date +'%m_%d_%Y')"
-cd /mnt/nfs_cje_home
-sudo tar czvf jenkins-app-data_$now.tar.gz  jenkins
-sudo chmod o+r /mnt/nfs_cje_home/*.gz
-sudo mv /mnt/nfs_cje_home*gz /home/ec2-user/
-cd /home/ec2-user
-aws s3 mv ./jenkins-*.gz  s3://my-web-devops-backups/jenkins/
+`mysqldump -u root -p'*******' bitbucket > /home/ec2-user/BB_db_backup/bb_db_backup_$now.sql`
+cd /home/ec2-user/<file_name>_backup/
+gzip <file_name>_backup_$now.sql
+aws s3 mv /home/ec2-user/<file_name>_backup/*.gz  s3://my-web-devops-backups/mysql/bitbucket_db/
