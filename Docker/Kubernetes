@@ -13,13 +13,36 @@ StatefulSet: a pod with gurantees on deployment and scaling ordering;
 Request: desired amount of CPU or memory for a container in a pod; 
 Resource: any individual KUBERNETES item such as deployment, pod, service or secret e.t.c,
 
-kubectl:
+Installation:
 
+Ref: https://www.edureka.co/blog/install-kubernetes-on-ubuntu
+
+KUBECTL Commands:
 kubectl create -f FILE : create a new KUBERNETES resources based on instructions in the FILE.
 kubectl delete TYPE NAME : delete a particular resource --> kubectl delete POD my_pod
 kubectl get TYPE : return all KUBERNETES resources of specified TYPE --> kubectl get PODS
-kubectl describe TYPE NAME : prints detailed info about a particular resource --> kubectl describe POD my_pod
-kubectl logs POD_NAME : print container logs for a particular pod;
 
-Minikube Installation: (Requires Docker Pre-installed)
-https://www.radishlogic.com/kubernetes/running-minikube-in-aws-ec2-ubuntu/
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| FUNCTION                  | COMMAND                                                                                                      |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| Proxy to access Dashboard | kubectl proxy --address '0.0.0.0' -p 8001 --accept-hosts '.*'                                                |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| URL to access Dashboard   | http://34.220.156.131:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| Edit Dashboard Pod        | kubectl edit svc/kubernetes-dashboard --namespace=kube-system                                                |
+|                           | kubectl -n kube-system edit service kubernetes-dashboard                                                     |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| Dashboard port exposed    | kubectl -n kube-system get service kubernetes-dashboard                                                      |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| Pod Logs                  | kubectl logs kubernetes-dashboard-77fd78f978-g2hts -n kube-system                                            |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| Pod Describe              | kubectl describe pod kubernetes-dashboard-86bcb9fc9c-rr2l5 --namespace=kube-system                            |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| List all pods             | kubectl get pods -o wide --all-namespaces                                                                    |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| lists all the nodes       | kubectl get nodes                                                                                            |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| Cluster Info              | kubectl cluster-info                                                                                         |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+|                           |                                                                                                              |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
