@@ -23,6 +23,7 @@ Ref: https://www.edureka.co/blog/install-kubernetes-on-ubuntu
 --Step 6: kubectl proxy --address '0.0.0.0' -p 8001 --accept-hosts '.*' (Only for Demo, not recommended to open to world)
 Note: Dashboard should not be exposed publicly over HTTP. For domains accessed over HTTP it will not be possible to sign in.
       For domains other than localhost and 127.0.0.1, nothing will happen after clicking Sign in button on login page.
+      https://github.com/kubernetes/dashboard/wiki/Accessing-Dashboard---1.7.X-and-above
 
 KUBECTL Commands:
 kubectl create -f FILE : create a new KUBERNETES resources based on instructions in the FILE.
