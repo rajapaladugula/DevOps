@@ -19,7 +19,7 @@ Ref: https://www.edureka.co/blog/install-kubernetes-on-ubuntu
 *Updates to above Installation Link:
 -Steps Only For Kubernetes Master VM (kmaster)
 --Step 3: https://docs.projectcalico.org/v3.5/getting-started/kubernetes/installation/calico
---Step 4: https://github.com/kubernetes/dashboard/wiki/Installation
+--Step 4: https://github.com/kubernetes/dashboard/wiki/Installation (Use Alternative step to access on http)
 --Step 6: kubectl proxy --address '0.0.0.0' -p 8001 --accept-hosts '.*' (Only for Demo, not recommended to open to world)
 Note: Dashboard should not be exposed publicly over HTTP. For domains accessed over HTTP it will not be possible to sign in.
       For domains other than localhost and 127.0.0.1, nothing will happen after clicking Sign in button on login page.
