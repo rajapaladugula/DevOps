@@ -35,7 +35,7 @@ kubectl get TYPE : return all KUBERNETES resources of specified TYPE --> kubectl
 +---------------------------+--------------------------------------------------------------------------------------------------------------+
 | Proxy to access Dashboard | kubectl proxy --address '0.0.0.0' -p 8001 --accept-hosts '.*'                                                |
 +---------------------------+--------------------------------------------------------------------------------------------------------------+
-| URL to access Dashboard   | http://**.**.**.**:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login |
+| URL to access Dashboard   | http://**.**.**.**:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard:/proxy/ (IPv4 Public IP) |
 +---------------------------+--------------------------------------------------------------------------------------------------------------+
 | Edit Dashboard Pod        | kubectl edit svc/kubernetes-dashboard --namespace=kube-system                                                |
 |                           | kubectl -n kube-system edit service kubernetes-dashboard                                                     |
