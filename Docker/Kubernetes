@@ -29,9 +29,6 @@ Note: For the Recommended version of Dashboard installation, Dashboard should no
 -Steps For Only Kubernetes Node VM (knode): For AWS open inbound:6443
 
 KUBECTL Commands:
-kubectl create -f FILE : create a new KUBERNETES resources based on instructions in the FILE.
-kubectl delete TYPE NAME : delete a particular resource --> kubectl delete POD my_pod
-kubectl get TYPE : return all KUBERNETES resources of specified TYPE --> kubectl get PODS
 
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | FUNCTION                      | COMMAND                                                                                     | Description                          |
@@ -52,11 +49,11 @@ kubectl get TYPE : return all KUBERNETES resources of specified TYPE --> kubectl
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | Lists pods                    | kubectl get pods -o wide --all-namespaces                                                   |                                      |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-|                               |                                                                                             |                                      |
+| create                        | kubectl create -f <FILE>                                                                    | Can be used for: Service, Node, Pod  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | Cluster Info                  | kubectl cluster-info                                                                        |                                      |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-|                               |                                                                                             |                                      |
+| delete                        | kubectl delete pod POD_NAME                                                                 | Can also be used for: Service, Node  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 |                               |                                                                                             |                                      |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
