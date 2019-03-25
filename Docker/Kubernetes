@@ -22,6 +22,7 @@ Ref: https://www.edureka.co/blog/install-kubernetes-on-ubuntu
       Environment="KUBELET_EXTRA_ARGS=--cloud-provider=aws" (Add this line to configure CLOUD-PROVIDER)
 -Steps Only For Kubernetes Master VM (kmaster)
 --Step 3: https://docs.projectcalico.org/v3.5/getting-started/kubernetes/installation/calico
+      https://docs.projectcalico.org/v3.5/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
 --Step 4: https://github.com/kubernetes/dashboard/wiki/Installation (Used Alternative step to access on http; For AWS open inbound:8001)
 --Step 6: kubectl proxy --address '0.0.0.0' -p 8001 --accept-hosts '.*' (Only for Demo, not recommended to open to world)
 Note: For the Recommended version of Dashboard installation, Dashboard should not be exposed publicly over HTTP. For domains accessed
