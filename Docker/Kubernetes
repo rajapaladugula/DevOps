@@ -28,6 +28,8 @@ Note: For the Recommended version of Dashboard installation, Dashboard should no
 --Step 7: kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
 -Steps For Only Kubernetes Node VM (knode): For AWS open inbound:6443
 
+AWS Persistant volume: https://blog.scottlowe.org/2018/09/28/setting-up-the-kubernetes-aws-cloud-provider/
+
 KUBECTL Commands:
 
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
