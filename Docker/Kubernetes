@@ -17,6 +17,9 @@ Resource: any individual KUBERNETES item such as deployment, pod, service or sec
 
 Ref: https://www.edureka.co/blog/install-kubernetes-on-ubuntu
 *Updates to above Installation Link:
+-Updating Kubernetes Configuration
+-- vi /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+      Environment="KUBELET_EXTRA_ARGS=--cloud-provider=aws" (Add this line to configure CLOUD-PROVIDER)
 -Steps Only For Kubernetes Master VM (kmaster)
 --Step 3: https://docs.projectcalico.org/v3.5/getting-started/kubernetes/installation/calico
 --Step 4: https://github.com/kubernetes/dashboard/wiki/Installation (Used Alternative step to access on http; For AWS open inbound:8001)
