@@ -24,6 +24,7 @@ Ref: https://www.edureka.co/blog/install-kubernetes-on-ubuntu
 --Step 3: https://docs.projectcalico.org/v3.5/getting-started/kubernetes/installation/calico
       https://docs.projectcalico.org/v3.5/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
 --Step 4: https://github.com/kubernetes/dashboard/wiki/Installation (Used Alternative step to access on http; For AWS open inbound:8001)
+      kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/alternative/kubernetes-dashboard.yaml
 --Step 6: kubectl proxy --address '0.0.0.0' -p 8001 --accept-hosts '.*' (Only for Demo, not recommended to open to world)
 Note: For the Recommended version of Dashboard installation, Dashboard should not be exposed publicly over HTTP. For domains accessed
       over HTTP it will not be possible to sign in. For domains other than localhost and 127.0.0.1, nothing will happen after clicking
@@ -33,9 +34,13 @@ Note: For the Recommended version of Dashboard installation, Dashboard should no
 -Steps For Only Kubernetes Node VM (knode): For AWS open inbound:6443
 
 AWS Persistant volume: https://blog.scottlowe.org/2018/09/28/setting-up-the-kubernetes-aws-cloud-provider/
+https://blog.scottlowe.org/2019/02/18/kubernetes-kubeadm-and-the-aws-cloud-provider/
+https://docs.docker.com/ee/ucp/kubernetes/storage/configure-aws-storage/
+https://docs.google.com/document/d/17d4qinC_HnIwrK0GHnRlD1FKkTNdN__VO4TH9-EzbIY/edit
+https://stackoverflow.com/questions/50668070/kube-controller-manager-doesnt-start-when-using-cloud-provider-aws-with-kubea
+https://stackoverflow.com/questions/51197734/kubernetes-controller-manager-error-if-use-kubeadm-init-with-cloud-provider-aw/51201933
 
 KUBECTL Commands:
-
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | FUNCTION                      | COMMAND                                                                                     | Description                          |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
