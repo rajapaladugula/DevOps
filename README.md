@@ -23,7 +23,7 @@ This contains various documents related to ad hoc DevOps Tasks.
     <td></td>
   </tr>
   <tr>
-    <td>Database</code></td>
+    <td><code>Database</code></td>
     <td>SQL</td>
     <td></td>
   </tr>
