@@ -28,31 +28,31 @@ This contains various documents related to ad hoc DevOps Tasks.
     <td></td>
   </tr>
   <tr>
-    <td>Containerization</code></td>
+    <td><code>Containerization</code></td>
     <td>DockerL</td>
     <td></td>
   </tr>
   <tr>
-    <td>ELK</code></td>
+    <td><code>ELK</code></td>
     <td>Elastic Search, Log statsh, Kibana, Watchers</td>
     <td></td>
   </tr><tr>
-    <td>Linux</code></td>
+    <td><code>Linux</code></td>
     <td>CentOs</td>
     <td></td>
   </tr>
   <tr>
-    <td>Programming</code></td>
+    <td><code>Programming</code></td>
     <td>SQL</td>
     <td></td>
   </tr>
   <tr>
-    <td>Source Code Management</code></td>
+    <td><code>Source Code Management</code></td>
     <td>BitBucket | GitHub</td>
     <td></td>
   </tr>
   <tr>
-    <td>Windows</code></td>
+    <td><code>Windows</code></td>
     <td></td>
     <td></td>
   </tr>
