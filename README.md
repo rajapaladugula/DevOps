@@ -29,7 +29,7 @@ This contains various documents related to ad hoc DevOps Tasks.
   </tr>
   <tr>
     <td><code>Containerization</code></td>
-    <td>Docker</td>
+    <td>Docker | K8</td>
     <td></td>
   </tr>
   <tr>
