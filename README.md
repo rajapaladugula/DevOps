@@ -43,7 +43,7 @@ This contains various documents related to ad hoc DevOps Tasks.
   </tr>
   <tr>
     <td><code>Programming</code></td>
-    <td>SQL</td>
+    <td>Core Java</td>
     <td></td>
   </tr>
   <tr>
