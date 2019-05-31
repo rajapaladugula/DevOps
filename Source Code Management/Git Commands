@@ -56,8 +56,10 @@ $ git remote rm destination
 # Update branch on local system when the original branch from official repository has been updated
 $ git fetch [name_of_your_remote]
 
-stashing: check-point for non-commited changes.
+stashing: check-point for non-commited changes that saves to temp location. changes in the temp location can be re-applied any where.
 $ git stash save "Comment"
 $ git stash list
 $ git stash apply <STASH_NAME>
 
+rebase: integrates branches similar to merge, but in a different way. used when changes made in one branch needs to be reflected
+in another branch.
