@@ -16,18 +16,26 @@ $ git clone https://github.com/rajapaladugula/DevOps.git
 # To pull the code ($ git pull ALIAS_NAME BRANCH_NAME).
 $ git pull DevOps Master
 
-# After modifications we need to do staging i.e, add all ($ git add .) or specific files ($ git add FILE.TXT)
+# After modifying the "working copy" we perform 'add' operation to add all files($ git add .) or specific files($ git add FILE.TXT)
+  to the staging area.
+  
+# difference between the modified files.
+$ git diff
 
-# Commit the changes ($ git commit -m "RANDOM_MESSAGE") which displays the insertions, deletions or changes to the file.
+# Then we Commit the changes ($ git commit -m "RANDOM_MESSAGE") to Local Repo which displays the insertions, deletions or changes
+  made to the file.
 $ git commit -m "This is the first commit"
+
+# Displays commits and their description
+$ git log
 
 # Push changes to the Repo ($ git push -u ALIAS_NAME BRANCH_NAME) and authenticate. 
 $ git push -u DevOps master
 
-# Check the status.
+# Check the status: branch commits?
 $ git status
 
-# Create a Branch on local machine.
+# Create a Branch on local machine and swith(checkout) to it.
 $ git checkout -b BRANCH_NAME
 
 # Delete a branch on your local file system
@@ -35,6 +43,9 @@ $ git branch -d [name_of_your_new_branch]
 
 # Change working branch.
 $ git checkout [name_of_your_new_branch]
+
+# merging branches with the current to <BRANCH_NAME>
+$ git merge <BRANCH_NAME>
 
 # View current remotes.
 $ git remote -v
@@ -44,4 +55,9 @@ $ git remote rm destination
 
 # Update branch on local system when the original branch from official repository has been updated
 $ git fetch [name_of_your_remote]
+
+stashing: check-point for non-commited changes.
+$ git stash save "Comment"
+$ git stash list
+$ git stash apply <STASH_NAME>
 
