@@ -32,7 +32,7 @@ $ git log
 # Push changes to the Repo ($ git push -u ALIAS_NAME BRANCH_NAME) and authenticate. 
 $ git push -u DevOps master
 
-# Check the status: branch commits?
+# Check the status: which branch are we on? Any left branch commits?
 $ git status
 
 # Create a Branch on local machine and swith(checkout) to it.
@@ -57,7 +57,7 @@ $ git remote rm destination
 $ git fetch [name_of_your_remote]
 
 stashing: check-point for non-commited changes that saves to temp location. changes in the temp location can be re-applied any where.
-$ git stash save "Comment"
+$ git stash save 'Comment'
 $ git stash list
 $ git stash apply <STASH_NAME>
 
