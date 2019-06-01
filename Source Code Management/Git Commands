@@ -38,6 +38,9 @@ $ git status
 # Create a Branch on local machine and swith(checkout) to it.
 $ git checkout -b BRANCH_NAME
 
+# displays current working branch and other branches available
+$ git branch
+
 # Delete a branch on your local file system
 $ git branch -d [name_of_your_new_branch]
 
@@ -53,13 +56,19 @@ $ git remote -v
 # Remove a remote.
 $ git remote rm destination
 
-# Update branch on local system when the original branch from official repository has been updated
+# Remove Repo
+$ git rm <REPO_NAME>
+
+# Update branch on local Repo when the original branch from Remote repository has been updated.
 $ git fetch [name_of_your_remote]
 
 stashing: check-point for non-commited changes that saves to temp location. changes in the temp location can be re-applied any where.
 $ git stash save 'Comment'
-$ git stash list
-$ git stash apply <STASH_NAME>
+$ git stash list : lists all the stash
+$ git stash apply <STASH_ID> : apply stash to a branch.
+$ git stash drop : delete a stash
+$ git stash clear : Remove all the stash
 
 rebase: integrates branches similar to merge, but in a different way. used when changes made in one branch needs to be reflected
-in another branch.
+in another branch. Ex: Chnages in the current branch were applied to 'master' as well.
+$ git rebase <master>
