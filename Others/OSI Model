@@ -1,0 +1,10 @@
+Open System Interconnection:
+
+Application Layer: used by web/Network Applications. protocols: http, http/s, tcp, smtp, telnet
+Presentation Layer: Translation, Compression and Encryption, Decryption of the data.
+Session Layer: Session Management, Authorization, Authentication.
+Transport Layer: Reliability of communication, Segmentation (seq n.o, port n.o to packets), flow control (Regulate amount of data
+                  transmission), Error control (checksum to packets to avoid data loss). Protocols: TCP (connection), UDP (connectionless)
+Network Layer: Logical addressing (assign I.P address to packets), Path determination, Routing
+Data Link Layer: Data is framed.
+Physical Layer: Converts the binaries from D.L.L to signals.
