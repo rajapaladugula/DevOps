@@ -1,0 +1,13 @@
+bin: Binaries. Programs or applications like ls, cat...
+boot: Everythin that O.S needs to boot while starting up.
+dev: Devices. Hardware like disks attached to the instance: sda - sda1, sda2
+etc: System configs stored like yum, systemd.
+home: each user has a own dir inside which stores personal files.
+lib: libraries. apps uses lib's for various functions.
+mnt: mounted drives like external Hard Drive.
+opt: optional. Install softwares from vendors.
+proc: processes. sudo files/dir of every system process and resources stored.
+root: roots users home folder. needs root permission to access.
+tmp: temporary. directory where files were temporarily stored by apps.
+usr: user app space, where apps are installed that are used by the user.
+var: variable. contains files/dir that are expected to grow in size. ex: log has log files of system and other apps.
