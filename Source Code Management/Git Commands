@@ -47,7 +47,7 @@ $ git branch -d [name_of_your_new_branch]
 # Change working branch.
 $ git checkout [name_of_your_new_branch]
 
-# merging branches with the current to <BRANCH_NAME>
+# merging branch <BRANCH_NAME> to Current branch present in.
 $ git merge <BRANCH_NAME>
 
 # View current remotes.
