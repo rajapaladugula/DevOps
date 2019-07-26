@@ -1,0 +1,30 @@
+#Palindrome
+
+def isPalindrome(s):
+    def toChars(s):
+        s = s.lower()
+        ans = ''
+        for c in s:
+            if c in 'a-z':
+                ans += c
+        return ans
+    def isPal(s):
+        if len(s) <= 1:
+            return True
+        else:
+            return s[0] == s[-1] and isPal(s[1:-1])
+    return isPal(toChars(s))
+print(isPalindrome("aba"))
+
+#Reverse an integer
+
+def reverse(x):
+    number = x
+    lastDight = 0
+    reverse = 0
+    while number > 0:
+        lastDight = number % 10
+        reverse = (reverse*10) + lastDight
+        number = number // 10
+    return reverse
+print(reverse(579))
