@@ -1,5 +1,7 @@
-#Palindrome:
+#Palindrome::
 -----------
+Strings:
+-------
 def isPalindrome(s):
     def toChars(s):
         s = s.lower()
@@ -15,6 +17,18 @@ def isPalindrome(s):
             return s[0] == s[-1] and isPal(s[1:-1])
     return isPal(toChars(s))
 print(isPalindrome("aba"))
+
+Arrays:
+------
+def palindrome(arr):
+    if len(arr) <= 1:
+        return True
+    else:
+        return arr[0] == arr[-1] and palindrome(arr[1:-1])
+
+arr = [ 1, 2, 3, 2, 9, 1 ];
+
+print(palindrome(arr))
 ======================================================
 #Reverse an integer:
 -------------------
