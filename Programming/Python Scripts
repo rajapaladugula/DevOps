@@ -1,6 +1,6 @@
 #Palindrome::
 -----------
-Strings:
+Strings:[Recursive]
 -------
 def isPalindrome(s):
     def toChars(s):
@@ -18,17 +18,32 @@ def isPalindrome(s):
     return isPal(toChars(s))
 print(isPalindrome("aba"))
 
-Arrays:
+Arrays: [Recursive]
 ------
 def palindrome(arr):
     if len(arr) <= 1:
         return True
     else:
         return arr[0] == arr[-1] and palindrome(arr[1:-1])
-
-arr = [ 1, 2, 3, 2, 9, 1 ];
-
+arr = [ 1, 2, 3, 2, 1 ];
 print(palindrome(arr))
+[Iteration]:
+-----------
+def Palindrome(arr, n):
+    flag = 0
+    i = 0
+    while(i <= n//2 and n != 0):
+        if (arr[i] != arr[n - i -1]):
+            flag += 1
+            break;
+        i += 1
+    if (flag == 1):
+        print("Not a Palindrome")
+    else:
+        print("Palindrome")
+arr = [1, 2, 3, 2, 1]
+n = len(arr)
+print(Palindrome(arr, n))
 ======================================================
 #Reverse an integer:
 -------------------
