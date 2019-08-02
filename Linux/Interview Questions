@@ -1,4 +1,4 @@
-SSH Troubleshooting:
+SSH Troubleshooting: (https://www.digitalocean.com/docs/droplets/resources/troubleshooting-ssh/connectivity/)
 -------------------
 1. Check any on going N/W issues in the region? (Try other servers)
 2. Host Name Resolution error. (Typo in host name?, Try 'ping', Host name/Service doesnt exist!)
@@ -6,3 +6,5 @@ SSH Troubleshooting:
     Firewall Rules? check firewall-cmd --list-services/ports | iptables -nL
 4. Connection Refused? (SSH Service Running? service ssh status, listening on 22?)
 
+Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
+--------
