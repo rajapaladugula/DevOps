@@ -16,5 +16,6 @@
 10. CPU Usage: top, htop
 11. Mounts: mount <VOLUMR_PATH> <MOUNT_POINT> ex: mount /dev/sda1 /opt
     Mount volume at boot: /etc/fstab
-
+12. Zombie process: Child process whose parent is exited. Its process is in terminated state with resources unreleased.
+                    Entry still in process table.
 Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
