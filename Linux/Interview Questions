@@ -25,6 +25,7 @@
 15. DR Strategy: a) Replica(Standby) of current Environment and DNS switch to D.B connection when required.
                  b) maintain multiple availability zones & Load Balancing traffic.
                  c) DNS based switch to route traffic on basis of health checks
-                 
+16. Generate SSH Keys, Pass less auth: ssh-keygen -t rsa copy the generated public key to remote servers ~/.ssh/authorizedkeys
+17. 
          
 Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
