@@ -1,3 +1,5 @@
+Linux:
+-----
 1. SSH Troubleshooting: (https://www.digitalocean.com/docs/droplets/resources/troubleshooting-ssh/connectivity/)
     a) Check any on going N/W issues in the region? (Try other servers)
     b) Host Name Resolution error. (Typo in host name?, Try 'ping', Host name/Service doesnt exist!)
@@ -18,14 +20,21 @@
     Mount volume at boot: /etc/fstab
 12. Zombie process: Child process whose parent is exited. Its process is in terminated state with resources unreleased.
                     Entry still in process table.
-13. Role back stategy: Backup current artificat before deployment | Follow Blue-Green Deployments with testing endpoints inbetween.
-14. Ansible/Chef:
-      a) Agent-less | Agent, Agent-less
-      b) ymal | Ruby
-15. DR Strategy: a) Replica(Standby) of current Environment and DNS switch to D.B connection when required.
+13. Generate SSH Keys, Pass less auth: ssh-keygen -t rsa copy the generated public key to remote servers ~/.ssh/authorizedkeys
+Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
+
+DevOps:
+------
+1. Role back stategy: Backup current artificat before deployment | Follow Blue-Green Deployments with testing endpoints inbetween.
+2. DR Strategy:  a) Replica(Standby) of current Environment and DNS switch to D.B connection when required.
                  b) maintain multiple availability zones & Load Balancing traffic.
                  c) DNS based switch to route traffic on basis of health checks
-16. Generate SSH Keys, Pass less auth: ssh-keygen -t rsa copy the generated public key to remote servers ~/.ssh/authorizedkeys
-17. 
-         
-Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
+
+Configuration Management:
+------------------------
+1. Ansible/Chef:
+      a) Agent-less | Agent, Agent-less
+      b) ymal | Ruby
+
+Terraform:
+---------
