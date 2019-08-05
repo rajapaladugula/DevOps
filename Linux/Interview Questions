@@ -21,14 +21,33 @@ Linux:
 12. Zombie process: Child process whose parent is exited. Its process is in terminated state with resources unreleased.
                     Entry still in process table.
 13. Generate SSH Keys, Pass less auth: ssh-keygen -t rsa copy the generated public key to remote servers ~/.ssh/authorizedkeys
+14. Ports: 21 FTP (File Transfer Protocol)
+           22 SSH (Secure Shell)
+           23: Telnet
+           25: SMTP
+           53: DNS
+15. SSH Port Forwarding: Bypass Firewalls, Tuneel ports using SSH protocols.
+
 Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
 
 DevOps:
 ------
-1. Role back stategy: Backup current artificat before deployment | Follow Blue-Green Deployments with testing endpoints inbetween.
-2. DR Strategy:  a) Replica(Standby) of current Environment and DNS switch to D.B connection when required.
+DevOps is a set of cultural norms and technology practices that enable the fast flow of planned work, right from development, through tests into operations while preserving
+  world class reliability, operation and security. This involves Continuous Development, Continuous Testing, Continuous Integration, Continuous Deployment and Continuous
+  Monitoring of the software throughout its development life cycle.
+1. Need: Now a days, Instead of releasing big sets of features, companies are trying to see if small features can be transported to their customers through a series of release trains.
+         This has many advantages like quick feedback from customers, better quality of software etc. which in turn leads to high customer satisfaction. In order to acheieve this, companies
+         are required to: Increase deployment frequency, Lower failure rate of new releases, Shortened time between fixes, Faster mean time to recovery in the event of new release crashing.
+         DevOps fulfills all these requirements and helps in achieving seamless software delivery.
+2. Role back stategy: Backup current artificat before deployment | Follow Blue-Green Deployments with testing endpoints inbetween.
+3. DR Strategy:  a) Replica(Standby) of current Environment and DNS switch to D.B connection when required.
                  b) maintain multiple availability zones & Load Balancing traffic.
-                 c) DNS based switch to route traffic on basis of health checks
+                 c) DNS based switch to route traffic on basis of health checks.
+4. Agile | DevOps:  a) Agility in Dev | both Dev & Operations
+                    b) emphasize on timeliness | both timeliness & quality
+                    c) feedback from customers | self-monitoring
+                    d) practices: scrum, kanban | ci, cd, ct, cm
+5. 
 
 Configuration Management:
 ------------------------
@@ -38,3 +57,8 @@ Configuration Management:
 
 Terraform:
 ---------
+
+Jenkins:
+-------
+Plugins: Git, SVN, Maven, Trigger build on other project, Deploy ear/war to container, UpStream/Downstream jobs, E-mail notification
+
