@@ -7,4 +7,13 @@ SSH Troubleshooting: (https://www.digitalocean.com/docs/droplets/resources/troub
 4. Connection Refused? (SSH Service Running? service ssh status, listening on 22?)
 
 Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
---------
+System Information: uname -a
+Ip address: if config, ip addr
+Disk free: df -ah
+Disk usage: du -ah
+Memory: free, vmstat
+Manage services: service <NAME> status, systemctl status <NAME>
+Check open ports: netstat -tulpn
+CPU Usage: top, htop
+Mounts: mount <VOLUMR_PATH> <MOUNT_POINT> ex: mount /dev/sda1 /opt
+Mount volume at boot: /etc/fstab
