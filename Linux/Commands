@@ -1,6 +1,4 @@
-1. Lists Top 10 directories eating disk space in File System /etc
-    du -a /etc/ | sort -n -r | head -n 10
-2. for i in 0 1; do kubectl exec web-$i -- sh -c 'echo $(hostname) > /usr/share/nginx/html/index.html'; done
+1. for i in 0 1; do kubectl exec web-$i -- sh -c 'echo $(hostname) > /usr/share/nginx/html/index.html'; done
     for both 0,1 one after the other, replace i with $i in the command then in a shell, execute command that writes to a file.
-3. copy (y), cut (d) and paste (p) in vi editor. serach :s/string, replace line :s/patter/replace, replace entire text :%s/patter/replace
-4. Soft (Symbolic) Link: $ ln -s <Source> <Link>    Hard Link: $ ln <Source> <Link>     Verify soft and Hard Links: ls -l <Source> <Link>
+2. copy (y), cut (d) and paste (p) in vi editor. serach :s/string, replace line :s/patter/replace, replace entire text :%s/patter/replace
+3. Soft (Symbolic) Link: $ ln -s <Source> <Link>    Hard Link: $ ln <Source> <Link>     Verify soft and Hard Links: ls -l <Source> <Link>
