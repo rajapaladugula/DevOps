@@ -1,9 +1,9 @@
 1. SSH Troubleshooting: (https://www.digitalocean.com/docs/droplets/resources/troubleshooting-ssh/connectivity/)
-    1. Check any on going N/W issues in the region? (Try other servers)
-    2. Host Name Resolution error. (Typo in host name?, Try 'ping', Host name/Service doesnt exist!)
-    3. Connection Time out (SSH listening on 22? check /etc/ssh/sshd_config,
-    Firewall Rules? check firewall-cmd --list-services/ports | iptables -nL
-    4. Connection Refused? (SSH Service Running? service ssh status, listening on 22?)
+    a) Check any on going N/W issues in the region? (Try other servers)
+    b) Host Name Resolution error. (Typo in host name?, Try 'ping', Host name/Service doesnt exist!)
+    c) Connection Time out (SSH listening on 22? check /etc/ssh/sshd_config,
+            Firewall Rules? check firewall-cmd --list-services/ports | iptables -nL
+    d) Connection Refused? (SSH Service Running? service ssh status, listening on 22?)
 2. Lists Top 10 directories eating disk space in File System /etc
     du -ah /etc/ | sort -n -r | head -n 10
 3. System Information: uname -a
@@ -18,4 +18,13 @@
     Mount volume at boot: /etc/fstab
 12. Zombie process: Child process whose parent is exited. Its process is in terminated state with resources unreleased.
                     Entry still in process table.
+13. Role back stategy: Backup current artificat before deployment | Follow Blue-Green Deployments with testing after inbetween.
+14. Ansible/Chef:
+      a) Agent-less | Agent, Agent-less
+      b) ymal | Ruby
+15. DR Strategy: a) Replica(Standby) of current Environment and DNS switch to D.B connection when required.
+                 b) A-Z availability zone & Load Balancing traffic.
+                 c) DNS based switch to route traffic on basis of health checks
+                 
+         
 Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
