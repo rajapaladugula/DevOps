@@ -18,12 +18,12 @@
     Mount volume at boot: /etc/fstab
 12. Zombie process: Child process whose parent is exited. Its process is in terminated state with resources unreleased.
                     Entry still in process table.
-13. Role back stategy: Backup current artificat before deployment | Follow Blue-Green Deployments with testing after inbetween.
+13. Role back stategy: Backup current artificat before deployment | Follow Blue-Green Deployments with testing endpoints inbetween.
 14. Ansible/Chef:
       a) Agent-less | Agent, Agent-less
       b) ymal | Ruby
 15. DR Strategy: a) Replica(Standby) of current Environment and DNS switch to D.B connection when required.
-                 b) A-Z availability zone & Load Balancing traffic.
+                 b) maintain multiple availability zones & Load Balancing traffic.
                  c) DNS based switch to route traffic on basis of health checks
                  
          
