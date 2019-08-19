@@ -1,0 +1,135 @@
+Linux:
+-----
+1. SSH Troubleshooting: (https://www.digitalocean.com/docs/droplets/resources/troubleshooting-ssh/connectivity/)
+    a) Check any on going N/W issues in the region? (Try other servers)
+    b) Host Name Resolution error. (Typo in host name?, Try 'ping', Host name/Service doesnt exist!)
+    c) Connection Time out (SSH listening on 22? check /etc/ssh/sshd_config,
+            Firewall Rules? check firewall-cmd --list-services/ports | iptables -nL
+    d) Connection Refused? (SSH Service Running? service ssh status, listening on 22?)
+2. Lists Top 10 directories eating disk space in File System /etc
+    du -ah /etc/ | sort -n -r | head -n 10
+3. System Information: uname -a
+4. Ip address: if config, ip addr
+5. Disk free: df -ah
+6. Disk usage: du -ah
+7. Memory: free -m, vmstat, top, htop
+8. Manage services: service <NAME> status, systemctl status <NAME>
+9. Check open ports: netstat -tulpn
+10. CPU Usage: top, htop
+11. Mounts: mount <VOLUMR_PATH> <MOUNT_POINT> ex: mount /dev/sda1 /opt
+    Mount volume at boot: /etc/fstab
+12. Zombie process: Child process whose parent is exited. Its process is in terminated state with resources unreleased.
+                    Entry still in process table.
+13. Generate SSH Keys, Pass less auth: ssh-keygen -t rsa copy the generated public key to remote servers ~/.ssh/authorizedkeys
+14. Ports: 21 FTP (File Transfer Protocol)
+           22 SSH (Secure Shell)
+           23: Telnet
+           25: SMTP
+           53: DNS
+15. SSH Port Forwarding: Bypass Firewalls, Tunnel ports using SSH protocols.
+
+Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
+
+DevOps:
+------
+DevOps is a set of cultural norms and technology practices that enable the fast flow of planned work, right from development, through tests into operations while preserving
+  world class reliability, operation and security that involves Continuous Development, Continuous Testing, Continuous Integration, Continuous Deployment and Continuous
+  Monitoring of the software throughout its development life cycle.
+1. Need: Now a days, Instead of releasing big sets of features, companies are trying to see if small features can be transported to their customers through a series of release trains.
+         This has many advantages like quick feedback from customers, better quality of software etc. which in turn leads to high customer satisfaction. In order to acheieve this, companies
+         are required to: Increase deployment frequency, Lower failure rate of new releases, Shortened time between fixes, Faster mean time to recovery in the event of new release crashing.
+         DevOps fulfills all these requirements and helps in achieving seamless software delivery.
+2. Role back stategy: Backup current artificat before deployment | Follow Blue-Green Deployments with testing endpoints inbetween.
+3. DR Strategy:  a) Replica(Standby) of current Environment and DNS switch to D.B connection when required.
+                 b) maintain multiple availability zones & Load Balancing traffic.
+                 c) DNS based switch to route traffic on basis of health checks.
+4. Agile | DevOps:  a) Agility in Dev | both Dev & Operations
+                    b) emphasize on timeliness | both timeliness & quality
+                    c) feedback from customers | self-monitoring
+                    d) practices: scrum, kanban | ci, cd, ct, cm
+5. 
+
+Configuration Management:
+------------------------
+1. Ansible/Chef:
+      a) Agent-less | Agent, Agent-less
+      b) ymal | Ruby
+
+Terraform:
+---------
+		Tool for building, changing and versioning infrastructure as a Code safely and effectively.
+1. Usecases: a) Disposable Env's (QA, UAT)
+			 b) Mutli-Cloud Deployment (AWS, Azure)
+			 c) n-tier Applications
+			 d) Self-service Clusters(Developers, QA)
+			 e) Resource Schedulars (K8) as providers
+2. Providers: responsible for understanding API interactons and exposing resources (AWS, Azure, GCP, Grafana)
+3. Resources: describes the infrastructure components such as virtual networks, instances...
+4. Module: container for multiple resources used together. Every tf has atleast 'root' module.
+5. Datasources: allows data to be fetched or computed defined outside of terraform, or defined by other tf module.
+6. State: stores information about managed infrastructure and configuration. default location is "terraform.tfstate". Supports Backends; gcs, s3...
+7. workspaces: containers for state. used to manage Infrastructure environments(Dev, QA..) using same config files.
+8. lifecycle: create_before_destroy, prevent_destroy, ignore_changes
+9. Provisioners: used to execute scripts on a local or remote machine as part of resource creation or destruction. (local, remote, chef, puppet, file)
+10. Steps for EC2 creation: VPC, Subnets, Security Group, EC2 instances, Load Balancer, DNS
+
+Jenkins:
+-------
+Plugins: Git, SVN, Maven, Trigger build on other project, Deploy ear/war to container, UpStream/Downstream jobs, E-mail notification
+
+Es:
+--
+	It is a search engine based on Apache Lucene that supports full-text search engine to perform a fast
+	incisive search over large chunks of data.
+Adv: distributed, scalable and easy to integrate, compatible on any platform, supports every document type except text rendering.
+	 find out anomalies on data based on pattern, send alerts when particular condition matched like stock market, exception from logs etc.
+DisAdv: Elasticsearch does not support multiple languages while handling request and response data in JSON.
+		In rare cases, it has a problem of Split Brain situations.
+Split Brian: https://blog.trifork.com/2013/10/24/how-to-avoid-the-split-brain-problem-in-elasticsearch/
+Index: An index in Elasticsearch is similar to a db in relational databases. Its is a collection of documents with similar characteristics and is identified by name.
+	   An index maps one or more multiple shards and can have zero or many replica shards.
+Type(Table): It is a logical category/partition of index. defined for docs that have a set of common fields.
+Document(Row): A document in elastic search is a top level or a root component object that is serialized into JSON object and will be stored in Elastic search under a unique id.
+		  Documents in elastic search are indexed and stored and will be available to search using the index.
+Inverted Index:  primary goal is to make very fast full-text searches, while finding the documents in which our search terms occur.
+				 Inverted index consists of a list of all unique words that occurs in documents and for each word, maintain a list of documents number and positions
+				 in which it appears. It is a hashmap like data structure that directs users from a word to a document or a web page.
+Shards: Data in an index can be partitioned into multiple portions which are itself fully-functional and independent index managed by a separate node of Elasticsearch .
+		Each such portion is called a Shard. And an Elasticsearch index has 5 shards by default.
+Replias: Each shard in elastic search has again two copies of the shard that are called the replicas.
+		 They serve the purpose of fault tolerance and high availability.
+Operations: Indexing, Fetch, delete, update
+Cluster: collection of one or more nodes (servers) that together holds your entire data and provides federated indexing and search capabilities across all nodes. 
+Node: It is a single server that is part of the cluster. It stores the data and participates in the clusters indexing and search capabilities.
+	  A Master node is a node that controls the entire cluster. A data node is a node that holds data in it and performs logical operations on the data.
+	  Ingest node pre-process(applies transformations) documents before the actual document indexing happens. The ingest node intercepts bulk and index requests.
+Analyzer: While indexing data in ElasticSearch, data is transformed internally by the Analyzer defined for the index. 
+		  Analyzers are composed of a single Tokenizer and zero or more TokenFilters(lower case). The tokenizer may be preceded by one or more CharFilters. Ex: Whitespace, stop
+Filters:  AND, EXISTS, OR
+Schema: A schema is a structure that describes multiple fields that provides the detailed overview of the document and its type and the way of handling the fields inside the document.
+Tokenizer: Tokenizers are used to break a string down into a stream of terms or tokens. A simple tokenizer might split the string up into terms wherever 
+		   it encounters whitespace or punctuation. 
+Document APIS::
+Create/Update Index: PUT <Index_Name>
+List Index: GET /<Index_Name>/<doc_name>
+Delete Index: DELETE /<Index_Name>/<doc_name>
+Search APIS:: GET /<Index_Name>/<doc_name>/_search?q=year:2001
+Index APIS:: Indexes of Cluster: GET /<Index_Name>/indices
+Cluster APIS: GET _cluster/health
+Add mapping in index: POST website /_bulk
+Elasticsearch REST API Uses: Check your cluster, node, and index health, status, and statistics.
+							 Perform CRUD (Create, Read, Update, and Delete) and search operations against your indexes.
+
+Tomcat:
+------
+Best Practices: Run as a service
+				download executable from the trusted soource
+				Enable SSL
+				Secure the Tomcat Manager application
+				Use Complex passwords
+				create individual log file to each application
+				encrypt passwords or sensible information
+				Update error pages relavently
+				Rotate the log files
+				disable shutdown port
+				Web Application Firewall
