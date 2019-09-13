@@ -66,7 +66,7 @@ Init Sequence(Target Units):: systemd uses targets instead of runlevels after th
        # multi-user.target: analogous to runlevel 3 --> These have all the services that are pointed to the sym links of the respective service scripts (etc/systemd/system).
        # graphical.target: analogous to runlevel 5
 
-Runlevel(System V init)	Target_Units(Systemd)
+Runlevel(System V init)	Target_Units(Systemd) /etc/rc.d/rc*.d
 runlevel 0					      System halt i.e, system can be safely powered off.
 runlevel 1					      single user mode
 runlevel 2					      multi-user mode wihout NFS(Network File system)
@@ -74,6 +74,8 @@ runlevel 3					      multi-user mode wih NFS
 runlevel 4					      User-definable
 runlevel 5					      GUI [standard run Level]
 runlevel 6					      reboot to restart the system
+
+Chnage Run level: sudo telinit 5 (default specified in /etc/initab)
 
     As in System V, we had the default runlevel defined in a file called inittab, Likewise In systemd, that file is replaced by default.target.
     The default target unit file lives under /etc/systemd/system directory. It's a symbolic link to one of the target unit files under /lib/systemd/system.
