@@ -134,7 +134,7 @@ Search for a Service:  $ps -ef | grep SERVICE_NAME
 Kill the process: $sudo kill -9 process_number
 
 -------------------------chkconfig----------------------------
-$chkconfig                        : Used to start/stop a service at a particular runlevels of linux.
+$chkconfig                        : Used to manage(start/stop) services at a particular runlevels of linux.
 $sudo chkconfig SERVICE_NAME on : Enable chkconfig for the service.
 
 Reference: https://www.liquidweb.com/kb/chkconfig-command-examples-for-red-hat-and-centos/
