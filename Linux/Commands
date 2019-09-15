@@ -2,3 +2,4 @@
     for both 0,1 one after the other, replace i with $i in the command then in a shell, execute command that writes to a file.
 2. copy (y), cut (d) and paste (p) in vi editor. serach :s/string, replace line :s/patter/replace, replace entire text :%s/patter/replace
 3. Soft (Symbolic) Link: $ ln -s <Source> <Link>    Hard Link: $ ln <Source> <Link>     Verify soft and Hard Links: ls -l <Source> <Link>
+https://www.ostechnix.com/explaining-soft-link-and-hard-link-in-linux-with-examples/
