@@ -1,5 +1,8 @@
 Cron Jobs in Linux can be set in 2 ways:
+---------
+Cron is a daemon used to run scheduled tasks such as system backups,updates suitable for running scheduled tasks on machines running 24/7
 Default system crontab file is /etc/crontab
+
 A)
   1. cd to one of the following cron directories:
     /etc/cron.hourly
@@ -39,3 +42,13 @@ More graphically they would look like this:
   
 # To list existing cron jobs: crontab –l
   To remove an existing cron job:   $crontab –e  Delete the line that contains your cron job.
+
+AnaCron:
+--------
+Anacron is used to run commands periodically with a frequency defined in days assuming that a machine will not be powered on all time.
+Anacron jobs are listed in /etc/anacrontab. Anacron will check if a job has been executed within the specified period in the period field.
+If not, it executes the command specified in the command field after waiting the number of minutes specified in the delay field.
+Once the job has been executed, it records the date in a timestamp file in the /var/spool/anacron directory with the name specified
+in the job-id (timestamp file name) field.
+Format: @daily    10    example.daily   /bin/bash /home/aaronkilik/bin/backup.sh
+https://www.tecmint.com/cron-vs-anacron-schedule-jobs-using-anacron-on-linux/
