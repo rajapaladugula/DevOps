@@ -6,11 +6,11 @@ A)
     /etc/cron.weekly
     /etc/cron.monthly
     
-  2. Copy your shell script ‘script.sh` or ‘script’ into one of the directories above. If you need to run the script hourly, place your script file in the “cron.hourly” folder.
-   For daily, place it inside the “cron.daily” and so forth.
+  2. Copy your shell script ‘script.sh` or ‘script’ into one of the directories above. If you need to run the script hourly, place your
+     script file in the “cron.hourly” folder. For daily, place it inside the “cron.daily” and so forth.
    
-  3. Give the shell script the correct permission. For example, if script is called “script.sh”, set permission as follows:
-    chmod 755 script.sh
+  3. Give the shell script the correct permissions. For example, if script is called “script.sh”, set permission as follows:
+     chmod 755 script.sh
  
 B)
   1. Add new cron job to crontab:
