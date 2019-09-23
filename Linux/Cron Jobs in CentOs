@@ -1,4 +1,5 @@
 Cron Jobs in Linux can be set in 2 ways:
+Default system crontab file is /etc/crontab
 A)
   1. cd to one of the following cron directories:
     /etc/cron.hourly
