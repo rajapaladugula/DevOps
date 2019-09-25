@@ -12,7 +12,7 @@ Create a Docker container from Docker image: docker run -d -p 3000:8080 --name=m
 -d : Detach (Runs container in background)
 --name : Desired name of the container
 -p (publish): Bind port on host:port on container -p | -P (publish all) maps port dynamically
---network : Network associated
+--network : Connect to an existing Network Bridge
 
 lynx: Terminal based browser -> lynx localhost:xxxx
 
@@ -25,7 +25,9 @@ Interact with the running container --> docker attach <CONTAINER_ID>
 
 3 Networks: bridge-host-none $docker network ls
 (default)bridge n/w has access to interact with every other container and also reach outside world.
-$docker network create --driver bridge <Network_Name>
+Create N/W: $docker network create --driver bridge <Network_Name>
+Remove N/W: $docker network rm <Network_Name>
+Disconnect N/W: $docker network disconnect <Network_Name> <Container_Id>
 hosts n/w adds containers to hosts n/w directly, no isolation b/w hosts & containers. ($docker run -d --network=host)
 none has no n/w access $docker run -d --network=none
 Show all containers on N/W: arp-scan --interface=eth0 --localnet
