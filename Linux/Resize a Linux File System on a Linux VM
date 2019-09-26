@@ -19,7 +19,8 @@
 
 9. Create a physical volume out of the new partition by using the pvcreate command e.g. $pvcreate /dev/sda3.
 
-10. Run $vgdisplay to list the current volume groups. Take note of the volume group which you want to extend the size of so that you can increase the file system.
+10. Run $vgdisplay to list the current volume groups. Take note of the volume group which you want to extend the size of so that you can
+    increase the file system.
 
 11. Use the vgextend command to extend the selected volume group to the new physical volume. e.g. $vgextend vg_redhat /dev/sda3.
 
