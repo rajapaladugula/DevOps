@@ -67,3 +67,7 @@ SORT Unique:  cat /var/log/cron | cut -d " " -f4 | sort |uniq
 -f 4 is the fourth row.
 
 Tail to refresh every sec: tail -F -s1 /path/to/logs
+
+kill vs stop: Kills thr running containers abruptly; stop ends the containers once the running process is complete.
+Add vs Copy: Both used for copying file to docker applications. Add used to copy from any where(URL), whereas Copy copies from local machine.
+CMD vs Entry Point: Both used for Starting point of teh container. 
