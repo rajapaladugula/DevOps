@@ -1,73 +1,202 @@
+Hypervisors:: (Type 1)Native/Bare Metal - runs directly on host system - Hyper V; (Type 2)Hosted - used host O.S - VMWare 
+Docker: It is a containerization platform that packages the applications code and dependencies into a single file called docker to ensure
+        that app works seemlessly in any env.
+Docker Image: Point in time capture of code and dependencies of a docker file.
+Docker Container: Runtime instance of Docker image that include the application and all of its dependencies. Runs as isolated processes
+                in user space on the host O.S.
+Docker Hub: It is the registry where the docker images are stored and retrieved. Example: DTR
+Docker Namespaces: offers isolated workspaces(layer of isolation) for the Containers.
+Docker Architecture: client-server application with 3 major components
+	A server which is a type of long-running program called a daemon process (the dockerd command).
+	A REST API which specifies interfaces that programs can use to talk to the daemon and instruct it what to do.
+	A command line interface (CLI) client (the docker command).
+	The CLI uses the Docker REST API to control or interact with the Docker daemon through scripting or direct CLI commands.
+Container Life-Cycle: create, run, pause, un-pause, start, stop, restart, kill, destroy.
+Docker Uses: Simplifying configs, environment independent, App Isolation, Rapid Deployment
+Docker resources storage path: /var/lib/docker/*
+Docker kill vs stop: Kills the running containers abruptly; stop ends the containers once the running process is complete.
+
+Commands:
+--------
+Create a Docker Image from an existing Container: $docker commit <CONTAINER_ID> <NEW_REPOSITORY_NAME>
+List all images: $docker image ls
+Remove an Image: $docker rmi <Repository | Image_ID>
+Remove all unused Images: $docker image prune
+Inspect Image: $docker image inspect <Repository | Image_ID>
+Tag an image: $docker tag <image> <username>/<repository>:<tag>
+Publish image: $docker push <username>/<repository>:<tag>
+Pull & run image from remote repo: $docker run -p 4000:80 <username>/<repository>:<tag>
+Number of containers running, paused and stopped: $docker info
+
 Build Docker Image from a Dockerfile: docker build -t <tag_name> <PATH | URL | -file>
 PATH: local path in the machine; URL: Git Repo; -f /path/to/file(if exists at a dfferent location)
 
-Create a Docker Image from an existing Container: docker commit <CONTAINER_ID> <NEW_REPOSITORY_NAME>
+Create a Docker container from Docker image: $docker run -d -p 3000:8080 --name=my_app --network=<Network_Name> <image name>
+-d : Detach (Runs container in background);	--name : Desired name of the container
+-p (publish): Bind port on host:port on container -p | -P (publish all) maps port dynamically;	--network : Network associated
+Docker Run = {Docker create + start + attach}
 
-Remove a Docker Image: docker rmi <Container_ID>
-Remove all Docker Images: docker image prune -a
-Remove a Docker Container: docker rm <Container_ID>
-Remove all stopped containers: docker system prune
-
-Create a Docker container from Docker image: docker run -d -p 3000:8080 --name=my_app --network <Network_Name> <image name>
--d : Detach (Runs container in background)
---name : Desired name of the container
--p (publish): Bind port on host:port on container -p | -P (publish all) maps port dynamically
---network : Connect to an existing Network Bridge
-
-lynx: Terminal based browser -> lynx localhost:xxxx
-
-Docker resources storage path: /var/lib/docker/*
-Docker Logs: docker logs <Container_ID>
-Run Docker Interactively: docker run -it <image>
-Fetch IP address of a container: docker inspect <Container_ID | Name>
+Remove a Docker Container: $docker rm <Container_ID>
+Remove all stopped containers: $docker container prune
+Remove all stopped/unused containers, volumes, images: $docker system prune
+Docker Logs: $docker logs <Container_ID>
+Run Docker Image Interactively: $docker run -it <image>
+Fetch IP address of a container: $docker inspect <Container_ID | Name>
 Detach from a container without stopping: CTRL+p | CTRL+q
-Interact with the running container --> docker attach <CONTAINER_ID>
+Interact with the running container --> $docker exec -it <CONTAINER_ID> /bin/sh
 
-3 Networks: bridge-host-none $docker network ls
-(default)bridge n/w has access to interact with every other container and also reach outside world.
-Create N/W: $docker network create --driver bridge <Network_Name>
+3 Networks: bridge-host-none
+----------
+Bridge(default) n/w has access to interact with every other container and also reach outside world.
+Host n/w adds containers to docker host's n/w directly without any isolation. i.e, container's app runs on host's Ip address.
+    Container does not get its own IP-address allocated.
+Overlay N/W creates a distributed network among multiple Docker daemon hosts.
+None has no n/w access.
+List the available N/W: $docker network ls
+Create N/W: $docker network create --driver <Driver_Name> <Network_Name>
 Remove N/W: $docker network rm <Network_Name>
+Connect N/W: $docker network connect <Network_Name> <Container_Id>
 Disconnect N/W: $docker network disconnect <Network_Name> <Container_Id>
-hosts n/w adds containers to hosts n/w directly, no isolation b/w hosts & containers. ($docker run -d --network=host)
-none has no n/w access $docker run -d --network=none
-Show all containers on N/W: arp-scan --interface=eth0 --localnet
+Inspect N/W: $docker network inspect <Network_Id|Name>
+Remove unused N/W: $docker network rm <Network_Id|Name>
+Remove unused N/W: $docker network prune
 
 MOUNT:
-1. docker run -d --mount type=bind,src="/opt/demo", dst=/logs <Image_Name>
-src is the path in the host; dst is the path in the container, which are binded together.	
-2. docker run -d --mount type=volume,src="<VOLUME_NAME>", dst=/logs <Image_Name> --> need not mention the fully qualified name of the src in host, docker manages it.
-Create a new Docker volume : Docker volume create <VOLUME_NAME>
-To find where the volume is mounted: docker volume inspect <VOLUME_NAME | src>
-3. docker run -d --mount type=tmpfs,dst=/logs <Image_Name> --> In Memory storage isolated from host, so no src mentioned.  
-
-Connect a volume to the container : docker run -it --name=<Container_Name> -p 8083:8080 -p 50000:50000 -v </path/to/host | VOLUME_NAME>:/var/jenkins_home <Image_Name>
--v | --volume | --mount : attach a created volume; --mount is the path/on/host
-Remove unused volumes: docker volume prune
-
-Tag an image: docker tag <image> <username>/<repository>:<tag>
-publish image: docker push <username>/<repository>:<tag>
-pull & run image from remote repo: docker run -p 4000:80 <username>/<repository>:<tag>
+-----
+1. $docker run -d --mount type=bind,src="/opt/demo", dst=/logs <Image_Name>	: File/dir on the host machine is mounted into a container.
+	<src> is the path in the host; <dst> is the path in the container, which are binded together.
+2. $docker run -d --mount type=volume,src="<VOLUME_NAME>", dst=/logs <Image_Name> --> need not mention the fully qualified name of the
+    volume src in host, docker manages it.
+3. $docker run -d --mount type=tmpfs,dst=/logs <Image_Name> --> In Memory(Container) storage isolated from host machine; temp is removed
+    when container stops.
+Create a Docker volume : $docker volume create <VOLUME_NAME>
+List Docker volumes: $docker volume ls
+Remove a Docker volume: $docker volume rm
+Inspect a volume: $docker volume inspect <VOLUME_NAME>  
+Remove unused volumes: $docker volume prune
 
 DOCKER_FILE INSTRUCTIONS:::
-FROM : base image to be used ; FROM python:2.7-slim --> Use an official Python runtime as a parent image whose version is 2.7-slim.
-RUN : takes commands as arg's and runs. installs packages specified like jenkins, java.. actually used to build image.
-ADD: has 2 arg's --> ADD /source/file /dest/file Copies files from host to container. also supports extracting local tar file to dest file.
-COPY: copy files from host to the container; COPY . /app --> Copy the current directory contents into the container at /app.
-CMD : runs the commands specified similar to RUN. unlike RUN, it is not executed during build, but when container is instantained using image built finally.
-ENTRYPOINT : 1st command to be executed that determines location where to start from.
+------------------------
+FROM : base image to be used ; FROM python:2.7-slim --> Download & Use an official Python as a parent image whose version(tag) is
+       2.7-slim. Used "lastest", id tag unspecified.
+MAINTAINER : name of the maintainer : MAINTAINER Administrator
+RUN : used to execute commands as arg's and runs on top of current image, which creates a new layer. installs packages specified like
+      jenkins, java.
+	    RUN ["<executable>", "<param1>", "<param2>"] (exec form) : RUN ["yum","update"] : RUN yum update (shell form)
+ADD: has 2 arg's --> ADD </source/file> </dest/file> Copies files from anywhere(files/dir, URL's) to container.
+	   ADD <src> [<src> ...] <dest>
+	   ADD ["<src>", ... "<dest>"] (this form is required for paths containing whitespace)
+	   If <dest> doesn’t exist, it is created along with all missing directories in its path.
+	   If <src> is a compressed file(tar,zip) then it will extract at the dest location.
+COPY: copy files from host <src> and adds them to the container <dest>
+	    COPY . /app --> Copy the current directory contents into the container at /app.
+	    If <dest> doesn’t exist, it is created along with all missing directories in its path. 
+	    COPY <src> [<src> ...] <dest>
+	    COPY ["<src>", ... "<dest>"] (this form is required for paths containing whitespace)
+CMD : runs the commands specified similar to RUN. unlike RUN, it is not executed during build, but when container is instantained using 
+      image built finally.
+	    Used to execute commands at runtime for the container as an executable.
+	    There can only be one CMD instruction in a Dockerfile. If you list more than one CMD then only the last CMD will take effect.
+	    If the user specifies arguments to "docker run" then they will override the default specified in CMD.
+	    CMD ["<executable>","<param1>","<param2>"] (exec form, this is the preferred form) : CMD [“echo” , “hello world”] 
+	    CMD ["<param1>","<param2>"] (as default parameters to ENTRYPOINT)
+	    CMD <command> <param1> <param2> (shell form) : CMD ping google.com
+ENTRYPOINT : Used to execute commands at runtime for the container as an executable.
+			       This will override all elements specified using CMD or RUN and are not overwritten by "docker run" command args.
+	           ENTRYPOINT ["<executable>", "<param1>", "<param2>"] (exec form, preferred) : ENTRYPOINT [“echo”]
+	           $docker run docker_container Hello World --> prints "Hello World"
+	           ENTRYPOINT <command> <param1> <param2> (shell form)
+CMD vs ENTRYPOINT: when a user runs a container with any args as the end of "docker run" cmd, specified cmd overrides default args in CMD instruction. wheresas it doesnt in ENTRYPOINT
 URL : Git repository location.
-MAINTAINER : name of the maintainer.
-USER : UID/username of the user who can execute container.
-VOLUME : enable access from your container to a directory on host machine(mount)
-ENV : Define environment variable key-value pair --> ENV NAME World
-EXPOSE : EXPOSE 80 --> used to associate specified port to enable n/w access of running process inside container.
-WORKDIR : Set the working directory; WORKDIR /desired/path --> used to set path where command defined with CMD is to be executed.
+USER : UID/username of the user who can execute container. Else root user will be used. USER webadmin
+VOLUME : create or mount a volume to the docker container from the docker host file system. VOLUME /data
+ENV : Define environment variables key-value pair. These will be set during image build and also after launching container.
+	  ENV <key> <value> : ENV var1=Tutorial var2=point
+ARG: Also used to set env variables with key value pair, but will set only during image build, not on the container. ARG <name>[=<value>]
+	   Environment variables defined using the ENV instruction always override an ARG instruction of the same name.
+EXPOSE : Used to inform Docker about the N/W ports that the container listens on run time.
+		     Does not make the ports of the container accessible to the host.   EXPOSE 80 443
+WORKDIR : Sets the working directory for any RUN, CMD, ENTRYPOINT, COPY, and ADD instructions that follow it.
+		      WORKDIR </path/to/workdir> : WORKDIR /newtemp
 
-SORT Unique:  cat /var/log/cron | cut -d " " -f4 | sort |uniq
--f 4 is the fourth row.
+Docker Compose: define & run multi-container (micro-services) docker applications.
+--------------
+Check validity of docker-compose file: $docker-compose config
+Scale services desired : $docker-compose up -d -scale <SERVICE_NAME>=<No_of_containers_required>
+Compose file configs: version, image, volumes, networks, ports, environment...
+Apps in Compose were isolated using projects. The resources created in a project were appeneded <project_name>-<Name_key_in_compose-file>
+By default uses directory as project name which enables to isolate multiple environments. -p is used to customize project name.
+If you dont want dependencies to be updated in the service compose-file: docker-compose -f <file_name>.yml up -d --no-deps <service_name>
+If you want to restart all the containers even without any changes in compose file: --force-recreate
+UP: creates n/w's & named volumes, then builds, creates, starts & attaches to service containers.
+DOWN: removes containers & default n/w's; does not delete volumes & images by default.
+      To delete explicitly: --rmi all for images; --volumes for volumes; --remove-orphans 
+      for project containers no longer defined in the compose file.
+Check logs of docker-compose service: $docker-compose -f <docker-compose.yml> logs <service_name>
 
-Tail to refresh every sec: tail -F -s1 /path/to/logs
+Docker-compose.yml :  contains details about the services, networks, and volumes for setting up the Docker application.
+------------------
+version: '3.4'
+x-logging:			    // extension fields let reuse configuration blocks; only works with >3.4; begins with x-<CONFIGURATION_NAME>
+  &default-logging		// &<name> is the anchor<name> which is used to reference in services
+  options:
+    max-size: '10m'
+	max-file: 7
+  driver: json-file
 
-kill vs stop: Kills thr running containers abruptly; stop ends the containers once the running process is complete.
-Add vs Copy: Both used for copying file to docker applications. Add used to copy from any where(URL), whereas Copy copies from local machine.
-CMD vs Entry Point: Both used for Starting point of teh container. 
+services:				// Docker containers to be created
+  my_app:				// Name of the Service
+    image: redis:1.01	// Image from Docker Hub
+    ports:				// Ports Exposed
+	  - '3000:8080'
+    command:			// Commands (in-line syntax)
+	  - "redis-server"
+	  - "appendonly"
+	  - "yes"
+    command: ["redis-server", "--appendonly", "yes"] // Docker default syntax
+    command: redis-server --appendonly yes
+    depends_on:			// Initiates the depends_on service if exists
+	  - web
+    restart: always     // restarts the container if stopped.
+    environment:
+      redis_root_password: somepassword
+    networks:
+	  - frontend
+    logging: *default-logging		// default-logging is being referenced with *
+  web:
+    image: app
+    volumes:			// Can use volumes in services config, even when not mentioned in the compose file volumes.
+	  - named-volume:/data  // <named-volume> is the name of the volume; /data is the directory on container.
+      environment:
+        - redis_root_password=somepassword
+    networks:
+	  backend:
+	    aliases:
+		  - database
+volumes:				// Similar to docker volume create
+  named-volume:			// named-volume creates volume using the default local volume driver. <directory_name>_service_data
+  external-volume:      // volume created that already exists
+    external: true
+networks:				// compose automatically creates a new n/w using the default bridge driver for the apps in compose file. <directory_name>_default
+  frontend:
+  backend:              // network created that already exists
+    external: true
+	
+--> Docker-compose can be used to build images from dockerfile. Use-case is that we can modify the code and observe changes without
+    restarting container. To instruct docker-compose to build an image we need to add build key in he docker-compose file config. 
+
+build:
+  context: . // directory of the docker file.
+  dockerfile:  // name of the docker file from which image is created; default is dockerfile
+  args:         // optional; passed arg values at build time.
+    buildno: 1
+  
+docker-compose up is used to build images for any services that doesnt have an image built. Add --build to re-build the image.
+docker-compose build is used to build/re-build images if already exist.
+--no-cache : rebuild all services without using any cache; --pull : to always pull latest version of image in docker file.
+
+non-dev docker files have all the src files in the container, without any mounts to volumes; whereas dev docker files have volumes
+attached to container,to make changes on the go. prod docker files: use restart: always ; dont specify host ports & let docker choose to
+avoid port conflicts, only specify container ports; use ENV variables to distinguish prod/non-prod; use named volume to persist data.
+ 
+Combining multiple docker-compose files: $docker-compose -f <docker-compose.yml> -f <docker-compose.yml> config
