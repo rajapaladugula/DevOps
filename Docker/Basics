@@ -106,7 +106,8 @@ ENTRYPOINT : Used to execute commands at runtime for the container as an executa
 	     ENTRYPOINT ["<executable>", "<param1>", "<param2>"] (exec form, preferred) : ENTRYPOINT [“echo”]
 	     $docker run docker_container Hello World --> prints "Hello World"
 	     ENTRYPOINT <command> <param1> <param2> (shell form)
-CMD vs ENTRYPOINT: when a user runs a container with any args as the end of "docker run" cmd, specified cmd overrides default args in CMD instruction. wheresas it doesnt in ENTRYPOINT
+CMD vs ENTRYPOINT: when a user runs a container with args at the end of "docker run" cmd, specified cmd overrides default args in CMD
+		   instruction. wheresas it doesnt in ENTRYPOINT.
 URL : Git repository location.
 USER : UID/username of the user who can execute container. Else root user will be used. USER webadmin
 VOLUME : create or mount a volume to the docker container from the docker host file system. VOLUME /data
