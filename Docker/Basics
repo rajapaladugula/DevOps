@@ -63,7 +63,7 @@ Remove unused N/W: $docker network prune
 
 MOUNT:
 -----
-1. $docker run -d --mount type=bind,src="/opt/demo", dst=/logs <Image_Name>	: File/dir on the host machine is mounted into a container.
+1. $docker run -d --mount type=bind,src="/opt/demo", dst=/logs <Image_Name>	: File/dir on the host machine is mounted into container.
 	<src> is the path in the host; <dst> is the path in the container, which are binded together.
 2. $docker run -d --mount type=volume,src="<VOLUME_NAME>", dst=/logs <Image_Name> --> need not mention the fully qualified name of the
     volume src in host, docker manages it.
@@ -102,10 +102,10 @@ CMD : runs the commands specified similar to RUN. unlike RUN, it is not executed
 	    CMD ["<param1>","<param2>"] (as default parameters to ENTRYPOINT)
 	    CMD <command> <param1> <param2> (shell form) : CMD ping google.com
 ENTRYPOINT : Used to execute commands at runtime for the container as an executable.
-			       This will override all elements specified using CMD or RUN and are not overwritten by "docker run" command args.
-	           ENTRYPOINT ["<executable>", "<param1>", "<param2>"] (exec form, preferred) : ENTRYPOINT [“echo”]
-	           $docker run docker_container Hello World --> prints "Hello World"
-	           ENTRYPOINT <command> <param1> <param2> (shell form)
+	     This will override all elements specified using CMD or RUN and are not overwritten by "docker run" command args.
+	     ENTRYPOINT ["<executable>", "<param1>", "<param2>"] (exec form, preferred) : ENTRYPOINT [“echo”]
+	     $docker run docker_container Hello World --> prints "Hello World"
+	     ENTRYPOINT <command> <param1> <param2> (shell form)
 CMD vs ENTRYPOINT: when a user runs a container with any args as the end of "docker run" cmd, specified cmd overrides default args in CMD instruction. wheresas it doesnt in ENTRYPOINT
 URL : Git repository location.
 USER : UID/username of the user who can execute container. Else root user will be used. USER webadmin
@@ -137,7 +137,7 @@ Check logs of docker-compose service: $docker-compose -f <docker-compose.yml> lo
 Docker-compose.yml :  contains details about the services, networks, and volumes for setting up the Docker application.
 ------------------
 version: '3.4'
-x-logging:			    // extension fields let reuse configuration blocks; only works with >3.4; begins with x-<CONFIGURATION_NAME>
+x-logging:	// extension fields let reuse configuration blocks; only works with >3.4; begins with x-<CONFIGURATION_NAME>
   &default-logging		// &<name> is the anchor<name> which is used to reference in services
   options:
     max-size: '10m'
@@ -177,7 +177,7 @@ volumes:				// Similar to docker volume create
   named-volume:			// named-volume creates volume using the default local volume driver. <directory_name>_service_data
   external-volume:      // volume created that already exists
     external: true
-networks:				// compose automatically creates a new n/w using the default bridge driver for the apps in compose file. <directory_name>_default
+networks: // compose automatically creates new n/w using the default bridge driver for the apps in compose file. <directory_name>_default
   frontend:
   backend:              // network created that already exists
     external: true
