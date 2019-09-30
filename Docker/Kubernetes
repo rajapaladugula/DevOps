@@ -10,6 +10,7 @@ CPU/memory quotes; Batch job processing; Role based access control; High availab
 
 Master-Node Architecture:
 ------------------------
+kubectl-->kube-apiserver-->Controller Manager(controls obj state from current to desired)--save configs to etcd-->kube schedular(kubelet)-->nodes
 User sends REST API commands(through kubectl) to api-server which then validates and processes the requests. Controller manager through
 various control loops makes sure that the current state is same as the desired state as mentioned in spec file. If not, takes necessary
 actions to correct it. After executing the requests, resulting cluster state is stored in ETCD(distributed key-value store). Schedular
@@ -38,10 +39,10 @@ SERVICE: n/w rules for exposing pods to other pods (or) public internet determin
 	ClusterIP: Exposes service on cluster-internal IP; makes service only reachable from within the cluster; default service type.
 	NodePort: Exposes service on each Node's IP at static port and any request to your cluster on that port gets forwarded to the
                 service. A Cluster IP service to which Node Port service will route is automatically created.
-	LoadBalancer: Expose service externally using a cloud provider's N/W LB with IP address; Services, to which external LB will route
-                are automatically created.
-	ExternalName: Maps the service to the contents of the External Name field by returing a CNAME record with its value; No proxying of
-                any kind is set up.
+	LoadBalancer: Expose service externally using a cloud provider's N/W LB with IP address; Services, to which external LB will 
+		route are automatically created.
+	ExternalName: Maps the service to the contents of the External Name field by returing a CNAME record with its value; No proxying
+		of any kind is set up.
 Selector: set of rules to match resources based on metadata; Allows users to filter a list of resources based on labels.
 Label: key/value pair attached to resources.
 Annotation: non-identifying metadata for retrival by API clients such as tools & lib's.
@@ -95,6 +96,15 @@ https://docs.docker.com/ee/ucp/kubernetes/storage/configure-aws-storage/
 https://docs.google.com/document/d/17d4qinC_HnIwrK0GHnRlD1FKkTNdN__VO4TH9-EzbIY/edit
 https://stackoverflow.com/questions/50668070/kube-controller-manager-doesnt-start-when-using-cloud-provider-aws-with-kubea
 https://stackoverflow.com/questions/51197734/kubernetes-controller-manager-error-if-use-kubeadm-init-with-cloud-provider-aw/51201933
+
+#K8 Installation on ubuntu:
+--------------------------
+https://www.edureka.co/blog/install-kubernetes-on-ubuntu
+
+#Access K8 Dashboard outside Cluster:
+------------------------------------
+https://stackoverflow.com/questions/39864385/how-to-access-expose-kubernetes-dashboard-service-outside-of-a-cluster
+https://github.com/kubernetes/dashboard/wiki/Accessing-Dashboard---1.7.X-and-above
 
 KUBECTL Commands:
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
