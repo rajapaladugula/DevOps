@@ -1,0 +1,47 @@
+ECS:: highly scalable, high-performance container orchestration service that supports Docker containers and allows you to easily run and
+	scale containerized applications on AWS.
+Fargate: allows you to focus on designing and building your applications on containers without having to manage(provision, configure, and
+	scale) servers or clusters(infrastructure). Specify: CPU and memory requirements, define networking and IAM policies.
+EC2 Launch Type: manage a cluster of servers and schedule placement of containers on the servers that runs your container applications.
+	 ECS keeps track of all the CPU, memory and other resources in your cluster, and finds the best server for a container to run on
+	 based on your specified resource requirements. You are responsible for provisioning, patching, and scaling clusters of servers.
+1. Create Cluster: Select - EC2 Instance Type, No. instances, EC2 AMI, EBS Storage, Key Pair, VPC, Subnet, Security Group, IAM role.
+2. Task Definition: Point in time capture of configuration(docker repository/image, memory and CPU requirements, shared data volumes, and
+	how the containers are linked to each other) for running one or more containers that are required for your task. Allow you to 
+	have version control over your application specification.
+3. Service: Specify how many copies of Task Definition to run, maintain in a cluster. Select: Task Definition, Cluster, Number of tasks,
+	Deployment type(Rolling update or Blue-Green) Load Balancer Type, AutoScaling.
+
+SWARM consists of one or more Docker Engines(nodes) running in swarm mode. Nodes can either be Managers or Workers. Every SWARM requirs 
+	atleast one Manager.
+UCP (Universal Control Plane) is the enterprise edition of docker which has all the functionalties of Swarm.
+Managers accepts specs from users and drive swarm to specified desired state; ensures actual state of the swarm matches the Service Specs.
+	Managers schedule Tasks across the nodes in the Swarm; can also run Tasks as workers (not recommended in prod)
+Workers has an agent which reports back status report to Manager; responsible for running delegated work;
+Service: is the specs (desired state, volumes, n/w's, replicas, resource constraints) that users submit to Managers.
+	Types: Replicated: no of replicas for a replicated service is based on scale desired.
+	Global: allocates one unit of work for each node in swarm, Useful for montoring services.
+Tasks: running containers that are replicas of the service.
+
+OverLay N/W's: In Swarm mode Sevices were spread across multiple nodes. In order for the services to communicate one another across nodes
+	that runs tasks, Docker includes a N/W Driver. Can attach a service to one/more OverLay N/W's same way as user-defined N/W's.
+N/W Isolation & Firewall rules: Containers in a Docker N/W have access on all ports in same N/W; Access is denied b/w containers that 
+	doesnt share common N/W. Traffic orginating from Docker container not destinated for docker host is permitted; Incoming traffic 
+	is disabled by default (need to EXPOSE ports to allow).
+Service Discovery: Swarm Service Discovery is based on DNS; All nodes in a N/W, store corresponding DNS records for N/W; As services can
+	be replicated across multiple nodes, In order to resolve which IP address to be called when a service name is requested, docker 
+	assigns single Virtual IP to each service. So requests for the VIP are automatically load balanced across all the healthy tasks 
+	in the OverLay N/W. Due to this the end user remains uneffected even if the tasks changes nodes.
+	Example: Service A with 1 replica, Service B with 2. When Service A makes request to B by name, VIP of B is resolved by DNS 
+		server. Using support for VIPS the request for VIP address is routed to one of the 2 nodes of Service B tasks.
+	Load Balancing can also be acheived using DNS Round Robin which allows to configure load balancing on per service basis. Each 
+	individual task is discoverable with a name to IP mapping in internal DNS. When DNS RR is used Docker Engine DNS server resolves
+	a service name to individual task IP address by cycling through list of IP address of nodes running tasks in a service.
+External Access: 2 Service publishing modes: Host: Container port is published on host that is running the task for a service; tasks fail
+	to run if we have more tasks than available hosts. No L.B; used for Global services where only 1 task for a service runs on each 
+	node. Example: A Service that monitors nodes health should not be L.B as we need stats from that node.
+	Ingress Mode: option to L.B published port across all tasks of a service. In SWARM all nodes publishes ports, whereas in Host 
+	mode the port is only published if the node is running a task for a service. Requests a RR LB across healthy instances regardless of the node. default service publishing mode; used to L.B multiple replicas of service.
+	Ingress mode works with Routing Mesh which combines overlay n/w and service VIP: when Swarm is initialized manager creates an 
+	overlay ingress n/w, where every node in swarm joins it. when a node receives an external request, it resolves service name to 
+	VIP and IPVS load balances requests to service replica over ingress n/w.
