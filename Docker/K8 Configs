@@ -1,0 +1,302 @@
+# K8 Nginx-ingress: https://cloud.google.com/kubernetes-engine/docs/tutorials/http-balancer
+----------------------
+Pod:
+----------------------
+apiVerson: v1			# API Version in use
+kind: Pod				# Resource
+metadata:				# Name, Labels for the Resource...
+  name: hello-world-po	# Name of the resource Pod
+  labels:				# Key-value pairs; can be used to match other Resources
+    app: hello-world
+spec: 					# Specifications of the Resource
+  containers:			# Containers that runs on the Pod.
+	- name: hello-world				# Name of the Container
+	  image: hashicorp/http-echo	# Image of the Container
+	  args:
+        - "-text=hello-world"
+	  ports:						# Ports exposed (Should also be exposed in corresponding Service)
+	    - containerPort: 8080
+		  protocol: TCP     		# Protocol type of the port used.
+----------------------
+1.0 Service: To expose hello-world pod to other pods/internet.
+----------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-svc
+  labels:
+    app: hello-world
+spec:
+  selector:				
+    app: hello-world	# has to match with the labels in the POD (app:hello-world)
+  ports:
+    - port: 8080
+      protocol: TCP
+	  targetport: 80
+  type: NodePort		# Can also be ClusterIp(default) which is a virtualIp can only be internally accessed / Loadbalancer which is cloud specific.
+-----------------------
+1.1 Deployment: To create hello-world pod.
+-----------------------
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+   name: hello-world-deploy
+   labels:
+     app: hello-world
+spec:
+  replicas: 1			# Number of replicas of the containers
+  selector:
+    matchLabels:
+	  app: hello-world
+  template:				# POD specifications
+    metadata:
+      name: hello-world-po
+      labels:
+        app: hello-world
+    spec:
+      containers:
+        - name: hello-world-container
+          image: hashicorp/http-echo
+          imagePullPolicy: IfNotPresent  # Policy to pull image, can be Always.
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+		  resources:
+			requests:
+			  cpu: "100m" # K8 scale this pod when atleast 0.1 CPU is available on the node.
+------------------------
+1.3 Ingress: Nginx LB to load balance and redirect the request in terms of path.
+Ref: https://cloud.google.com/kubernetes-engine/docs/tutorials/http-balancer
+	https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-ingress-guide-nginx-example.html
+------------------------
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /*		# Redirects to http://<IP_ADDRESS>/
+        backend:
+          serviceName: hello-world-svc
+          servicePort: 8080
+      - path: /v2/*		# # Redirects to http://<IP_ADDRESS>/v2/
+        backend:
+          serviceName: hello-world-svc-2
+          servicePort: 8080
+------------------------
+2.0 nfs-server-deploy: NFS Server for maintaining persistent-volume-for-persistent-data-storage
+------------------------
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nfs-server
+  labels:
+    app: es-nfs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:		# how the Deployment finds which Pods to manage; Associates to any pod that matches the specfied key-value pair.
+      app: es-nfs		# has to match .spec.template.metadata.labels
+  template:
+    metadata:
+	  name: nfs-server
+      labels:
+        app: es-nfs		# has to match .spec.selector.matchLabels
+    spec:
+      containers:
+      - name: nfs-server
+        image: gcr.io/google_containers/volume-nfs:0.8
+        ports:
+          - name: nfs
+            containerPort: 2049
+          - name: mountd
+            containerPort: 20048
+          - name: rpcbind
+            containerPort: 111
+        securityContext:
+          privileged: true
+        volumeMounts:				# Mounts container volume to a persistent volume(here gce-pv) that is gce-nfs-disk.
+          - name: gce-pv			# Name provided in the "volumes" of spec.
+		    mountPath: /exports		# Mounted file path of the nfs container to the gce-nfs-disk.
+      volumes:
+        - name: gce-pv				# provide a name to the available pvc.
+          gcePersistentDisk:		# persistent volume of Google cloud. Can also be "awsElasticBlockStore".
+            pdName: gce-nfs-disk	# Name of the created PersistentVolume.
+            fsType: ext4
+------------------------
+2.1 nfs-svc: NFS svc to support nfs-server pod
+------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs-svc
+  labels:
+    app: es-nfs
+spec:
+  selector:
+    name: nfs-server				# Associates to any pod with matched label name=nfs-server.
+  ports:
+    - name: nfs
+      port: 2049
+    - name: mountd
+      port: 20048
+    - name: rpcbind
+      port: 111
+  type: ClusterIP
+------------------------
+2.2 persistentVolume: piece of storage in the cluster that has been provisioned by an administrator.
+Ref: https://medium.com/platformer-blog/nfs-persistent-volumes-with-kubernetes-a-case-study-ce1ed6e2c266
+https://blog.bigbinary.com/2017/04/12/using-kubernetes-persistent-volume-for-persistent-data-storage.html
+https://kubernetes-on-aws.readthedocs.io/en/latest/user-guide/using-volumes.html
+------------------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+  labels:
+    app: es-nfs
+spec:
+  capacity:
+    storage: 10Gi					# Available PersistentVolume (here nfs).
+  accessModes:
+    - ReadWriteMany					# Can also be ReadWriteOnce (Only one connection at a time).
+  persistentVolumeReclaimPolicy: Retain		# Retain keeps data, whereas Recycle clears.
+  nfs:								# PersistentVolume Type.
+    server: <ClusterIP> / <service-name>.<namespace>.svc.cluster.local	# Associated nfs server.
+    path: "/"
+------------------------
+2.3 persistentVolumeClaim: Consumes PV resources. Can request how much storage they need from the PV.
+------------------------
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nfs-pvc
+  labels:
+    app: es-nfs						# Bounds to PV when the name/labels matches.
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 10Gi					# Resource requested from PV.
+------------------------
+2.4 es-deploy: Here we use the above created NFS persistentVolume to store Elasticserach data
+init container: Runs before other containers. useful for running pre-conditions. 
+https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+------------------------
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  labels:
+    app: es-nfs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es-nfs
+  template:
+    metadata:
+	  name: es-po
+      labels:
+        app: es-nfs
+    spec:
+      containers:
+      - name: es
+	    image: elasticsearch:5-alpine
+        imagePullPolicy: Always
+        env:
+          - name: discovery.type
+            value: single-node
+        ports:
+          - containerPort: 9200
+            name: "es-server"
+            protocol: TCP
+        volumeMounts:					# Mounts container volume to a persistent volume claim(here es-nfs-pvc) that is nfs-pvc.
+          - name: es-nfs-pvc
+            mountPath: "/usr/share/elasticsearch/data"
+	  - name: nginx
+	    image: nginx:latest
+        imagePullPolicy: Always
+		ports:
+		  - name: nginx
+		    containerPort: 80
+			protocol: TCP
+		volumeMounts:
+		  - name: nginx-config
+		    mountPath: /usr/share/nginx/html
+	  initContainers:
+	  - name: nginx-configs
+	    image: busybox
+		command:
+		- wget
+		- "-O"
+		- "/work-dir/index.html"
+		-  http://kubernetes.io
+		volumeMounts:				# Mounting available Deployment Pod volume to the container path. 
+		  - name: nginx-config
+		    mountPath: "/work-dir"
+      volumes:						# Volumes associated to the Deployment Pod.
+      - name: es-nfs-pvc
+        persistentVolumeClaim:
+          claimName: nfs-pvc
+	  - name: nginx-config
+	    emptyDir: {}		#  Only exists for the life time of the pod.
+------------------------
+Stateful: Manages deployment & scaling of set of pods and provides guarantees about ordering & uniqueness of pods, volumes.
+------------------------
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+  labels:
+    app: nginx-ss
+spec:
+  ServiceName: nginx-svc		# Service associated to this StatefulSet
+  replicas: 1
+  selector:
+    matchLabels:		# how the Deployment finds which Pods to manage; Associates to any pod that matches the specfied key-value pair.
+      app: nginx-ss
+  template:
+    metadata:
+	  name: nginx-po
+      labels:
+        app: nginx-ss
+    spec:
+      containers:
+      - name: nginx
+        image: k8s.gcr.io/nginx-slim:0.8
+        ports:
+          - name: nginx
+            containerPort: 80
+        volumeMounts:				# Mounts container volume to a persistent volume in gce.
+          - name: www			# Name provided in the spec of "volumeClaimTemplates".
+		    mountPath: /usr/share/nginx/html		# Mounted file path of the nginx container to the gce disk.
+  volumeClaimTemplates:
+    - metadata:
+	    name: www
+	  spec:
+	    accessModes: [  "ReadWriteOnce"  ]
+		resources:
+		  requests:
+		    storage: 1Gi
+------------------------
+probes (health checks): HTTP Get, TCP, custom cmd
+Liveness: test if a container is UP or should be restarted?
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+Readiness: test if a container is ready to process or should be taken out of service.
+------------------------
+secret (pass, token or keys): population Env var with a secret value. Pod needs to Ref the secret: Files mounted as a volume, Env var, Auth Docker Registry
+https://kubernetes.io/docs/concepts/configuration/secret/
+------------------------
+ConfigMaps: Similar(holds key-value pairs) to Secrets, but do not contain sensitive data that can be consumed in config data. can be used as Files mounted as a volume, Env var
+			Created like a resource similar to secret with "data" block in place of "Spec"
+---------------------
+K8 Pattern to ENV variables for Service Discovery:
+ The host variable is the capitalized and underscored service name with service host appended: <EXAMPLE_SVC>_SERVICE_HOST
+ Port variables are the capitalized and underscored service name with service port appended followed by the port name: <EXAMPLE_SVC>_SERVICE_PORT_<PORT_NAME>
+
+Env variables and ports can not be changed on running pods.
