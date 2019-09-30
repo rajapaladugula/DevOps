@@ -1,17 +1,73 @@
-Cluster: group of nodes configured to run a functioning KUBERNETES Systen.
-Control plane: schedules containers onto nodes based on compute requirements.
-PODS: lowest building block; group of one or more containers running on single node; 
-SERVICES: defines n/w rules for exposing pods to other pods (or) public internet determined by a selector;
-Selector: set of rules to match resources based on metadata; 
-Label: key/value pair attached to resources; 
-Annotation: non-identifying metadata for retrival by API clients such as tools & lib's; 
-DEPLOYMENT: a declerative template (deployment config changes) for creating & scaling pods; 
-ReplicationSet: coordinates pod creation, deletion and updates during deployments; 
-Volume: a stateful block store for use with ephemeral pods to write persisted data; not a DB;  
-Secret: senstive info such as passwords, OAuth tokens, ssh keys; 
-StatefulSet: a pod with gurantees on deployment and scaling ordering; 
-Request: desired amount of CPU or memory for a container in a pod; 
+KUBERNETES::
+----------
+Open source container orchestration tool to automate deployment, scaling and operating containerized apps.
+Features:
+--------
+Build clusters from mix of physical and virtual infra. Places containers according to the compute resource requirements.
+Automatically moves containers from dead machines/clusters to running. Automated deployment rollout and rollback; horizontal scaling;
+Secret management; Service discovery & Load balancing; simple log collection; Stateful app support; persistent volume management;
+CPU/memory quotes; Batch job processing; Role based access control; High availability configs.
+
+Master-Node Architecture:
+------------------------
+User sends REST API commands(through kubectl) to api-server which then validates and processes the requests. Controller manager through
+various control loops makes sure that the current state is same as the desired state as mentioned in spec file. If not, takes necessary
+actions to correct it. After executing the requests, resulting cluster state is stored in ETCD(distributed key-value store). Schedular
+schedules the work to worker nodes(through kubelet) based on the compute requirements.
+
+Cluster: Group of nodes configured to run a functioning KUBERNETES System.
+Kube-apiserver: acts as a front end to k8 master node to validate & perform operations(create, delete, modify..) on K8 objects(PODS,
+      Sevices, Deployments..) as specified using kubectl commands. Exposes API's of k8 master and responsible for communication btw'n
+      master and worker nodes.
+Kube-schedular: responsible for distribution and management of workload(PODS, Services) on worker nodes. selects node to run unscheduled
+      pod on basis of resource requirements. Keeps track of resource utilization.
+Etcd: distributed key-value store that stores the configuration data of the Kubernetes cluster, representing the state of the cluster at
+      any given point in time.
+Controller-Manager(controller): multiple control process(node, replication, end points, service account & token controller) on master 
+      node compiled together to run as K8 controller manager. responsibe for overall health of the cluster. ensures nodes inside the
+      cluster are up and running with desired state as specified in the spec. communicate with API server to manage end-points.
+Kubectl: CLI used to run commands aginast the cluster with various ways to create and manage the Kubernetes System.
+Kubelet: agent that runs on each node which ensures that containers are running healthy in pods as specified in spec all times. tries to
+      restart pods if any issues.
+Kube-proxy: runs on each node and responsible for TCP/UDP packet forwarding in the backend distributed n/w. Its a n/w proxy that reflects
+      and exposes the services to outside world as configured in k8 API. Cluster IPs and ports are opened by kube-proxy. 
+POD: lowest building block; group of one or more dependent containers running together on single node. each POD has unique IP address.
+Heapster: cluster-wide data aggregator provided by Kubelet running on each node as a pod that discovers all nodes in the cluster and 
+      queries usage information from the Kubernetes nodes in the cluster.
+SERVICE: n/w rules for exposing pods to other pods (or) public internet determined by a selector.
+	ClusterIP: Exposes service on cluster-internal IP; makes service only reachable from within the cluster; default service type.
+	NodePort: Exposes service on each Node's IP at static port and any request to your cluster on that port gets forwarded to the
+                service. A Cluster IP service to which Node Port service will route is automatically created.
+	LoadBalancer: Expose service externally using a cloud provider's N/W LB with IP address; Services, to which external LB will route
+                are automatically created.
+	ExternalName: Maps the service to the contents of the External Name field by returing a CNAME record with its value; No proxying of
+                any kind is set up.
+Selector: set of rules to match resources based on metadata; Allows users to filter a list of resources based on labels.
+Label: key/value pair attached to resources.
+Annotation: non-identifying metadata for retrival by API clients such as tools & lib's.
+DEPLOYMENT: a declerative template (deployment config changes) for (managing rollout & rollback) creating & scaling pods.
+Volume: a stateful block store for use with ephemeral pods to write persisted data; not a DB.
+Secret: senstive info such as passwords, OAuth tokens, ssh keys.
+StatefulSet: A pod which gurantees on deployment and scaling ordering; maintains a sticky identity for each of their Pods. These pods are
+      created from the same spec, but are not interchangeable. each has persistent identifier that it maintains across any rescheduling.
+Replication Controller: coordinates pod creation, deletion and updates during deployments; use Equity-Based selectors - only looks for 
+      pods that matches label key-values.
+ReplicaSet: A ReplicaSet’s purpose is to maintain a stable set of replica Pods running at any given time. As such, it is often used to 
+      guarantee the availability of a specified number of identical Pods.
+Deamonset: Ensures that all (or some) Nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them. As nodes are
+      removed from the cluster, those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods it created. useful like for
+      monitoring agents, log collectors.
+Request: desired amount of CPU or memory for a container in a pod.
 Resource: any individual KUBERNETES item such as deployment, pod, service or secret e.t.c,
+Namespace: Abstarction used by K8 to support virtual clusters on a physical cluster.
+Ingress: collection of rules that acts as an entry point to the Kubernetes cluster. an API object to load balance and redirect the 
+      request in terms of path and is the most powerful way of exposing service.
+Headless Service: similar to that of a ‘Normal’ services but does not have a Cluster IP. enables you to directly reach the pods without 
+      the need of accessing it through a proxy.
+Security Measures: Regular security updates to Env, Log everything, auditing, restrict access to etcd, strict policies for resources, 
+      vulnerability scanning, define resource quota, use images from auth repos only.
+Federated clusters: Multiple Kubernetes clusters can be managed as a single cluster with the help of federated clusters.
+	Features: Cross-cluster discovery, Sync resources across clusters.
 
 #####################Cluster Installation - Ubuntu 16.4#####################
 
@@ -48,40 +104,52 @@ KUBECTL Commands:
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | URL to access Dashboard Pod   | http://**.**.**.**:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard:/proxy/ | AWS:: IPv4 Public IP; Inbound: 8001  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-| Edit Service (Dashboard)      | kubectl edit svc/kubernetes-dashboard --namespace=kube-system                               | -n : namespace                       |
-|                               | kubectl -n kube-system edit service kubernetes-dashboard                                    | Can also use: Node, Pod, Deployment  |
+| Edit					        | kubectl edit svc/kubernetes-dashboard --namespace=kube-system                               | -n : namespace                       |
+|                               | kubectl edit service kubernetes-dashboard -n kube-system                                    | Can also use: Node, Pod, Deployment  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | get                           | kubectl get service kubernetes-dashboard -n kube-system                                     | Can also be used for: Node, Pod;     |
-|                               |                                                                                             | Exposes the Service Port provided    |
+|                               | kubectl get pods -o wide --all-namespaces                                                   | Exposes the Service Port provided    |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | Pod Logs                      | kubectl logs kubernetes-dashboard-77fd78f978-g2hts -c counter -n kube-system                | -c: container                        |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | Describe                      | kubectl describe pod kubernetes-dashboard-86bcb9fc9c-rr2l5 --namespace=kube-system          | Can also be used for: Service, Node  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-| Lists pods                    | kubectl get pods -o wide --all-namespaces                                                   |                                      |
+| replace                       | kubectl replace -f nginx.yaml                                                               | Update the objects defined in config |
+|								|																 							  | file by overwriting the live config  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-| create                        | kubectl create -f <FILE>                                                                    |                                      |
-                                | kubectl create deployment <pod_name> --image=<>                                             | Can be used for: Service, Node, Pod  |
+| create                        | kubectl create -f <FILE> --dry-run                                                          | (Imperative cmd) dry-run: no effect  |
+|                               | kubectl create deployment <pod_name> --image=<>                                             | Can be used for: Service, Node, Pod  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | Cluster Info                  | kubectl cluster-info                                                                        |                                      |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | delete                        | kubectl delete pod POD_NAME                                                                 | Can also be used for: Service, Node  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-| init into container           | kubectl exec -it <POD_NAME> bash                                                            | Browse inside the Container          |
+| init into container           | kubectl exec -it <POD_NAME> /bin/sh                                                         | Browse inside the Container          |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-| create Service                | kubectl expose deployment <PODNAME> --type=LoadBalancer --port 80 --name <svc-name> -n <>   |                                      |
+| create Service                | kubectl expose deployment <PODNAME> --type=LoadBalancer --port 80 --name <svc-name> -n <>   | type can also be NodePort, ClusterIP |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | Access with Svc name (DNS)    | <service_name>.<Name_Space>.svc.cluster.local                                               |                                      |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-| Create Deployment             | kubectl run nginx --image nginx --replicas 2 -n <Name_Space>                                |                                      |
+| Create Deployment             | kubectl run nginx --image nginx --replicas 2 -n <Name_Space>						| Imperative cmd: Run instance of nginx|
+|					  | kubectl create deployment nginx --image nginx -n <Name_Space>						| container by creating Deployment obj |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | services binded to pod        | kubectl get ep -n <Name_Space>                                                              | ep: end point Service binded to Pod  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-|                               |                                                                                             |                                      |
+| scale                         | kubectl scale deploy <DEPLOY_NAME> --replicas 2 -n <Name_Space>                             | update replicas in deployments live  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-|                               |                                                                                             |                                      |
+| Top memory consumers          | kubectl top <nodes | pods>                                                                  |                                      |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-|                               |                                                                                             |                                      |
+| Autoscaling                   | kubectl autoscale deploy <DEPLOY_NAME> --min 1 --max 5 --cpu-percent 50 -n <Name_Space>     | Increase if CPU % >= 50 & vice-versa |
++-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
+| watch                         | watch -n 1 kubectl get deploy <DEPLOY_NAME> -n <Name_Space>                                 | watch real-time changes              |
++-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
+| horizontal pod autoscaller    | kubectl get hpa -n <Name_Space>                                                             | displays target, min, max, replicas  |
+|                               |                                                                                             | update autoscale: kubectl edit hpa   |
++-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
+| roll out                      | kubectl rollout <status|pause|resume|undo|history> deploy <DEPLOY_NAME> -n <Name_Space>     | undo can be used with --to-revision 3|
+|                               |                                                                                             | any change to deploy template trigger|
++-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
+| apply                         | kubectl apply -f <deployment.yml> -n <Name_Space>                                           | used after updating deployment file  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 |                               |                                                                                             |                                      |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
