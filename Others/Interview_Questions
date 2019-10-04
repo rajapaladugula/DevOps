@@ -9,26 +9,94 @@ Linux:
 2. Lists Top 10 directories eating disk space in File System /etc
     du -ah /etc/ | sort -n -r | head -n 10
 3. System Information: uname -a
-4. Ip address: if config, ip addr
+4. Ip address: ifconfig, ip addr
 5. Disk free: df -ah
-6. Disk usage: du -ah
+6. Disk usage | To find size occupied: du -ah
 7. Memory: free -m, vmstat, top, htop
+8. Process status:: ps -aux : shows PID, CMD -a: process by every user; -x: daemon process; -u: additional info; ps –p <PID> - Process name for PID
+9. kill PID:: kills a process : -9: kills including parent process  
 8. Manage services: service <NAME> status, systemctl status <NAME>
-9. Check open ports: netstat -tulpn
+9. Check open ports: netstat -tulpn; t: TCP, u: UDP, x: Unix, l: listening, p: PID/Program Name, 
 10. CPU Usage: top, htop
-11. Mounts: mount <VOLUMR_PATH> <MOUNT_POINT> ex: mount /dev/sda1 /opt
+11. Mounts: mount <VOLUME_PATH> <MOUNT_POINT> ex: mount /dev/sda1 /opt
     Mount volume at boot: /etc/fstab
-12. Zombie process: Child process whose parent is exited. Its process is in terminated state with resources unreleased.
-                    Entry still in process table.
-13. Generate SSH Keys, Pass less auth: ssh-keygen -t rsa copy the generated public key to remote servers ~/.ssh/authorizedkeys
-14. Ports: 21 FTP (File Transfer Protocol)
-           22 SSH (Secure Shell)
+12. Linux process: Waiting(for a resource), Running(being executed), Stopped(after execution or receiving kill)
+				   Zombie - Child process whose parent is exited. Its process is in terminated state with resources unreleased. Entry still in process table.
+13. Generate SSH Keys, Pass less auth: ssh-keygen -t rsa copy the generated public key to remote servers ~/.ssh/authorized_keys
+14. Ports: 20, 21: FTP (File Transfer Protocol)
+           22: SSH (Secure Shell)
            23: Telnet
            25: SMTP
            53: DNS
-15. SSH Port Forwarding: Bypass Firewalls, Tunnel ports using SSH protocols.
+15. SSH Port Forwarding: mechanism in SSH for tunneling application ports from the client machine to the server machine, or vice versa. 
+						 System Admins use it for opening backdoors into the internal network from their home machines. https://www.ssh.com/ssh/tunneling/example
+						 ssh -L localPort:host:hostport user@ssh_server -N
+	SSHpass: allows us to automatically supply password to ssh cmd prompt using a dedictaed tty so automated scripts can be run.
+	scp: secure copy is used to copy files between hosts over N/W with authentication and security provided by ssh. scp /home/text.txt sree@server123:/opt
+16. sed::: finding(print), substitution/replacement and text manipulations like insertion, deletion, search(print).
+	sed -n '2,5p' a.txt : View/Print the files where n is the line number.
+	s:: substitute/replace : sed 's/linux/unix' --> sed 's/^/     /' a.txt : Insert 5 spaces to the left of every line; 's/linux/unix/g': all occurance
+	d:: delete - sed '2,5d' filename.txt : delete from range x to y; $d for last line
+	delete pattern: sed '/abc/d' filename.txt
+17. awk:: split records/fields, compare to pattern, action on matched lines : awk options 'selection _criteria {action }' input-file > output-file
+	awk '{print}' filename.txt : prints every line
+	awk '/match_pattern/ {print}' filename.txt : Print the lines which matches with the given pattern.
+	awk '{print $1,$3}' filename.txt : Spliting a Line into Fields
+	NR command keeps a current count of the number of input records; NF command keeps a count of the total number of fields in record.
+	FS command contains the field separator character which is used to divide fields (space); RS command stores the current record separator character(new line).
+	awk 'NR==3, NR==6 {print NR,$0}' employee.txt : Display lines from 3-6
+18. join
+	join file1.txt file2.txt : combine two files the files must have some common field.
+	join file1.txt file2.txt -a1 : display unpairable lines of file 1.
+	join file1.txt file2.txt -v 1 : Supress paired lines of file 1.
+	join -1 2 -2 2 file1.txt file2.txt : join using 2nd field of both the files; common field same in both the files: -j2
+	-i : case insensitive; --nocheck-order : leave unsorted; -t , : specify delimiter ,; -o : order; -k1 : 1st field of the file.
+	Ex: join -1 2 -2 3 -a1 -v2 -t, -o 1.1,1.2,1.3,2.2,2.1 <(sort -k1 names.csv) trans.csv
+19. sort:
+	-r : reverse order; -o : O/P to file; -n : numerically; -k 2n :  sort by column number 2; -c : check if sorted?; -u : remove duplicates; 
+20. chmod +t dir_xyz : files can only be deleted by the owner of the directory or the root superuser.
+	Read: 4 Write: 2 Execute:1
+21. cut:
+	cut -b 1-3,5 state.txt	-c: character, -b: byte, 
+	cut -d " " -f 1-4 state.txt	-d: field separator or delimiter -f 1-4: first to fourth of each line from the file.
+22. $#: total number of args; $1: Arg one; $0: CMD passed; $@: all arguments seperate; $*: all the arguments as a single string; $$: currently executing process ID;
+	$?: exit status 0 of last cmd? $!: PID of most recent Background CMD
+23. Copy files from system to remote: rsync -rvhe ssh source user@pass:remote ; scp source user@pass:remote
+24. set -x: debugging shell script where all executed commands are printed to terminal; #!/bin/bash –xv
+25. set: set user defined variables.
+26. Loops::
+	if: if [ -f /home/ec2-user/README.txt ]; then echo "File Exists"; else echo "File doesnt exists"; fi
+	for i in $(ls); do echo $i; done	for i in {0..100..3}; do echo $i; done	for (( i=0; i<=100; i=i+3 )); do echo "Welcome $i times"; done
+	while|until [ $i -le 10 ]; do echo $i; let i+=1; done	[LET is used for mathematical operations in SHELL]
+	read -p "Destination backup Server : " - Get Input values
+27. & - Execute script in background;&& - Logical AND, 2nd command executes only if first script was finished successfully; || Logical OR, 2nd only executes when 1st fails.
+		rm file1 && echo It Worked! || echo It Failed
+28. > - redirect ['tee' is also used for the same], overrides the information; >> - append the information to file if exists.
+	<	OR	0<	for standard input; >	OR	1>	 for standard output; standard error I have to use 2> /dev/null; cat < input.txt > output 2> /dev/null [CMD >out.txt 2>&1: both o/p, err]
+	http://www.learnlinux.org.za/courses/build/shell-scripting/ch01s04.html
+29. ' '- dont evaluate var; " "- evaluate var; \ - escape special characters: echo hello \; world --> hello ; world
+30. find: find ./Dir_Name -name *.txt; -type f: file type, -perm 664: permissions, -empty: empty files/dir, -exec: execute a cmd, 
+31. Get part of string var with echo:: echo ${variable:x:y} x-start position, y-length
+	${#variable} : Variable length; echo ${variable: -5} : Last 5 chars
+32. tr:: translate
+	tr "[a-z]" "[A-Z]" | "[:lower:]" "[:upper:]" - Lower to Upper ; tr [:space:] '\t' - White space to Table ; tr '{}' '()' - Bracs to Paranthesis; 
+	tr -s [:space:] ' ' - Squeeze multiple spaces to space ; tr -d 'w' - delete specific char ; tr -d [:digit:] - remove digits
+33. finger Login_Name: Get Login user details.
+34. Swap space is a certain amount of space used by Linux to temporarily hold some programs that are running concurrently.
+	This happens when RAM does not have enough memory to hold all programs that are executing.
+35. Linux components; Kernal, Shell, Terminal, GUI, System Utilities.
+36. Daemons are services whose primary task is to listen for service request and at the same time to act on these requests.
+	After the service is done, it is then disconnected and waits for further requests.
+37. Execute more than one command or program from a single command line entry: ;(semi colon)
+38. View Text file using terminal: less *.txt
+39. SSH config file: /etc/ssh/sshd_config ; Script: etc/init.d/sshd
+40. Route | netstat -r: view/modify Kernal IP Routing table
+41. Traceroute: map the journey that a packet of information undertakes from its source to its destination
+42. host | nslookup : resolve host name to IP and vice-versa
+43. Tail to refresh every sec: $tail -F -s1 /path/to/logs
 
 Firewall: (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
+A firewall is a system that provides network security by filtering incoming and outgoing network traffic based on a set of user-defined rules.
 
 DevOps:
 ------
@@ -47,7 +115,6 @@ DevOps is a set of cultural norms and technology practices that enable the fast 
                     b) emphasize on timeliness | both timeliness & quality
                     c) feedback from customers | self-monitoring
                     d) practices: scrum, kanban | ci, cd, ct, cm
-5. 
 
 Configuration Management:
 ------------------------
@@ -60,41 +127,65 @@ Terraform:
 		Tool for building, changing and versioning infrastructure as a Code safely and effectively.
 1. Usecases: a) Disposable Env's (QA, UAT)
 			 b) Mutli-Cloud Deployment (AWS, Azure)
-			 c) n-tier Applications
+			 c) n-tier Applications :  tiers can be scaled independently
 			 d) Self-service Clusters(Developers, QA)
 			 e) Resource Schedulars (K8) as providers
 2. Providers: responsible for understanding API interactons and exposing resources (AWS, Azure, GCP, Grafana)
 3. Resources: describes the infrastructure components such as virtual networks, instances...
 4. Module: container for multiple resources used together. Every tf has atleast 'root' module.
 5. Datasources: allows data to be fetched or computed defined outside of terraform, or defined by other tf module.
-6. State: stores information about managed infrastructure and configuration. default location is "terraform.tfstate". Supports Backends; gcs, s3...
+6. State: stores information about managed infrastructure and configuration. default location is "terraform.tfstate".
+	Without state, Terraform has no way to identify the real resources it created during previous runs. Thus, when multiple
+	people are collaborating on shared infrastructure, it's important to store state in a shared location backend.
+	Supports Backends; gcs, s3...
 7. workspaces: containers for state. used to manage Infrastructure environments(Dev, QA..) using same config files.
 8. lifecycle: create_before_destroy, prevent_destroy, ignore_changes
 9. Provisioners: used to execute scripts on a local or remote machine as part of resource creation or destruction. (local, remote, chef, puppet, file)
 10. Steps for EC2 creation: VPC, Subnets, Security Group, EC2 instances, Load Balancer, DNS
+11. CLI: init - Initialize a Terraform working directory
+		 plan - Generate and show an execution plan
+		 validate - Validates the Terraform files
+		 apply - Builds or changes infrastructure
+		 destroy - Destroy Terraform-managed infrastructure
 
 Jenkins:
 -------
-Plugins: Git, SVN, Maven, Trigger build on other project, Deploy ear/war to container, UpStream/Downstream jobs, E-mail notification
+Plugins: Git, SVN, Maven, Trigger build on other project, Deploy ear/war to container, UpStream/Downstream jobs, E-mail notification.
+Pipeline: A Pipeline is a user-defined model of a CD pipeline. A Pipeline’s code defines your entire build process, which typically includes stages
+	for building an application, testing it and then delivering it.
+Pipeline Adv: User defined process, Pipeline as code in SCM, Audit trail for pipeline, Pausable(optionally stop and wait for human input or approval 
+	before continuing the Pipeline run), perform work in parallel, multiple options for integration with other plugins.`
+Node: a machine which is part of the Jenkins environment and is capable of executing a Pipeline.
+Stage: a conceptually distinct subset of tasks performed through the entire Pipeline (e.g. "Build", "Test" and "Deploy" stages), which is used by 
+	many plugins to visualize or present Jenkins Pipeline status/progress.
+Step: A single task. Fundamentally, a step tells Jenkins what to do at a particular point in time (or "step" in the process)
+	For example, to execute the shell command make use the sh step: sh 'make'.
+Declarative: opens with a "pipeline" block with agent, stages and steps inside respective stages.
+Scripted: opens with a "node" block with stages and steps inside respective stages.
+Comparision: Scripted pipeline written in Groovy | Declarative pipeline doesnt require groovy; Starts with node block | starts with pipeline block;
+			 uses declarative programming model| imperative programming model; provides richer syntactical features over Scripted Pipeline syntax
+Connect Jenkins slavce(Linux) to Master: https://medium.com/@_oleksii_/how-to-deploy-jenkins-agent-and-connect-it-to-jenkins-master-in-microsoft-azure-ffeb085957c0
+Connect Jenkins slave(Windows) to Master: https://support.cloudbees.com/hc/en-us/articles/217423827-How-to-Install-Several-Windows-Slaves-as-a-Service-
+Securing Jenkins: Security Realm(AD, LDAP) and Authorization Strategy(Role-based), Enable CSRF, Secure HOME https://jenkins.io/doc/book/system-administration/security/
 
 Es:
 --
 	It is a search engine based on Apache Lucene that supports full-text search engine to perform a fast
 	incisive search over large chunks of data.
 Adv: distributed, scalable and easy to integrate, compatible on any platform, supports every document type except text rendering.
-	 find out anomalies on data based on pattern, send alerts when particular condition matched like stock market, exception from logs etc.
+	 find out anomalies on data based on pattern, send alerts when particular condition matched like exception from logs etc.
 DisAdv: Elasticsearch does not support multiple languages while handling request and response data in JSON.
 		In rare cases, it has a problem of Split Brain situations.
 Split Brian: https://blog.trifork.com/2013/10/24/how-to-avoid-the-split-brain-problem-in-elasticsearch/
-Index: An index in Elasticsearch is similar to a db in relational databases. Its is a collection of documents with similar characteristics and is identified by name.
+Index: An index in ES is similar to a db in relational databases. Its a collection of documents with similar characteristics and is identified by name.
 	   An index maps one or more multiple shards and can have zero or many replica shards.
 Type(Table): It is a logical category/partition of index. defined for docs that have a set of common fields.
-Document(Row): A document in elastic search is a top level or a root component object that is serialized into JSON object and will be stored in Elastic search under a unique id.
-		  Documents in elastic search are indexed and stored and will be available to search using the index.
+Document(Row): A document in elastic search is a top level or a root component object that is serialized into JSON object and will be stored in Elastic search
+	under a unique id. Documents in elastic search are indexed and stored and will be available to search using the index.
 Inverted Index:  primary goal is to make very fast full-text searches, while finding the documents in which our search terms occur.
-				 Inverted index consists of a list of all unique words that occurs in documents and for each word, maintain a list of documents number and positions
-				 in which it appears. It is a hashmap like data structure that directs users from a word to a document or a web page.
-Shards: Data in an index can be partitioned into multiple portions which are itself fully-functional and independent index managed by a separate node of Elasticsearch .
+	Inverted index consists of a list of all unique words that occurs in documents and for each word, maintain a list of documents number and positions
+	in which it appears. It is a hashmap like data structure that directs users from a word to a document or a web page.
+Shards: Data in an index can be partitioned into multiple portions which are itself fully-functional and independent index managed by a separate node of ES.
 		Each such portion is called a Shard. And an Elasticsearch index has 5 shards by default.
 Replias: Each shard in elastic search has again two copies of the shard that are called the replicas.
 		 They serve the purpose of fault tolerance and high availability.
@@ -103,8 +194,8 @@ Cluster: collection of one or more nodes (servers) that together holds your enti
 Node: It is a single server that is part of the cluster. It stores the data and participates in the clusters indexing and search capabilities.
 	  A Master node is a node that controls the entire cluster. A data node is a node that holds data in it and performs logical operations on the data.
 	  Ingest node pre-process(applies transformations) documents before the actual document indexing happens. The ingest node intercepts bulk and index requests.
-Analyzer: While indexing data in ElasticSearch, data is transformed internally by the Analyzer defined for the index. 
-		  Analyzers are composed of a single Tokenizer and zero or more TokenFilters(lower case). The tokenizer may be preceded by one or more CharFilters. Ex: Whitespace, stop
+Analyzer: While indexing data in ElasticSearch, data is transformed internally by the Analyzer defined for the index. Analyzers are composed of a single Tokenizer
+		  and zero or more TokenFilters(lower case). The tokenizer may be preceded by one or more CharFilters. Ex: Whitespace, stop
 Filters:  AND, EXISTS, OR
 Schema: A schema is a structure that describes multiple fields that provides the detailed overview of the document and its type and the way of handling the fields inside the document.
 Tokenizer: Tokenizers are used to break a string down into a stream of terms or tokens. A simple tokenizer might split the string up into terms wherever 
@@ -123,7 +214,7 @@ Elasticsearch REST API Uses: Check your cluster, node, and index health, status,
 Tomcat:
 ------
 Best Practices: Run as a service
-				download executable from the trusted soource
+				download executable from the trusted source
 				Enable SSL
 				Secure the Tomcat Manager application
 				Use Complex passwords
@@ -133,3 +224,107 @@ Best Practices: Run as a service
 				Rotate the log files
 				disable shutdown port
 				Web Application Firewall
+https://www.softwaretestinghelp.com/apache-tomcat-interview-questions/
+
+
+GitHub:
+------
+Best Practices: Don’t just git push directly to master. (turn on git branch protection to prevent direct commits)
+				Commit early and often. (help understand how you broke something.)
+				Avoid Rebase while sharing branch with other people.
+				Do git commit with the right email address. (Having commits with unrecognized authors makes it more difficult to track )
+				Define Code/Repo owners for faster code reviews.
+				Don’t let secrets leak into source code. (inject secrets as environment variables; use Harshicorp Vault/AWS Secret Manager)
+				Don’t commit dependencies into source code. (Use Nexus/Artifactory)
+				Don’t commit configuration files into source code.
+				Create a meaningful git ignore file. (helps to ignore pre-defined files liked secret keys)
+				Archive dead repositories. (avoid risk of people using unmaintained repos)
+				Lock package version. (specify a version or version range for every package and dependency listed in the manifest)
+				Align packages versioning. (try at a minimum to use the same major version of the package.)
+https://www.janbasktraining.com/blog/top-devops-interview-questions-and-answers/
+https://www.edureka.co/blog/interview-questions/git-interview-questions/
+
+Networking:
+----------
+HTTP: Hyper Text Transfer Protocol used by web pages to transmit website content and allow for display & navigation of hypertext or links to web browser. Protocol: TCP; Port:80
+HTTPS: Secure HTTP is designed to be used for identity verification. It uses SSL certs to verify the server connecting to. Protocol: TCP; Port: 443
+FTP: File Transfer Protocol is primarily designed for large file transfers, with capability of resuming downloads if interrupted.
+	 DisAdv: credentials of the user are transmitted in cleartext. SFTP (FTP over SSH) and FTPS (FTP with SSL) overcmes this issue. FTP uses TCP ports 20 and 21.
+SSH: Secure Shell is designed to create secure tunnel between devices, so that even insecure programs can be used in secure state. TCP PORT 22
+DHCP: Dynamic Host Configuration Protocol is default way for connecting up to a N/W. Upon connecting to a network, a DHCP request will be sent out from a new member system and
+	  the DHCP server will respond and issue an address lease for a varying amount of time.  If the system connects to another network, it will be issued a new address by that server.
+TCP: Transmission Control Protocol is used by HTTP, FTP, SSH and many other. TCP establishes connection on both ends before any data begins to flow. It is also able to sync up the
+	 data flow so that if packet arrives out of order, the receiving system is able to figure out what the packet is supposed to look like.
+UDP: User Datagram Protocol is connectionless protocol, which doesnt care if other end is listening. faster transmission spped than TCP. Ex; Telivision broadcast
+ICMP: Internet Control Message Protocol primary purpose is to tell systems when they are trying to connect remotely if the other end is available. used by PING.
+OSI Layers: Physical, Datalink, N/w, Transport, Session, Presentation and Application                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+Firewall: is a network security system that monitors and controls incoming and outgoing network traffic based on pre-determined security rules. can be both S/W(IPTables, FirewallD)
+		  Rules - ACCEPT, DROP and REJECT. and H/W(Routers). (https://www.digitalocean.com/community/tutorials/what-is-a-firewall-and-how-does-it-work)
+		  Flush IP Tables (Temp) - iptables -f ; permanent: service iptables save; /etc/sysconfig/iptables: iptables 
+Proxy server: is a computer on the web that redirects your web browsing activity under a different IP address identity not revealing their true access point to website.
+Subnet: A portion of a network that shares a common address component.  For example, all devices with IP addresses that start with 100.100.100. would be part of the same subnet.
+		Dividing a network into subnets is useful for both security and performance reasons.
+Subnet mask: is a mask used to determine what subnet an IP address belongs to.
+Work Group: collection of systems each with their own rules and local user logins tied to that particular system.
+			similar to a P2P network- each member is its own island and chooses what it decides to share with the rest of the network.
+Domain: is a collection of systems with a centralized authentication server that tells them what the rules are. It is standard client/server relationship- the individual members
+		of the domain connect to a central server which handles the heavy lifting and standardization of sharing and access permissions.
+ifconfig: sysadmin tool in Unix-like O.S for N/w interface configs. Features: configuring, controlling, and querying TCP/IP network interface parameters
+Telnet: would allow the admin to connect into remote devices and administer them via a command prompt. telnet transmits its data in cleartext (like ftp)
+		used to see if a program is listening on a particular port.
+/etc/passwd is the primary file in Unix/Linux operating system that stores information about user accounts and can be read by all users.
+
+DNS Flow:	Domain Name Service to resolve Host Name to Ip Address and vice-versa. PORT: 53
+			https://www.cloudflare.com/learning/dns/what-is-dns/	https://www.verisign.com/en_US/website-presence/online/how-dns-works/index.xhtml
+DNS Config File: etc/resolv.conf Lists name servers used by host for DNS resolution; Restart to get the changes effect: service network restart
+/etc/hosts: map hostnames(domains) to IP addresses. scope is local to your system; /etc/nsswitch.conf :specifies the lookup order with the hosts entry.
+A Record: Address records assign IP address to domain names.
+CNAME: Aliases for domain names
+PTR: Pointer Record is used to translate IP address to Domain name.
+Name Server: Keeps info about translation of Domain names to IP address and vice-versa. It performs at the request of resolver or another name server.
+Resources Records: Contains information regarding host names and their IP address along with other information distributed via DNS.
+TTL: Time to Live is the time the RR can be kept alive in a server cache.
+DNS TYPES:
+	A Record: Address Record assigns IP Address to Domain Names.
+	C Name: provide Alias name to Domain names.
+Round Robin DNS: used for Load balancing the load of distributed web servers.  
+Dynamic DNS: method of keeping a domain name linked to changing IP Address.
+Primary Name Server/Master Server: main data source and authoritative server for the zone. aquires data about its zone from databases saved on local disk.
+Forward Lookup: Domain name - IP address | Reverse Lookup : IP Address - Domain name
+
+SonarQube:
+---------
+Web based code Quality analysis tool for Maven based Java Projects. checks for Duplications, Code Bugs, Coding standards, Unit tests
+Default port: 9000
+components: Plugins: for various languages
+	Scanner: It analyze projects on Continuous Integration Servers
+	Server:  
+	DB:  stores configuration of the SonarQube instance like security settings and they also store project quality snapshot.
+Process: Developer commits code --> Jenkins build --> Execute Sonar Scanner for Analysis --> Report sent to SonarQube Server for processing 
+			--> Stores result in DB and display in UI
+
+Maven:
+-----
+project management tool that providers complete build lifecycle framework. used for compile, build, deploy, unit tests, create prject docs and reports.
+Build Life Cycle: Clean(deletes the target directory with all the build data before starting the build process.)
+	Validate: validate the project and check if everything is correct and all necessary information is available.
+	Compile: compiles the source code of your project.
+	Test: tests the compiled source code by using a suitable unit testing framework. These tests should not require the code to be packaged or deployed.
+	package: takes the compiled code and packages it in its distributable format(jar, war or ear).
+	integration-test: processes and deploys the package if possible into an environment where integration tests can be run.
+	verify: runs any checks to verify the package is valid and meets the required quality criteria.
+	Install: installation of the package into the local repository. This is done to use it as a dependency in other projects locally.
+	deploy: done in integration or release environment. final package is copied to remote repository for sharing with other developers and projects.
+POM.xml(Project Object Model): Collection of dependencies information of a project
+	collection of project dependencies, plugins(build, reporting)
+	build profiles: set of configuration values that can be used to set or override default values of Maven build. 
+	goals: represents a specific task that contributes to the building and managing of a project. It is bound to zero or more build phases.
+Maven Repo: A repository is a directory where all the project jars, library jar, plugins or any other project specific artifacts are stored
+	and this can be used by Maven easily - Local: folder location that is present on your machine where you can find your project’s all dependencies. ~/m2./repository
+	Central: Maven community which contains of a huge collection of commonly used lib's. When Maven does not find any dependency in local repository, searches here.
+	Remote: Dev's own custom repository containing required libraries or other project jars. Ex: Nexus, Artifacctory.
+Maven vs Ant: Project management tool | Build tool; pom.xml | build.xml; can reuse plugins | cant reuse sripts; declarative steps | Procedural ;
+	has Life Cycle | no life cycle; framework | toolbox
+Snapshot: SNAPSHOT can be defined as a special version that indicates a current development copy. Unlike the regular versions, Maven checks for a new SNAPSHOT
+	version in its remote repository.
+project’s fully qualified artifact name: <groupId>:<artifactId>:<version>
