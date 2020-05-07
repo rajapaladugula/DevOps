@@ -18,6 +18,8 @@ $ git pull DevOps Master
 
 # After modifying the "working copy" we perform 'add' operation to add all files($ git add .) or specific files($ git add FILE.TXT)
   to the staging area.
+
+# To revert the changes made, use $ git reset <file> to unstage.
   
 # difference between the modified files.
 $ git diff
