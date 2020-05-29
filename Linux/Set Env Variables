@@ -1,0 +1,8 @@
+The ~/.bash_profile is executed when you login using console or remotely using SSH.
+Edit the file: vi ~/.bash_profile
+Command: export PATH=${PATH}:${HOME}/bin
+   Here, {HOME} is the directory path where the required software is installed
+
+Example:    git=/dir/path/to/git
+            kubectl=/dir/path/to/kubectl
+            export PATH=${PATH}:${git}/bin:${kubectl}/bin
