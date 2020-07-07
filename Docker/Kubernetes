@@ -114,7 +114,7 @@ KUBECTL Commands:
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | URL to access Dashboard Pod   | http://**.**.**.**:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard:/proxy/ | AWS:: IPv4 Public IP; Inbound: 8001  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-| Edit					        | kubectl edit svc/kubernetes-dashboard --namespace=kube-system                               | -n : namespace                       |
+| Edit				| kubectl edit svc/kubernetes-dashboard --namespace=kube-system            		      | -n : namespace                       |
 |                               | kubectl edit service kubernetes-dashboard -n kube-system                                    | Can also use: Node, Pod, Deployment  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | get                           | kubectl get service kubernetes-dashboard -n kube-system                                     | Can also be used for: Node, Pod;     |
@@ -125,7 +125,7 @@ KUBECTL Commands:
 | Describe                      | kubectl describe pod kubernetes-dashboard-86bcb9fc9c-rr2l5 --namespace=kube-system          | Can also be used for: Service, Node  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | replace                       | kubectl replace -f nginx.yaml                                                               | Update the objects defined in config |
-|								|																 							  | file by overwriting the live config  |
+|				|			   	 							      | file by overwriting the live config  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | create                        | kubectl create -f <FILE> --dry-run                                                          | (Imperative cmd) dry-run: no effect  |
 |                               | kubectl create deployment <pod_name> --image=<>                                             | Can be used for: Service, Node, Pod  |
@@ -140,8 +140,8 @@ KUBECTL Commands:
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | Access with Svc name (DNS)    | <service_name>.<Name_Space>.svc.cluster.local                                               |                                      |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
-| Create Deployment             | kubectl run nginx --image nginx --replicas 2 -n <Name_Space>						| Imperative cmd: Run instance of nginx|
-|					  | kubectl create deployment nginx --image nginx -n <Name_Space>						| container by creating Deployment obj |
+| Create Deployment             | kubectl run nginx --image nginx --replicas 2 -n <Name_Space>				      | Imperative cmd: Run instance of nginx|
+|				| kubectl create deployment nginx --image nginx -n <Name_Space>				      | container by creating Deployment obj |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 | services binded to pod        | kubectl get ep -n <Name_Space>                                                              | ep: end point Service binded to Pod  |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
