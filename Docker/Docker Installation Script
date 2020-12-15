@@ -1,19 +1,25 @@
-$yum install -y yum-utils device-mapper-persistent-data lvm2
-$yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-$yum makecache fast
-$yum install -y --setopt=obsoletes=0 docker-ce-17.03.2.ce-1.el7.centos.x86_64 docker-ce-selinux-17.03.2.ce-1.el7.centos.noarch
-$usermod -aG docker ec2-user
-$mkdir -p /etc/systemd/system/docker.service.d
-$mkdir -p /apps/docker
-$echo "[Service]" > /etc/systemd/system/docker.service.d/docker.conf
-$echo "ExecStart=" >> /etc/systemd/system/docker.service.d/docker.conf
-$echo "ExecStart=/usr/bin/dockerd -g /apps/docker -H unix:///var/run/docker.sock -H tcp://0.0.0.0:5555 --insecure-registry diaunx:5000 --insecure-registry diaunx20:5000 --insecure-registry 172.30.0.0/16" >> /etc/systemd/system/docker.service.d/docker.conf
-$echo "[Service]" > /etc/systemd/system/docker.service.d/http-proxy.conf
-# $echo "Environment="HTTP_PROXY=http://my-proxy:xxxx"" >> /etc/systemd/system/docker.service.d/http-proxy.conf
-# $echo "Environment="HTTPS_PROXY=http://my-proxy:xxxx"" >> /etc/systemd/system/docker.service.d/http-proxy.conf
-$systemctl daemon-reload
-$service docker start
-$systemctl enable docker
+#yum install -y yum-utils device-mapper-persistent-data lvm2
+#yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+#yum install -y sudo yum install docker-ce docker-ce-cli containerd.io
+#systemctl start docker
+#usermod -aG docker ec2-user (Restart to effect using docker cli without sudo)
+#systemctl enable docker (Configure docker to start on boot)
+
+-To add HTTP/HTTPS Proxy in corporate settings::
+#mkdir -p /etc/systemd/system/docker.service.d
+Create a file /etc/systemd/system/docker.service.d/http-proxy.conf and add:
+#echo "[Service]" > /etc/systemd/system/docker.service.d/http-proxy.conf
+#echo "Environment="HTTP_PROXY=http://my-proxy:xxxx"" >> /etc/systemd/system/docker.service.d/http-proxy.conf
+#echo "Environment="HTTPS_PROXY=http://my-proxy:xxxx"" >> /etc/systemd/system/docker.service.d/http-proxy.conf
+#echo "Environment="NO_PROXY=localhost,127.0.0.1,docker-registry.example.com,.corp"" >> /etc/systemd/system/docker.service.d/http-proxy.conf
+
+#mkdir -p /apps/docker
+#echo "[Service]" > /etc/systemd/system/docker.service.d/docker.conf
+#echo "ExecStart=" >> /etc/systemd/system/docker.service.d/docker.conf
+#echo "ExecStart=/usr/bin/dockerd -g /apps/docker -H unix:///var/run/docker.sock -H tcp://0.0.0.0:5555 --insecure-registry diaunx:5000 --insecure-registry diaunx20:5000 --insecure-registry 172.30.0.0/16" >> /etc/systemd/system/docker.service.d/docker.conf
+#systemctl daemon-reload
+
+-To IP forward::
 $sed -i 's/net.ipv6.conf.default.disable_ipv6=0/net.ipv6.conf.default.disable_ipv6=1/g' /etc/sysctl.conf
 $sed -i 's/net.ipv6.conf.all.disable_ipv6=0/net.ipv6.conf.all.disable_ipv6=1/g' /etc/sysctl.conf
 $sed -i 's/net.ipv4.ip_forward=0/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
@@ -26,13 +32,12 @@ $docker run -d -p 9000:9000 --restart=always -v "/var/run/docker.sock:/var/run/d
 
 # RHEL Docker Installation on EC2 Instance:
 $sudo yum update -y
-$sudo yum install yum-utils -y
-$sudo yum-config-manager --enable rhui-REGION-rhel-server-extras -y
-$sudo yum install docker -y
-$sudo service docker start
-Manage Docker as non-root user:
+$sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+$sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo -y
+$sudo yum install -y sudo yum install docker-ce docker-ce-cli containerd.io
+$sudo systemctl start docker
+-Manage Docker as non-root user:
 $sudo groupadd docker --> Create Docker Group
 $sudo usermod -aG docker $USER --> Add your user to docker group
-$systemctl daemon-reload
-$systemctl restart docker
-$sudo reboot --> Restart the VM
+$systemctl enable docker
+$sudo reboot --> (Restart to effect using docker cli without sudo)
