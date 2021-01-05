@@ -10,10 +10,10 @@ $ git init
 # To add remote git url ($ git remote add ALIAS_NAME GIT_REPO_URL).
 $ git remote add DevOps https://github.com/rajapaladugula/DevOps.git
 
-# Clone a Repository from git
+# Clone a Repository from git to local workspace.
 $ git clone https://github.com/rajapaladugula/DevOps.git
 
-# To pull the code ($ git pull ALIAS_NAME BRANCH_NAME).
+# To update the local copy with new commits from remote repo ($ git pull ALIAS_NAME BRANCH_NAME) pull = fetch + merge
 $ git pull DevOps Master
 
 # After modifying the "working copy" we perform 'add' operation to add all files($ git add .) or specific files($ git add FILE.TXT)
