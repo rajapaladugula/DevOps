@@ -7,7 +7,7 @@ $ git config --global user.email rajapaladugula@gmail.com
 # Initialize git using ($ git init) which will create .git directory. 
 $ git init
 
-# To add remote git url ($ git remote add ALIAS_NAME GIT_REPO_URL).
+# To bookmark a remote git url ($ git remote add ALIAS_NAME GIT_REPO_URL).
 $ git remote add DevOps https://github.com/rajapaladugula/DevOps.git
 
 # Clone a Repository from git to local workspace.
@@ -72,5 +72,5 @@ $ git stash drop : delete a stash
 $ git stash clear : Remove all the stash
 
 rebase: integrates branches similar to merge, but in a different way. used when changes made in one branch needs to be reflected
-in another branch. Ex: Chnages in the current branch were applied to 'master' as well.
+in another branch. Ex: Changes in the current branch were applied to 'master' as well.
 $ git rebase <master>
