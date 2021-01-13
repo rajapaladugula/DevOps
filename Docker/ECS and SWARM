@@ -1,47 +1,110 @@
-ECS:: highly scalable, high-performance container orchestration service that supports Docker containers and allows you to easily run and
-	scale containerized applications on AWS.
-Fargate: allows you to focus on designing and building your applications on containers without having to manage(provision, configure, and
-	scale) servers or clusters(infrastructure). Specify: CPU and memory requirements, define networking and IAM policies.
+ECS:: Highly scalable, high-performance container orchestration service that supports docker containers and allows you to easily run and scale containerized applications on AWS.
+Fargate: Allows you to focus on designing and building your applications on containers without having to manage(provision, configure, and scale) servers or clusters(infrastructure).
+	Specify: CPU and memory requirements, define networking and IAM policies.
 EC2 Launch Type: manage a cluster of servers and schedule placement of containers on the servers that runs your container applications.
-	 ECS keeps track of all the CPU, memory and other resources in your cluster, and finds the best server for a container to run on
-	 based on your specified resource requirements. You are responsible for provisioning, patching, and scaling clusters of servers.
-1. Create Cluster: Select - EC2 Instance Type, No. instances, EC2 AMI, EBS Storage, Key Pair, VPC, Subnet, Security Group, IAM role.
-2. Task Definition: Point in time capture of configuration(docker repository/image, memory and CPU requirements, shared data volumes, and
-	how the containers are linked to each other) for running one or more containers that are required for your task. Allow you to 
-	have version control over your application specification.
-3. Service: Specify how many copies of Task Definition to run, maintain in a cluster. Select: Task Definition, Cluster, Number of tasks,
-	Deployment type(Rolling update or Blue-Green) Load Balancer Type, AutoScaling.
+	 ECS keeps track of all the CPU, memory and other resources in your cluster, and finds the best server for a container to run on based on your specified resource requirements.
+	 You are responsible for provisioning, patching, and scaling clusters of servers.
+1. Create Cluster: Select - EC2 Instance Type, Number of instances, EC2 AMI, EBS Storage, Key Pair, VPC, Subnet, Security Group, IAM role…
+2. Task Definition: Point in time capture of configuration(docker repository/image, memory and CPU requirements, shared data volumes, and how the containers are linked to each other)
+	for running one or more containers that are required for your task. Allow you to have version control over your application specification.
+3. Service: Specify how many copies of Task Definition to run, maintain in a cluster. Select: Task Definition, Cluster, Number of tasks, Deployment type(Rolling update or Blue-Green)
+			Load Balancer Type, Autoscaling.
 
-SWARM consists of one or more Docker Engines(nodes) running in swarm mode. Nodes can either be Managers or Workers. Every SWARM requirs 
-	atleast one Manager.
-UCP (Universal Control Plane) is the enterprise edition of docker which has all the functionalties of Swarm.
+SWARM::
+SWARM consists of one or more Docker Engines(nodes) running in swarm mode. Nodes can either be Managers or Workers. Every SWARM requires at least one Manager.
+UCP (Universal Control Plane) is the enterprise edition of docker which has all the functionalities of Swarm.
 Managers accepts specs from users and drive swarm to specified desired state; ensures actual state of the swarm matches the Service Specs.
-	Managers schedule Tasks across the nodes in the Swarm; can also run Tasks as workers (not recommended in prod)
+		Managers schedule Tasks across the nodes in the Swarm; can also run Tasks as workers (not recommended in prod)
 Workers has an agent which reports back status report to Manager; responsible for running delegated work;
-Service: is the specs (desired state, volumes, n/w's, replicas, resource constraints) that users submit to Managers.
-	Types: Replicated: no of replicas for a replicated service is based on scale desired.
-	Global: allocates one unit of work for each node in swarm, Useful for montoring services.
+Service: is the specs (desired state, volumes, n/w's, replicas, resource constraints) that users submit to Managers. Two types: Replicated, Global
+		Replicated: no of replicas for a replicated service is based on scale desired. Global: allocates one unit of work for each node in swarm, Useful for monitoring services.
 Tasks: running containers that are replicas of the service.
 
-OverLay N/W's: In Swarm mode Sevices were spread across multiple nodes. In order for the services to communicate one another across nodes
-	that runs tasks, Docker includes a N/W Driver. Can attach a service to one/more OverLay N/W's same way as user-defined N/W's.
-N/W Isolation & Firewall rules: Containers in a Docker N/W have access on all ports in same N/W; Access is denied b/w containers that 
-	doesnt share common N/W. Traffic orginating from Docker container not destinated for docker host is permitted; Incoming traffic 
-	is disabled by default (need to EXPOSE ports to allow).
-Service Discovery: Swarm Service Discovery is based on DNS; All nodes in a N/W, store corresponding DNS records for N/W; As services can
-	be replicated across multiple nodes, In order to resolve which IP address to be called when a service name is requested, docker 
-	assigns single Virtual IP to each service. So requests for the VIP are automatically load balanced across all the healthy tasks 
-	in the OverLay N/W. Due to this the end user remains uneffected even if the tasks changes nodes.
-	Example: Service A with 1 replica, Service B with 2. When Service A makes request to B by name, VIP of B is resolved by DNS 
-		server. Using support for VIPS the request for VIP address is routed to one of the 2 nodes of Service B tasks.
-	Load Balancing can also be acheived using DNS Round Robin which allows to configure load balancing on per service basis. Each 
-	individual task is discoverable with a name to IP mapping in internal DNS. When DNS RR is used Docker Engine DNS server resolves
-	a service name to individual task IP address by cycling through list of IP address of nodes running tasks in a service.
-External Access: 2 Service publishing modes: Host: Container port is published on host that is running the task for a service; tasks fail
-	to run if we have more tasks than available hosts. No L.B; used for Global services where only 1 task for a service runs on each 
-	node. Example: A Service that monitors nodes health should not be L.B as we need stats from that node.
-	Ingress Mode: option to L.B published port across all tasks of a service. In SWARM all nodes publishes ports, whereas in Host 
-	mode the port is only published if the node is running a task for a service. Requests a RR LB across healthy instances regardless of the node. default service publishing mode; used to L.B multiple replicas of service.
-	Ingress mode works with Routing Mesh which combines overlay n/w and service VIP: when Swarm is initialized manager creates an 
-	overlay ingress n/w, where every node in swarm joins it. when a node receives an external request, it resolves service name to 
-	VIP and IPVS load balances requests to service replica over ingress n/w.
+Overlay N/W's: In Swarm mode Services were spread across multiple nodes. In order for the services to communicate one another across nodes that runs tasks, Docker includes a N/W Driver. Can attach a service to one/more Overlay N/W's same way as user-defined N/W's.
+N/W Isolation & Firewall rules: Containers in a Docker N/W have access on all ports in same N/W; Access is denied b/w containers that doesn't share common N/W.
+		Traffic originating from Docker container not destinated for docker host is permitted; Incoming traffic is disabled by default (need to EXPOSE ports to allow).
+Service Discovery: Swarm Service Discovery is based on DNS; All nodes in a N/W store corresponding DNS records for N/W; As services can be replicated across multiple nodes, In order
+	to resolve which IP address to be called when a service name is requested, docker assigns single Virtual IP to each service. So requests for the VIP are automatically load balanced
+	across all the healthy tasks in the Overlay N/W. Due to this the end user remains unaffected even if the tasks changes nodes.
+	Example: Service A with 1 replica, Service B with 2. When Service A makes request to B by name, VIP of B is resolved by DNS server. Using support for VIP'S the request for VIP address
+			is routed to one of the 2 nodes of Service B tasks.
+	Load Balancing can also be achieved using DNS Round Robin which allows to configure load balancing on per service basis. Each individual task is discoverable with a name to IP
+	mapping in internal DNS. When DNS RR is used Docker Engine DNS server resolves a service name to individual task IP address by cycling through list of IP address of nodes running
+	tasks in a service.
+External Access: 2 Service publishing modes: Host: Container port is published on host that is running the task for a service; tasks fail to run if we have more tasks than available hosts.
+	No L.B; used for Global services where only 1 task for a service runs on each node. Ex: A Service that monitors nodes health should not be L.B as we need stats from that node.
+	Ingress Mode: option to L.B published port across all tasks of a service. In SWARM all nodes publishes ports, whereas in Host mode the port is only published if the node is running
+	a task for a service. Requests a RR L.B across healthy instances regardless of the node. default service publishing mode; used to L.B multiple replicas of service.
+	Ingress mode works with Routing Mesh which combines overlay n/w and service VIP: when Swarm is initialized manager creates an overlay ingress n/w, where every node in swarm joins it. when a node receives an external request, it resolves service name to VIP and IPVS load balances requests to service replica over ingress n/w.
+
+
+KUBERNETES::
+Open source container orchestration tool to automate deployment, scaling and operating containerized apps.
+Features:
+Build clusters from mix of physical and virtual infra. Places containers according to the compute resource requirements; Automatically moves containers from dead machines/clusters to running; Automated deployment rollout and rollback(Disaster Recovery); horizontal scaling; Secret management; Service discovery & Load balancing; simple log collection; Stateful app support; persistent volume management; CPU/memory quotes; Batch job processing; Role based access control; High availability configs.
+
+Master-Node Architecture:
+User sends REST API commands(through kubectl) to api-server which then validates and processes the requests. Controller manager through various control loops makes sure that the current state is same as the desired state as mentioned in spec file. If not, takes necessary actions to correct it. After executing the requests, resulting cluster state is stored in etcd(distributed key-value store). Schedular schedules the work to worker nodes(through kubelet) based on the compute requirements.
+
+
+
+Cluster: Group of nodes configured to run a functioning KUBERNETES System.
+Kube-apiserver: Acts as a front end/gateway to k8 master node to validate & perform operations(create, delete, modify..) on K8 objects(PODS, Services, Deployments..) as specified using kubectl commands. Exposes API's of k8 master and responsible for communication between master and worker nodes.
+Kube-schedular: Responsible for distribution and management of workload(PODS, Services) on worker nodes. Selects node to run unscheduled pod on basis of resource requirements. Keeps track of resource utilization.
+etcd: Distributed key-value store that stores the configuration data of the Kubernetes cluster, representing the state of the cluster at any given point in time.
+Controller-Manager(controller): Multiple control process(node, replication, end points, service account & token controller) on master node compiled together to run as K8 controller manager. Responsible for overall health of the cluster. ensures nodes inside the cluster are up and running with desired state as specified in the spec. communicate with API server to manage end-points.
+Kubectl: CLI used to run commands against the cluster with various ways to create and manage the Kubernetes System.
+Kubelet: Agent that runs on each node which ensures that containers are running healthy in pods as specified in spec all times. Tries to restart pods if any issues.
+Kube-proxy: Runs on each node and responsible for TCP/UDP packet forwarding in the backend distributed n/w from service to pods. It's a n/w proxy that reflects and exposes the services to outside world as configured in k8 API. Cluster IPs and ports are opened by kube-proxy. 
+POD: Lowest building block; Abstraction over container(Reason is so that we only interact with k8 layer to abstract container technology so we can replace them); 
+	Group of one or more dependent containers running together on single node; Each POD has unique IP address. Recommended to run 1 app/pod along with sidecars.
+ConfigMap: External configs of app running in the Pod used as the env variables.
+Secret: Used to store sensitive info such as passwords, OAuth tokens, ssh keys used as the env variables. 
+Heapster: Cluster-wide data aggregator provided by Kubelet running on each node as a pod that discovers all nodes in the cluster and queries usage information from the Kubernetes nodes in the cluster.
+Service: n/w rules for exposing pods to other pods (or) public internet determined by a selector; Need: As pods were ephemeral, we need a stable IP address; load balancing; loose coupling within and outside cluster.
+	ClusterIP: Exposes service on cluster-internal IP; Makes service only reachable from within the cluster; Default service type.
+	NodePort: Extension of ClusterIP that exposes service on each Node's IP at static port and any request to the node on that port gets forwarded to the service. In the svc config, nodePort: xxxxx is added. A Cluster IP service to which Node Port service will route is automatically created. No need of Nginx, user can directly access the Node, which is insecure(not for Production). 
+	LoadBalancer: Extension of the NodePort service that exposes service externally using a cloud provider's N/W LB with IP address; Services(ClusterIP & NodePort), to which external LB will route are automatically created.
+	
+	
+	
+	
+	
+	
+	
+	
+	ExternalName: Maps the service to the contents of the External Name field by returning a CNAME record with its value; No proxying of any kind is set up.
+	Headless: Used when client wants to communicate with 1 specific pod directly | Pods want to talk directly with specific pod, but not randomly selected. Enables you to directly reach the pods without the need of accessing it through a proxy.
+		Ex: Stateful Apps(Data sync); In this Service config is set to, clusterIP: None so that DNS lookup of svc returns Pod IP address instead of ClusterIP.
+	• Port Forwarding: Used to access app's in a cluster through forwarding a local port to a port on the pod. $kubectl port-forward deployment/redis-master 7000:6379
+Ref: https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/
+	•  Service EndPoints: K8 creates these same as Service name to keep track of, which Pods are members/endpoints of the service.
+Selector: Set of rules to match resources based on metadata; Allows users to filter a list of resources based on labels.
+Label: key/value pair attached to resources.
+Annotation: non-identifying metadata for retrieval by API clients such as tools & lib's.
+Replication Controller: Ensures that a specified number of pod replicas are running at any given time; use Equity-Based selectors - only looks for pods that matches label key-values. Previously used in place of Deployments.
+Deployment: A blueprint/declarative template(configurations) for creating & scaling(managing rollout & rollback) pods. Usually used for stateless apps. Deployment creates replica sets, which will further create the pods. Pod name:<deploy_name>-<replica-set->-<pod-id> Abstraction of pods.
+ReplicaSet: A Replica Set's purpose is to maintain a stable set of replica Pods running at any given time. As such, it is often used to guarantee the availability of a specified number of identical Pods. Used in integration with Deployments.
+StatefulSet: A pod which guarantees on deployment and scaling ordering; maintains a sticky identity(retain state and role) for each of their Pods. These pods are created from the same spec, but are not interchangeable(as each maintains individual state). Each has persistent identifier that it maintains across any rescheduling(Even when pod dies and gets replaced, it keeps that identity). StatesfulSets don’t create ReplicaSet, so you can't rollback. Can perform RollingUpdate.
+	DisAdv: Complex replication mechanism,  Manual effort: Configuring cloning & data sync, make remote storage available, Managing and back-up, not perfect for containers
+Pod Name: ${statefulset_name}-${pod-id}  DNS  Name: ${pod-name}.${service_name}     Any app that stores data to keep track of its state. Ex: Database
+Deployment vs Statefulset: Replica pods are identical | not identical; no individual identity | each pod has own identity; Can be addressed randomly | can't;
+Deamonset: Ensures that all (or some) nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods it created. Useful for monitoring agents, log collectors…
+Volume: An external stateful block store for use with ephemeral pods to write persisted data; not a DB.
+Request: Desired amount of CPU or memory for a container in a pod.
+Resource: Any individual KUBERNETES item such as deployment, pod, service or secret etc.,
+Namespace: Abstraction used by K8 to support virtual clusters on a physical cluster. Uses: Resource Grouping, Avoid resource naming conflicts between teams using same cluster, resource sharing between env's, Access isolation, Resource(CPU, Memory) limitations.
+	• Can't access most resources cross-namespace. Can access 'Service' in other namespace.  Volumes, Nodes are not limited by Namespaces.
+Ingress: Collection of rules that acts as an entry point to the Kubernetes cluster. An API object to load balance and redirect the request in terms of path and is the most powerful way of exposing service.
+Security Measures: Regular security updates to Env, Log everything, Auditing, Restrict access to etcd, Strict policies for resources, Vulnerability scanning, Define resource quota, Use images from auth repos only.
+Federated clusters: Multiple Kubernetes clusters can be managed as a single cluster with the help of federated clusters. Features: Cross-cluster discovery, Sync resources across clusters.
+Permissions:
+HELM: Package manager(like yum, apt) for K8. Used to package yaml files and distribute them in public and private repositories. (Like Chef cookbooks and docker images). Used to create template files that can be used across the env's using the parameterized 'values.yaml'
+	Directory Structure:
+		mychart/            # Top level folder. Name of the Chart.
+		  Chart.yaml       # meta info (name, version, dependencies) about chart.
+		  values.yaml     # default values for the template files that can be overridden.    # helm install --values=my-values.yaml <Chart_Name>
+		  charts/             # Chart dependencies (other charts).
+		  templates/      # Folder where actual template's file were stored.
+
+https://medium.com/stakater/k8s-deployments-vs-statefulsets-vs-daemonsets-60582f0c62d4
