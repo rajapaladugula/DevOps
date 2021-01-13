@@ -1,0 +1,101 @@
+ECS: Docker packages s/w code, lib's, Run Time(Instructions) bin's & package them to Docker Container Images --> Saved on ECR(EC2 Container Registry) --> Create ECS Cluster
+Cluster: contains EC2 instances that can launch containers along with light-weight agent(report status to containers) of ECS.
+creating cluster requires: name, instance type, no of instances, EC2 Ami, storage memory, vpc, key pair..
+Task Definition: defines launching docker containers details like reference to image, system configs (which are passed to docker daemon using RUN command in docker.)
+		Meta-data for launching single instance of app container as a task on a machine. Point in time capture of config for running image.
+Task: Tasks are versions of Task Definition that runs on machines, just as docker containers versioned with multiple tags. Task communicates with ecs-agent & docker daemon to find
+		ec2 instances in cluster that meets requirements of Task Def. 
+Service: allows to run & maintain specified no of instances of task def with a placement strategy in a cluster. Automate 'Run-Task' Process, monitor running tasks, restart tasks
+			if fails, manage workloads, maintain desired no of tasks.
+ECS with EC2 vs Fargate: EC2 has full access and control of your infrastructure | No control; Provision and manage servers | No need
+Autoscaling(Service): Add a Scaling policy: Step Scaling-that has alarm based on metrics(CPU/Memory)& its action(Scale Tasks UP/Down) defined to the service.
+	Best practice is to Scale down at <= 40% of the scale UP alarm to avoid loop of Scale UP/Down.
+Autoscaling(Cluster): Capacity Provider is associated to an EC2 ASG which is configured inside the Cluster that can scale ASG. 1. Create an ASG 2. Create an Capacity Provider
+	(associate ASG created, managed Scaling-enabled, select Target capacity%) Scenario: When ECS instance metric reports Target 'Capacity provider reservation'(is a metric that 
+	measures the total % of cluster resources needed by all ECS workloads on the cluster) >= <Target_Capacity>, Cloud watch(using the instance metrics, alarms) notifies ASG and
+	AWS scales/descales container instances.
+
+AWS Auto Scaling Types: Manual, Scheduled, Dynamic(based on metrics like CPU utilization), Predictive(uses ML algorithms)
+
+EC2 (Elastic compute cloud): Pay as you go, choose O.S template(AMI), select quantity, instance type, System specs in less than 5 minutes. has 2 types: 1.On-demand: pay for you use
+		2. spot-instance: bidding, Security is provided by :VPC(Logical Isolated N/W), security groups, IAM. Storage(volume) provided by Elastic Block Storage.
+		Auto-Scaling: can use standard metrics (N/W bandwidth, C.P.U Usage) or customized.
+
+Elastic Block Storage:  Persistent block storage; Snapshot Capability. Types: 1. SSD(Low Latency, High IO/s) Used for: Boot Volumes, Enterprise apps, Relational & NoSQL db
+		2. HDD(High throughput) Used for: Streaming I/O, Big data, Data warehousing & Log processing apps.
+	• Replicated within AZ and could only be mounted to a single EC2 in the same AZ (not across-AZ).
+
+Elastic File System: Replicated across AZ's in a region; Could be mounted to on-prem server as well(over VPN or DirectConnect); Could be mounted to multiple EC2 at the same time;
+	No sizing to be done(unlike EBS)
+
+Elastic Bean Stalk: Service that deploys, manages and scales web apps & services. Supports env's like java, python, docker, ruby, .NET... Deploys to servers like apache tomcat, nginx, iis.
+	It leverages other aws services like ec2, s3, sns, E.L.B, Auto Scaling. Just choose Platform, Instance type and any additional resources as required(RDS, VPC).
+	Used for: Web sites, API Backends, SaaS apps.
+
+ELB: Improves app's availability by distributing traffic between ec2 instances. Checks health periodically and re-routes traffic if finds unhealthy one. Can scale workloads automatically.
+		Listeners: defines how inbound connections are routed to target groups based on ports and protocols set as conditions.
+		Rules: Associated to each Listener that have configured to ELB; help to define incoming request gets routed to which Target Group.
+		Target Groups: Group of resources that you want your ELB to route requests to. Each ELB can have multiple Target Groups, each with different Listener configs and Rules.
+		Classic L.B: Listener checks for connection requests from clients and forwards to targets(instances) using protocol and port no. configured in Listener Rules.
+		App L.B: Listener checks for connection requests from clients and forwards to target groups(consists targets) based on rules that specifies target group, condition, and priority.
+			Every listener must have a default rule and can add multiple rules to specify different target groups based on content-based routing(host/path). Can register target with multiple target groups. Can configure health checks on target group basis.
+		N/W L.B: Ultra-high performance with very low latencies; operates at connection level routing traffic to targets within VPC; Handles millions of requests/sec
+	ELB --> Listener(s) --> [IF]Rules(s) - Condition(s) - [THEN]Action --> Target Groups.
+		Internet-Facing ELB: nodes of ELB are accessible via internet and have a public DNS that can be resolved to its public IP address, in addition to internal IP address. This allows
+			ELB to serve incoming requests from internet before distributing & routing to target groups(using the internal IP address).
+		Internal ELB: has only internal IP address which can only serve requests originated from VPC itself. Ex: internal LB btw'n Web service in public subnet & App Server in Private Subnet.
+		ELB Node: For each AZ an ELB node will be placed within that AZ; need to ensure to have an ELB node associated to any AZ's for which we want to route traffic to; nodes are used by ELB to distribute traffic to target groups.
+		Cross-Zone LB: With this enabled, ELB's distribute all incoming traffic evenly between all targets.
+
+S3: stores files, logs.. in buckets. Files can be 0 to 5 TB. Storage Classes::  1.S3 Standard 2. S3 IA (infrequent access): For data accessed less frequently; Lower fee than s3, but charged retrieval fee. 3. S3 One Zone - IA: Low-cost option for infrequent accessed data that do not require multi-AZ data resilience. 4.S3 Intelligent Tiering: Uses ML to optimize costs by auto moving data to cost-effective access tier, without performance impact or operational overhead. 5. Glacier: Low cost storage class for Data Archiving. Retrieval times configurable from minutes to hours.  6. S3 Glacier Deep Archive: lowest-cost storage class where retrieval time of 12 is acceptable.
+
+RDS: Relational Database, structured data. DB engines: SQL server, PostgreSQL, Amazon Aurora, Oracle, MariaDB.
+	Multi-AZ allows to have exact copy of production db in another AZ. AWS handles replication so whatever is written to primary db will automatically be sync to standby db. In event of planned db maintenance, db failure, or AZ failure, AWS RDS will automatically failover to standby without any manual intervention. Used for DR.
+	Read Replicas allows to have a read-only copy of db which is achieved by using asynchronous replication from primary RDS instance to the read replica. Used for read-heavy db workloads. Used for scaling, but not for DR. Can have up to 5 read replica copies of any db.
+	ElastiCache is a web service that makes it easy to deploy, operate and scale in-memory cache in cloud. Improves performance of web apps by retrieving info from fast, managed, in-memory caches. Options: Redis, Memcached.
+	
+DynamoDB: Fast and flexible NoSQL db service for apps that need consistent, low latency at any scale; Unstructured data that supports both document and key-value data models; stored in form of tables.
+
+VPC: Allows us to provision logically isolated section of AWS, where we can launch AWS resources in a virtual n/w we define. we have complete control over Virtual env, including selection 
+	of IP address, subnets, configuration of n/w tables & gateways. Internet --> Internet Gateway --> Route tables --> N/w access control list --> Subnets --> S.G --> Resources
+	Internet Gateway: horizontally scaled, redundant and highly available VPC component that allows communication b/w instances in your VPC & Internet.
+		Only 1 IGW is attached to a VPC at a time. IGW cannot be detached from VPC when active resource in the VPC.
+	Route Tables: Contains set of rules called routes that determines where n/w traffic is directed. Can have multiple active route tables. Cannot delete the one with associated dependencies(subnets). Can explicitly associate subnets to route tables, where the route tables were connected to VPC. 'Routes' in the Route Tables allows Subnets in the VPC to talk to each other. To make a 'Route Table' public, we need to add the 0.0.0.0/0 'destination' with 'Internet Gateway Target' to the 'Routes'. Then the subnet that needs to be public are attached in the 'Subnet Associations'. Subnets created in the VPC that have not been explicitly associated with any route tables are by default associated with the 'Main' route table created, which is created by default when creating a VPC.
+	NACL: Optional layer of security for vpc that acts as firewall for controlling traffic inbound & outbound rules(Allow or Deny) of one or more subnets. Rules are evaluated based on rule# from lowest to highest. The first rule evaluated applies to traffic and executes regardless of rules that comes after. Default NACL is ALLOW traffic to default subnets, whereas new NACL Deny's everything by default. A subnet can only be associated with one NACL at once and NACL can have multiple subnets associated. NACL acts before SG rules. Can block specific IP address using NACLS but not with SG. Security at Network Level.
+	Ephemeral ports are short lived transport protocol port for Internet protocol communications. On servers , EP can be used for port assignment on server end of a communication. The allocations are temporary and only valid for duration of communication session. Ports become available for reuse after completion(or timeout) of the communication session.
+	Subnets: When we create a VPC, subnets spans all the availability zones in the region to help fault tolerance, redundancy and availability. After VPC creation, we can add one or more subnets to each availability zones. Public subnet has route to internet whereas private does not, but can communicate with public subnets, as they are in same VPC. Must be associated with a route table. Associating a subnet to a route table that has a route which can access IGW makes it a public subnet. One Subnet can only be available in one AZ at a time. Each subnet in VPC must be associated with NACL(associated to default NACL by default).
+	Security Groups: Security at Instance level; Inbound and Outbound Rules.
+	NAT(n/w Address Translation)Gateway : Allows resources in private Subnets to access internet through IG.
+			§ Redundant(can survive failover) inside the AZ.
+			§ Throughput from 5Gbps to 45Gbps
+			§ Not associated with SG.
+			§ Automatically assigned public IP address.
+			§ If resources in multi-AZ share a NAT Gateway, in the event of failure resources in other AZ loses internet access. So, create a NAT Gateway in each AZ and configure to use NAT gateway in same AZ.
+	• By default when a VPC is created, a Router, Route Table, n/w ACL and Security Group were also created.
+	• Allowed size of IPV4 CIDR block is between /16(65,536 IP address) - /28(16 IP address)
+	• Amazon always reserves 5 IP address within the Subnet.
+	• Only one Internet Gateway can be attached per VPC.
+	• One AZ(US-East-1A) in one AWS account can be completely different AZ(US-East-1A) in other AWS account.
+	• Security Groups can't span VPC's which means they need to be created per VPC.
+	• Direct Connect(DX) is a cloud service solution to establish a dedicated n/w connection from on-prem to AWS, which in many cases can reduce n/w costs, increase bandwidth throughput and consistent n/w experience than internet-based connections.
+	• AWS Transit Gateway allows transitive peering between VPC's and on-prem data centers.
+	• NAT Gateway is to provide internet traffic to instances in private subnets; Bastion is used to securely administrate instances(using SSH/RDP).
+	• VPC Endpoints are horizontally scaled, redundant and highly available components that enables to privately connect VPC resources to supported AWS Services without requiring public IP address to communicate with resources in the service. Traffic between VPC resources and other service do not leave Amazon n/w and thus removing availability risks or bandwidth constraints on n/w traffic. Types: Interface, Gateway Endpoints
+	Create Endpoint --> Select a Service(S3) --> Select VPC, Route Table, Policy --> Endpoint Created. 
+
+	1.Create a VPC with a  IPV4 CIDR block(10.0.0.0/16). 2. Create a Public(10.0.1.0/24) and a Private(10.0.2.0/24) Subnet by configuring to attach it to the created VPC, an AZ and a IPV4 CIDR block. In order for the resources in the public subnet to have public IP address assigned, we need to 'Modify auto-assign IP settings' to Enable it. 3. Create an IGW and attach it to the created VPC. 4. The default created 'Route Table' will have the Routes(10.0.0.0/16) that allows the subnets in the VPC to talk to each other which we consider as private. Create another 'Route Table' attaching it with the VPC created and edit the 'Route' to add the 'destination' 0.0.0.0/0 with 'Internet Gateway' 'Target' created earlier. Associate the public subnet to this public 'Route Table' that we just created. 5. Create EC2 instances, one in Public subnet with SG 'Inbound rules' (SSH, HTTP) and another in private subnet with a SG 'Inbound rules' (ICMP, HTTP, HTTPS, SSH, MYSQL) that allows access to the previously created SG for Public Subnet Or the IP range(10.0.1.0/24). Now we should be able to Ping and SSH the Private Instance using the Private IP and Key from Public Instance terminal. But this Private Instance has no access to Internet. 6. In order to have our Private Instance access to Internet, we need to create a NAT Gateway using public subnet and 'New EIP'. Add the 'Destination' (0.0.0.0/0) with the 'Target' 'NAT Gateway' to the Private Route Table so that the private instance has access to the internet.
+
+IAM: Used to manage users and their level of access to AWS. Centralized control of AWS Account. Granular Permissions. Identity Federation. Multifactor Authentication. Temporary access for
+	Users/devices and services. Setup password rotation policy. Users(End Users), Groups(Collection of users who will inherit permissions(policies) of the group), Roles(assigned to AWS resources to Interact with other resources via policies), Policies (gives permissions to what a User/Group/Role is able to do certain actions)
+
+CloudWatch: Used for monitoring performance of resources and apps that run on AWS; Can create CloudWatch alarms which trigger notifications.
+CloudAudit: Used for Auditing resource activity by recording AWS console actions and API calls. Can identify which users and accounts of Aws, source IP address and when the calls were made.
+Route53: Register Domain Names, Routes traffic as per policy selected, DNS Failover, Health Check and Monitoring, Latency based routing, Traffic Flow.
+
+On-premise vs Cloud::
+Deployment: resources are in-house | on-premise of service provider
+Cost: responsible for on-going costs of infra | Pay as you go, no maintenance
+Control: fully in control of data | If downtime, unable to access data
+Security: More secure | Less secure with concerns
+Internet: Operates without | a must
+Scalability:  Difficult to scale quickly | one-click scalable
