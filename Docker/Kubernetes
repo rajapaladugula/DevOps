@@ -70,6 +70,34 @@ Security Measures: Regular security updates to Env, Log everything, auditing, re
 Federated clusters: Multiple Kubernetes clusters can be managed as a single cluster with the help of federated clusters.
 	Features: Cross-cluster discovery, Sync resources across clusters.
 
+Probes (health checks): HTTP Get, TCP, custom cmd
+Liveness: test if a container is UP or should be restarted?
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+Readiness: test if a container is ready to process or should be taken out of service.
+---------------------
+K8 Pattern to ENV variables for Service Discovery:
+ The host variable is the capitalized and underscored service name with service host appended: <EXAMPLE_SVC>_SERVICE_HOST
+ Port variables are the capitalized and underscored service name with service port appended followed by the port name: <EXAMPLE_SVC>_SERVICE_PORT_<PORT_NAME>
+
+Env variables and ports cannot be changed on running pods.
+
+Image pullbackoff: Can be caused due to many reasons
+	Get additional information of Events by 'describe' the pod that caused the issue.
+	Have access(authentication) to that repo? or does that repo exist? Any Typo? Secrets reference(imagePullSecrets) changed that we use in pod definition?
+	Try pulling the image locally and on the node where pod exists
+	Container Tag exists?
+CrashLoopBackOff:
+	'describe' pod for more information on 'Events'
+	Get pod Logs
+	Liveliness Probe fails?
+Multiple Documents(Deployment, Secret..) in one yaml file: Is separated by ---
+apiVersion: extensions/v1beta1
+kind: Deployment
+
+---
+apiVersion: v1
+kind: Secret
+
 #####################Cluster Installation - Ubuntu 16.4#####################
 
 Ref: https://www.edureka.co/blog/install-kubernetes-on-ubuntu
@@ -169,3 +197,4 @@ KUBECTL Commands:
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
 |                               |                                                                                             |                                      |
 +-------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------+
+
