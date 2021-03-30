@@ -10,12 +10,14 @@ init sequence::
 
 init daemon --created from-> /sbin/init --reads file-> /etc/inittab --decides run level & executes the init scripts for that level.
 
-System V config Init Scripts:: When a process or service starts, its binary program file has to load into memory. The job of starting, stopping, or reloading this binary application is handled by the service's init script.
+System V config Init Scripts:: When a process or service starts, its binary program file has to load into memory. The job of starting, stopping, or reloading this binary
+application is handled by the service's init script.
 Directory Structure::
 /etc --> Parent Directory
 /etc/init.d --> Actual location for init shell scripts, which are symlinked to the rc(run command) directories.
 /etc/rc0.d, /etc/rc1.d, /etc/rc2.d --> Numbers represent different runlevels. within each rc<n>.d, we have files that starts with K(Kill) and S(Start), followed by two digits.
-/etc/rc0.d/K25service_script, /etc/rc1.d/S25some_script --> These are sym links that points to the actual /etc/init.d shell scripts. The two digits represents the order of execution of the script.
+/etc/rc0.d/K25service_script, /etc/rc1.d/S25some_script --> These are sym links that points to the actual /etc/init.d shell scripts. The two digits represents the order of 
+execution of the script.
 /etc/inittab --> First file the init daemon reads after being craeted.
 /etc/init.d/rc --> init startup script.
 
@@ -82,7 +84,8 @@ Chnage Run level: sudo telinit 5 (default specified in /etc/initab)
     
     The inittab file in System V also specified which directory Linux will execute its init scripts from: it could be any of the rc<n>.d directories. Likewise,
     In systemd, the default target unit determines which resource units will be loaded at boot time, that has dependencies to other targets (Requires).
-    In systemd, a unit that requires another unit will not start until the required unit is loaded and activated. If the required unit fails for some reason while the first unit is active, the first unit will also stop.
+    In systemd, a unit that requires another unit will not start until the required unit is loaded and activated. If the required unit fails for some reason while the first
+    unit is active, the first unit will also stop.
     Example: default.target -> /lib/systemd/system/multi-user.target -> basic.target -> *
 
 ------------------Creating a service file-------------------------
