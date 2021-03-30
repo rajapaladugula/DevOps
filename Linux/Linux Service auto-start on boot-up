@@ -51,14 +51,14 @@ systemd config files are unit files. The main diff btwn systemd and other 2 are 
 Unit Files Locations:: /lib/systemd/system/		/etc/systemd/system
 
 ---------------------------linux Boot Process---------------------------------------
+Once you power a system on, the first thing that happens is the BIOS loads and performs POST(power on self test), to ensure that the components needed for a boot are Ok.
 Basic I/O system: looks for boot loader from the boot-able media and once it is detected and loaded into memory, BIOS gives control to it.
 Master Boot Record: located in the first sector of the boot-able disk (/dev/sda) loads(Boot info) & executes GRUB boot loader.
-Grand Unified Boot Loader: have multiple images installed on our system and we can choose one to be execute. It displays splash screen
-	waits for few seconds, if nothing pressed, loads  default kernal image specified in GRUB config file (boot/grub/grub.conf).
-	The conf contains Kernal & initrd image which GRUB loads and executes.
-After Kernal(core of OS) & initramfs are loaded, control goes to kernal which initializes, configure memory and executes init program.
-init(PID 1): during the process, system locates root partition and file system and then start init process which runs initialization
-	scripts invoking different scripts in "/etc/rc*.d" directory.
+Grand Unified Boot Loader: have multiple images installed on our system and we can choose one to be executed. It displays splash screen waits for few seconds, if nothing pressed,
+	loads default kernal image specified in GRUB config file (boot/grub/grub.conf). The conf contains Kernal & initrd image which GRUB loads and executes.
+After Kernal(core of OS) & initramfs are loaded, control goes to kernal which initializes, configure memory, mount the file system and start the linux kernal from the filesystem
+that executes init program, which is the very first process(PID 1). It looks at /etc/inittab and will switch to the default run-level 3. There are different run level scripts in
+"/etc/rc*.d/" directory which arr then executed based on the run level the system needs to be in.
 
 Init Sequence(Target Units):: systemd uses targets instead of runlevels after the machine boots & Kernal loads to memory.
     Target units represent the state of the system at any one time. systemd targets can therefore be loosely compared to System V runlevels, although they are not the same.
