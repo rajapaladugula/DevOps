@@ -60,7 +60,7 @@ Grand Unified Boot Loader: have multiple images installed on our system and we c
 	loads default kernal image specified in GRUB config file (boot/grub/grub.conf). The conf contains Kernal & initrd image which GRUB loads and executes.
 After Kernal(core of OS) & initramfs are loaded, control goes to kernal which initializes, configure memory, mount the file system and start the linux kernal from the filesystem
 that executes init program, which is the very first process(PID 1). It looks at /etc/inittab and will switch to the default run-level 3. There are different run level scripts in
-"/etc/rc*.d/" directory which arr then executed based on the run level the system needs to be in.
+"/etc/rc*.d/" directory which are then executed based on the run level the system needs to be in.
 
 Init Sequence(Target Units):: systemd uses targets instead of runlevels after the machine boots & Kernal loads to memory.
     Target units represent the state of the system at any one time. systemd targets can therefore be loosely compared to System V runlevels, although they are not the same.
